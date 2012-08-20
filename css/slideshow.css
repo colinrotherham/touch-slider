@@ -1,0 +1,114 @@
+/* ---------------------------------------
+	Slideshow
+--------------------------------------- */
+
+	html, body, p
+	{
+		margin: 0;
+		padding: 0;
+		border: 0;
+		vertical-align: baseline;
+		background: transparent;
+	}
+	
+	body
+	{
+		margin: 1.25em;
+		font-family: Helvetica, Arial, sans-serif;
+	}
+	
+	a
+	{
+		color: #373737;
+		font-weight: bold;
+	}
+	
+	a:hover,
+	a:focus
+	{
+		color: #737373;
+	}
+	
+	#slideshow
+	{
+		position: relative;
+	}
+	
+	#slideshow,
+	#slideshow .slides,
+	#slideshow .slide
+	{
+		width: 500px;
+		height: 150px;
+	}
+	
+	#slideshow .slide
+	{
+		position: absolute;
+		display: none;
+
+		width: 450px;
+		height: 100px;
+
+		padding: 25px;
+		
+		background: #CFCFCF;
+
+		-webkit-border-radius: 6px;
+		-moz-border-radius: 6px;
+		border-radius: 6px;
+	}
+	
+	#slideshow .sticky
+	{
+		display: block;
+	}
+	
+	#slideshow .buttons
+	{
+		position: absolute;
+		z-index: 1;
+		bottom: 0;
+		right: 0;
+	}
+	
+	#slideshow ul,
+	#slideshow li
+	{
+		display: block;
+		overflow: hidden;
+
+		margin: 0;
+		padding: 0;
+		
+		list-style: none;
+	}
+	
+	#slideshow ul
+	{
+		display: none;
+	
+		margin: 15px;
+		font-size: 0.8em;
+	}
+	
+	.advanced #slideshow ul
+	{
+		display: block;
+	}
+	
+	#slideshow li
+	{
+		float: left;
+	}
+	
+	#slideshow li + li
+	{
+		margin-left: 10px;
+	}
+	
+	#slideshow li a.sticky
+	{
+		color: #3172dd;
+	}
+	
