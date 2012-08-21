@@ -92,8 +92,13 @@
 			// Don't allow default event
 			else { event.preventDefault(); }
 			
-			// Run callback?
-			if (callback) { callback.apply(self); }
+			// Run callback
+			self.callback();
+		};
+		
+		self.callback = function()
+		{
+			if (typeof callback === 'function') { callback.apply(self); }
 		};
 		
 		self.transition = function(slideNext)
