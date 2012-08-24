@@ -21,7 +21,11 @@
 			// Adjust timings
 			delay: 3000,
 			slideTime: 5000,
-			slideTimeFade: 600
+			slideTimeFade: 600,
+			
+			// Allow infinite looping or auto-play?
+			canLoop: true,
+			isManual: false
 		};
 		
 		// Run this when the active slide changes

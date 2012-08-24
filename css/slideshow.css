@@ -72,6 +72,14 @@
 		right: 0;
 	}
 	
+	#slideshow .buttons .disabled,
+	#slideshow .buttons .disabled:hover,
+	#slideshow .buttons .disabled:focus
+	{
+		color: #afafaf;
+		cursor: default;
+	}
+	
 	#slideshow ul,
 	#slideshow li
 	{

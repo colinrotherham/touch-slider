@@ -14,6 +14,7 @@
 		var markers, markerLinks;
 		var buttons, buttonNext, buttonPrevious;
 		var timeoutStart, timeoutSlide;
+		var classDisabled = 'disabled';
 
 		// Not busy
 		self.isBusy = false;
@@ -41,6 +42,7 @@
 					// Grab first slide
 					self.slide = self.slides.eq(self.slideNumber - 1);
 
+					self.updateNextPrev();
 					self.initEvents();
 					self.initMarkers();
 					
@@ -52,7 +54,11 @@
 
 		self.start = function()
 		{
-			timeoutSlide = setTimeout(function() { self.change(); }, config.slideTime);
+			// Only re-start when automatic
+			if (!config.isManual)
+			{
+				timeoutSlide = setTimeout(function() { self.change(); }, config.slideTime);
+			}
 		};
 
 		self.stop = function()
@@ -65,25 +71,23 @@
 		{
 			isPrevious = !!isPrevious;
 
-			// Ignore when busy
-			if (!self.isBusy)
+			// Ignore when busy and if link is disabled
+			if (!self.isBusy && !event || event && !$(event.target).hasClass('disabled'))
 			{				
-				var slideNext = self.getNextSlide(isPrevious, slideOverride);				
+				var slideNext = self.getNextSlide(isPrevious, slideOverride);
 					
-				// check if the same slide has been requested
-				if (self.slide.is(slideNext))
-				{
-					return;
-				}
+				// Skip is same slide has been request
+				if (self.slide.is(slideNext)) { return; }
 				
 				// We are now busy
 				self.isBusy = true;
 	
+				self.updateNextPrev();
 				self.updateMarkers();
 				self.transition(slideNext);
-	
-				// Stop slideshow
-				self.stop();				
+
+				self.stop();
+				self.callback();
 			}
 
 			// Start slideshow again?
@@ -91,9 +95,6 @@
 			
 			// Don't allow default event
 			else { event.preventDefault(); }
-			
-			// Run callback
-			self.callback();
 		};
 		
 		self.callback = function()
@@ -139,6 +140,9 @@
 				// Does it exist?
 				if (!slideNext.length)
 				{
+					// If not looping, don't switch back to begining/end
+					if (!config.canLoop) { isPrevious = !isPrevious; }
+					
 					slideNext = (isPrevious)? self.slides.eq(self.slides.length - 1) : self.slides.eq(0);
 					self.slideNumber = (isPrevious)? self.slides.length : 1;
 				}
@@ -169,13 +173,29 @@
 				}
 			}
 		};
+		
+		self.updateNextPrev = function()
+		{
+			// Skip when looping is on
+			if (config.canLoop) { return; }
+
+			buttonPrevious.removeClass(classDisabled);
+			buttonNext.removeClass(classDisabled);
+
+			switch (self.slideNumber)
+			{
+				case 1:
+				buttonPrevious.addClass(classDisabled); break;
+				
+				case self.slides.length:
+				buttonNext.addClass(classDisabled); break;
+			}
+		};
 
 		self.initMarkers = function()
 		{
-			if (!config.classMarkers)
-			{
-				return;
-			}
+			// Skip when no marker config
+			if (!config.classMarkers) { return; }
 			
 			// Add the markers
 			markers = $('<ul />').addClass(config.classMarkers);
