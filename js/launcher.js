@@ -8,20 +8,20 @@
 		// This is a sample configuration
 		var config =
 		{
-			'slideshow': '#slideshow',
-			'buttons': 'ul.buttons',
-			'buttonNext': 'li.next a',
-			'buttonPrevious': 'li.previous a',
+			slideshow: '#slideshow',
+			buttons: 'ul.buttons',
+			buttonNext: 'li.next a',
+			buttonPrevious: 'li.previous a',
 	
-			// classes
-			'classSlide': 'slide',
-			'classActive': 'sticky',
-			'classMarkers': 'markers',
+			// Classes
+			classSlide: 'slide',
+			classActive: 'sticky',
+			classMarkers: 'markers',
 	
-			// adjust timings
-			'delay': 3000,
-			'slideTime': 5000,
-			'slideTimeFade': 600
+			// Adjust timings
+			delay: 3000,
+			slideTime: 5000,
+			slideTimeFade: 600
 		};
 		
 		// Run this when the active slide changes

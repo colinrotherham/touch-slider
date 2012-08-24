@@ -149,50 +149,55 @@
 		
 		self.updateMarkers = function(event)
 		{
-			var intMarker = self.slideNumber - 1;
-
-			// Clicked so update
-			if (event)
+			if (markers)
 			{
-				intMarker = markerLinks.index($(this));
-
-				// Change to the right slide
-				self.change(event, false, intMarker);
-			}
-
-			else
-			{
-				// Highlight the right marker
-				markerLinks.removeAttr('class').eq(intMarker).addClass(config.classActive);
+				var marker = self.slideNumber - 1;
+			
+				// Clicked so update
+				if (event)
+				{
+					marker = markerLinks.index($(this));
+	
+					// Change to the right slide
+					self.change(event, false, marker);
+				}
+	
+				else
+				{
+					// Highlight the right marker
+					markerLinks.removeAttr('class').eq(marker).addClass(config.classActive);
+				}
 			}
 		};
 
 		self.initMarkers = function()
 		{
-			if (config.classMarkers)
+			if (!config.classMarkers)
 			{
-				// Add the markers
-				markers = $('<ul />').addClass(config.classMarkers);
-	
-				// Create marker links
-				for (var i = 0, j = self.slides.length; i < j; i++)
-				{
-					markers.append($('<li><a href="#">' + (i + 1) + '</a></li>'));
-				}
-	
-				// Find the new links
-				markerLinks = markers.find('a');
-	
-				// Add the markers
-				self.element.append(markers);
-			
-				// Update the markers
-				self.updateMarkers();
-
-				// Wire up and show the markers
-				markerLinks.click(self.updateMarkers);
-				markers.show();
+				return;
 			}
+			
+			// Add the markers
+			markers = $('<ul />').addClass(config.classMarkers);
+
+			// Create marker links
+			for (var i = 0, j = self.slides.length; i < j; i++)
+			{
+				markers.append($('<li><a href="#">' + (i + 1) + '</a></li>'));
+			}
+
+			// Find the new links
+			markerLinks = markers.find('a');
+
+			// Add the markers
+			self.element.append(markers);
+		
+			// Update the markers
+			self.updateMarkers();
+
+			// Wire up and show the markers
+			markerLinks.click(self.updateMarkers);
+			markers.show();
 		};
 		
 		self.initEvents = function()
