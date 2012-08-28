@@ -12,7 +12,6 @@
 		var self = this;
 
 		var markers, markerLinks;
-		var buttons, buttonNext, buttonPrevious;
 		var timeoutStart, timeoutSlide;
 		var classDisabled = 'disabled';
 
@@ -35,9 +34,9 @@
 				if (self.slides.length > 1)
 				{
 					// Find all the buttons
-					buttons = self.element.find(config.buttons);
-					buttonNext = buttons.find(config.buttonNext);
-					buttonPrevious = buttons.find(config.buttonPrevious);
+					self.buttons = self.element.find(config.buttons);
+					self.buttonNext = self.buttons.find(config.buttonNext);
+					self.buttonPrevious = self.buttons.find(config.buttonPrevious);
 		
 					// Grab first slide
 					self.slide = self.slides.eq(self.slideNumber - 1);
@@ -179,16 +178,16 @@
 			// Skip when looping is on
 			if (config.canLoop) { return; }
 
-			buttonPrevious.removeClass(classDisabled);
-			buttonNext.removeClass(classDisabled);
+			self.buttonPrevious.removeClass(classDisabled);
+			self.buttonNext.removeClass(classDisabled);
 
 			switch (self.slideNumber)
 			{
 				case 1:
-				buttonPrevious.addClass(classDisabled); break;
+				self.buttonPrevious.addClass(classDisabled); break;
 				
 				case self.slides.length:
-				buttonNext.addClass(classDisabled); break;
+				self.buttonNext.addClass(classDisabled); break;
 			}
 		};
 
@@ -223,8 +222,8 @@
 		self.initEvents = function()
 		{
 			// Listen for back/forward
-			buttonNext.bind('click', function(event) { self.change(event, false); });
-			buttonPrevious.bind('click', function(event) { self.change(event, true); });
+			self.buttonNext.bind('click', function(event) { self.change(event, false); });
+			self.buttonPrevious.bind('click', function(event) { self.change(event, true); });
 
 			// Listen for mouse movement
 			self.element.bind('mouseenter', self.stop);
