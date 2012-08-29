@@ -86,7 +86,6 @@
 				self.transition(slideNext);
 
 				self.stop();
-				self.callback();
 			}
 
 			// Start slideshow again?
@@ -116,6 +115,8 @@
 				// This is now the current slide
 				self.slide = slideNext;
 				self.isBusy = false;
+				
+				self.callback();
 			});
 		};
 		
