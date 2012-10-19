@@ -19,13 +19,14 @@
 			classMarkers: 'markers',
 	
 			// Adjust timings
-			delay: 3000,
-			slideTime: 5000,
-			slideTimeFade: 600,
+			delay: 3000,			
+			slideInterval: 5000,
+			slideTransition: 600,
 			
-			// Allow infinite looping or auto-play?
+			// Allow infinite looping, auto-play or carousel style?
 			canLoop: true,
-			isManual: false
+			isManual: false,
+			isCarousel: false
 		};
 		
 		// Run this when the active slide changes

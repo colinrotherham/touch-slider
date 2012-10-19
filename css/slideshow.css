@@ -32,6 +32,7 @@
 	#slideshow
 	{
 		position: relative;
+		overflow: hidden;
 	}
 	
 	#slideshow,
@@ -40,6 +41,11 @@
 	{
 		width: 500px;
 		height: 150px;
+	}
+	
+	#slideshow
+	{
+		height: 195px;
 	}
 	
 	#slideshow .slide

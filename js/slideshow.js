@@ -18,25 +18,32 @@
 		// Not busy
 		self.isBusy = false;
 		
+		// Direction
+		self.isBackwards = false;
+
 		// The current slide
 		self.slideNumber = 1;
 
 		self.init = function()
 		{
 			self.element = $(config.slideshow);
+			self.width = self.element.width();
 
 			// Does this slideshow exist?
 			if (self.element.length)
 			{
 				self.slides = self.element.find('.' + config.classSlide);
-	
+
 				// Does it have more than one slide?
 				if (self.slides.length > 1)
 				{
 					// Find all the buttons
-					self.buttons = self.element.find(config.buttons);
-					self.buttonNext = self.buttons.find(config.buttonNext);
-					self.buttonPrevious = self.buttons.find(config.buttonPrevious);
+					if (config.buttons)
+					{
+						self.buttons = self.element.find(config.buttons);
+						self.buttonNext = self.buttons.find(config.buttonNext);
+						self.buttonPrevious = self.buttons.find(config.buttonPrevious);
+					}
 		
 					// Grab first slide
 					self.slide = self.slides.eq(self.slideNumber - 1);
@@ -44,7 +51,7 @@
 					self.updateNextPrev();
 					self.initEvents();
 					self.initMarkers();
-					
+
 					// Start the slideshow timer
 					timeoutStart = setTimeout(self.start, config.delay);
 				}
@@ -56,7 +63,7 @@
 			// Only re-start when automatic
 			if (!config.isManual)
 			{
-				timeoutSlide = setTimeout(function() { self.change(); }, config.slideTime);
+				timeoutSlide = setTimeout(function() { self.change(); }, config.slideInterval);
 			}
 		};
 
@@ -66,102 +73,135 @@
 			clearTimeout(timeoutSlide);
 		};
 
-		self.change = function(event, isPrevious, slideOverride)
+		self.change = function(event, isBackwards, slideOverride)
 		{
-			isPrevious = !!isPrevious;
+			self.isBackwards = !!isBackwards;
 
 			// Ignore when busy and if link is disabled
-			if (!self.isBusy && !event || event && !$(event.target).hasClass('disabled'))
-			{				
-				var slideNext = self.getNextSlide(isPrevious, slideOverride);
-					
+			if (!self.isBusy && (!event || event && !$(event.target).hasClass('disabled')))
+			{
+				self.getNextSlide(slideOverride);
+
 				// Skip is same slide has been request
-				if (self.slide.is(slideNext)) { return; }
-				
+				if (self.slide.is(self.slideNext)) { return; }
+
 				// We are now busy
 				self.isBusy = true;
-	
+
 				self.updateNextPrev();
 				self.updateMarkers();
-				self.transition(slideNext);
+				self.transition();
 
 				self.stop();
 			}
 
 			// Start slideshow again?
 			if (!event) { self.start(); }
-			
+
 			// Don't allow default event
 			else { event.preventDefault(); }
 		};
-		
+
 		self.callback = function()
 		{
 			if (typeof callback === 'function') { callback.apply(self); }
 		};
-		
-		self.transition = function(slideNext)
+
+		self.transition = function()
 		{
 			// In comes the new slide
-			slideNext.stop().css('z-index', 1).fadeTo(config.slideTimeFade, 1);
+			self.transitionNext();
 
 			// Out goes the old slide
-			self.slide.stop().css('z-index', 0).fadeOut(config.slideTimeFade / 2, function()
+			self.transitionCurrent(function()
 			{
 				// Update sticky class
-				self.slides.removeClass(config.classActive);
-				slideNext.addClass(config.classActive);
+				self.slides.hide().removeClass(config.classActive);
+				self.slideNext.show().addClass(config.classActive);
 
 				// This is now the current slide
-				self.slide = slideNext;
+				self.slide = self.slideNext;
 				self.isBusy = false;
-				
+
 				self.callback();
 			});
 		};
-		
-		self.getNextSlide = function(isPrevious, slideOverride)
+
+		self.transitionCurrent = function(complete)
 		{
-			var slideNext;
-		
-			// Go to specific slide
-			if (typeof slideOverride !== 'undefined')
+			var slide = self.slide, time = config.slideTransition;
+
+			// Stop animation and lower
+			self.slide.stop().css('z-index', 0);
+
+			if (config.isCarousel)
 			{
-				slideNext = self.slides.eq(slideOverride);
-				self.slideNumber = slideOverride + 1;
+				slide.animate({ left: ((!self.isBackwards)? '-' : '') + self.width + 'px' }, time, complete);
 			}
-			
-			// Go to next/previous
+
 			else
 			{
-				slideNext = (isPrevious)? self.slide.prev('.' + config.classSlide) : self.slide.next('.' + config.classSlide);
-				self.slideNumber = (isPrevious)? self.slideNumber - 1 : self.slideNumber + 1;
+				time = time / 2;
+				slide.fadeTo(time, 0, complete);
+			}
+		};
+
+		self.transitionNext = function()
+		{
+			var slide = self.slideNext, time = config.slideTransition;
+
+			// Stop animation and raise
+			slide.stop().css('z-index', 1);
+		
+			if (config.isCarousel)
+			{
+				slide.css({ left: ((self.isBackwards)? '-' : '') + self.width + 'px' }).show().animate({ left: '0' }, time);
+			}
+
+			else
+			{
+				slide.fadeTo(time, 1);
+			}
+		};
+
+		self.getNextSlide = function(slideOverride)
+		{
+			// Prepare specific slide
+			if (typeof slideOverride !== 'undefined')
+			{
+				self.slideNext = self.slides.eq(slideOverride);
+				self.slideNumber = slideOverride + 1;
+			}
+
+			// Prepare next/previous
+			else
+			{
+				self.slideNext = (self.isBackwards)? self.slide.prev('.' + config.classSlide) : self.slide.next('.' + config.classSlide);
+				self.slideNumber = (self.isBackwards)? self.slideNumber - 1 : self.slideNumber + 1;
 
 				// Does it exist?
-				if (!slideNext.length)
+				if (!self.slideNext.length)
 				{
 					// If not looping, don't switch back to begining/end
-					if (!config.canLoop) { isPrevious = !isPrevious; }
-					
-					slideNext = (isPrevious)? self.slides.eq(self.slides.length - 1) : self.slides.eq(0);
-					self.slideNumber = (isPrevious)? self.slides.length : 1;
+					if (!config.canLoop) { self.isBackwards = !self.isBackwards; }
+
+					self.slideNext = (self.isBackwards)? self.slides.eq(self.slides.length - 1) : self.slides.eq(0);
+					self.slideNumber = (self.isBackwards)? self.slides.length : 1;
 				}
 			}
-			
-			return slideNext;
 		};
-		
+
 		self.updateMarkers = function(event)
 		{
 			if (markers)
 			{
 				var marker = self.slideNumber - 1;
-			
+
 				// Clicked so update
 				if (event)
 				{
 					marker = markerLinks.index($(this));
-	
+
 					// Change to the right slide
 					self.change(event, false, marker);
 				}
@@ -176,8 +216,8 @@
 		
 		self.updateNextPrev = function()
 		{
-			// Skip when looping is on
-			if (config.canLoop) { return; }
+			// Skip when looping is on or no buttons
+			if (config.canLoop || !config.buttons) { return; }
 
 			self.buttonPrevious.removeClass(classDisabled);
 			self.buttonNext.removeClass(classDisabled);
@@ -186,7 +226,7 @@
 			{
 				case 1:
 				self.buttonPrevious.addClass(classDisabled); break;
-				
+
 				case self.slides.length:
 				self.buttonNext.addClass(classDisabled); break;
 			}
@@ -196,7 +236,7 @@
 		{
 			// Skip when no marker config
 			if (!config.classMarkers) { return; }
-			
+
 			// Add the markers
 			markers = $('<ul />').addClass(config.classMarkers);
 
@@ -211,7 +251,7 @@
 
 			// Add the markers
 			self.element.append(markers);
-		
+
 			// Update the markers
 			self.updateMarkers();
 
@@ -219,12 +259,15 @@
 			markerLinks.click(self.updateMarkers);
 			markers.show();
 		};
-		
+
 		self.initEvents = function()
 		{
 			// Listen for back/forward
-			self.buttonNext.bind('click', function(event) { self.change(event, false); });
-			self.buttonPrevious.bind('click', function(event) { self.change(event, true); });
+			if (config.buttons)
+			{
+				self.buttonNext.bind('click', function(event) { self.change(event, false); });
+				self.buttonPrevious.bind('click', function(event) { self.change(event, true); });
+			}
 
 			// Listen for mouse movement
 			self.element.bind('mouseenter', self.stop);
