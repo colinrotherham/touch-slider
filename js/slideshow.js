@@ -82,17 +82,18 @@
 			{
 				self.getNextSlide(slideOverride);
 
-				// Skip is same slide has been request
-				if (self.slide.is(self.slideNext)) { return; }
-
-				// We are now busy
-				self.isBusy = true;
-
-				self.updateNextPrev();
-				self.updateMarkers();
-				self.transition();
-
-				self.stop();
+				// Proceed if not current slide
+				if (!self.slide.is(self.slideNext))
+				{
+					// We are now busy
+					self.isBusy = true;
+	
+					self.updateNextPrev();
+					self.updateMarkers();
+					self.transition();
+	
+					self.stop();
+				}
 			}
 
 			// Start slideshow again?
