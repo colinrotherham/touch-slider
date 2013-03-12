@@ -27,7 +27,6 @@
 		self.init = function()
 		{
 			self.element = $(config.slideshow);
-			self.width = self.element.width();
 
 			// Does this slideshow exist?
 			if (self.element.length)
@@ -137,7 +136,7 @@
 
 			if (config.isCarousel)
 			{
-				slide.animate({ left: ((!self.isBackwards)? '-' : '') + self.width + 'px' }, time, complete);
+				slide.animate({ left: ((!self.isBackwards)? '-' : '') + self.element.width() + 'px' }, time, complete);
 			}
 
 			else
@@ -156,7 +155,7 @@
 		
 			if (config.isCarousel)
 			{
-				slide.css({ left: ((self.isBackwards)? '-' : '') + self.width + 'px' }).show().animate({ left: '0' }, time);
+				slide.css({ left: ((self.isBackwards)? '-' : '') + self.element.width() + 'px' }).show().animate({ left: '0' }, time);
 			}
 
 			else
