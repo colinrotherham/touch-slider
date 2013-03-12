@@ -8,7 +8,7 @@
 	CRD.Slideshow = function(config, callback)
 	{
 		'use strict';
-	
+
 		var self = this;
 
 		var markers, markerLinks;
@@ -17,7 +17,7 @@
 
 		// Not busy
 		self.isBusy = false;
-		
+
 		// Direction
 		self.isBackwards = false;
 
@@ -43,7 +43,7 @@
 						self.buttonNext = self.buttons.find(config.buttonNext);
 						self.buttonPrevious = self.buttons.find(config.buttonPrevious);
 					}
-		
+
 					// Grab first slide
 					self.slide = self.slides.eq(self.slideNumber - 1);
 
@@ -86,11 +86,11 @@
 				{
 					// We are now busy
 					self.isBusy = true;
-	
+
 					self.updateNextPrev();
 					self.updateMarkers();
 					self.transition();
-	
+
 					self.stop();
 				}
 			}
@@ -152,7 +152,7 @@
 
 			// Stop animation and raise
 			slide.stop().css('z-index', 1);
-		
+
 			if (config.isCarousel)
 			{
 				slide.css({ left: ((self.isBackwards)? '-' : '') + self.element.width() + 'px' }).show().animate({ left: '0' }, time);
@@ -205,7 +205,7 @@
 					// Change to the right slide
 					self.change(event, false, marker);
 				}
-	
+
 				else
 				{
 					// Highlight the right marker
@@ -213,7 +213,7 @@
 				}
 			}
 		};
-		
+
 		self.updateNextPrev = function()
 		{
 			// Skip when looping is on or no buttons
