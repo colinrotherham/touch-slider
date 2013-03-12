@@ -72,9 +72,9 @@
 			clearTimeout(timeoutSlide);
 		};
 
-		self.change = function(event, isBackwards, slideOverride)
+		self.change = function(event, slideOverride)
 		{
-			self.isBackwards = !!isBackwards;
+			self.isBackwards = !!(event.data && event.data.isBackwards);
 
 			// Ignore when busy and if link is disabled
 			if (!self.isBusy && (!event || event && !$(event.target).hasClass('disabled')))
@@ -265,8 +265,8 @@
 			// Listen for back/forward
 			if (config.buttons)
 			{
-				self.buttonNext.bind('click', function(event) { self.change(event, false); });
-				self.buttonPrevious.bind('click', function(event) { self.change(event, true); });
+				self.buttonNext.bind('click', { isBackwards: false }, self.change);
+				self.buttonPrevious.bind('click', { isBackwards: true }, self.change);
 			}
 
 			// Listen for mouse movement
