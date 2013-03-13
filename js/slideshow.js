@@ -16,7 +16,6 @@
 
 		self.isBusy = false;
 		self.isBackwards = false;
-		self.slideNumber = 1;
 
 		self.init = function()
 		{
@@ -39,12 +38,21 @@
 				self.buttonPrevious = self.buttons.find(config.buttonPrevious);
 			}
 
-			// Grab current slide
-			self.slide = self.slides.eq(self.slideNumber - 1);
-
-			// Load all slides onto slide strip, position and display
+			// Position all slides onto slide strip and display
 			self.strip.width((self.slides.length * 100) + '%');
 			self.slides.width((100 / self.slides.length) + '%');
+
+			// Grab sticky slide
+			self.slide = self.slides.filter('.' + config.classActive);
+			self.slideNumber = self.slides.index(self.slide) + 1;
+
+			// No active slide in markup
+			if (!self.slide.length)
+			{
+				// Mark first slide as active
+				self.slideNumber = 1;
+				self.slide = self.slides.eq(self.slideNumber - 1).addClass(config.classActive);
+			}
 
 			self.updateNextPrev();
 			self.initPositions();
@@ -77,7 +85,7 @@
 			// Ignore when busy and if link is disabled
 			if (!self.isBusy && (!event || event && !$(event.target).hasClass('disabled')))
 			{
-				self.getNextSlide(slideOverride);
+				self.setNextSlide(slideOverride);
 
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
@@ -107,11 +115,10 @@
 
 		self.transition = function(event)
 		{
-			var x = ((self.slideNumber - 1) * -100) + '%';
 			var time = (config.isCarousel)? config.slideTransition : 0;
 			var callback = function() { self.transitionEnd(event); };
 			
-			self.strip.animate({ left: x }, time, callback);
+			self.strip.animate({ left: self.getTransitionX() }, time, callback);
 		};
 
 		self.transitionEnd = function(event)
@@ -131,9 +138,14 @@
 			}
 
 			self.callback();
-		}
+		};
+		
+		self.getTransitionX = function()
+		{
+			return ((self.slideNumber - 1) * -100) + '%';
+		};
 
-		self.getNextSlide = function(slideOverride)
+		self.setNextSlide = function(slideOverride)
 		{
 			// Prepare specific slide
 			if (typeof slideOverride !== 'undefined')
@@ -208,6 +220,9 @@
 				x = i * (100 / self.slides.length) + '%';
 				self.slides.eq(i).css('left', x).css('display', 'block').attr('tabindex', '-1');
 			}
+
+			// Set start position for slide strip
+			self.strip.css({ left: self.getTransitionX() });
 		};
 
 		self.initMarkers = function()
