@@ -13,15 +13,9 @@
 
 		var markers, markerLinks;
 		var timeoutStart, timeoutSlide;
-		var classDisabled = 'disabled';
 
-		// Not busy
 		self.isBusy = false;
-
-		// Direction
 		self.isBackwards = false;
-
-		// The current slide
 		self.slideNumber = 1;
 
 		self.init = function()
@@ -29,32 +23,36 @@
 			self.element = $(config.slideshow);
 
 			// Does this slideshow exist?
-			if (self.element.length)
+			if (!self.element.length) { return; }
+
+			self.strip = self.element.find('.' + config.classStrip);
+			self.slides = self.element.find('.' + config.classSlide);
+
+			// Does it have more than one slide?
+			if (self.slides.length < 2) { return; }
+
+			// Find all the buttons
+			if (config.buttons)
 			{
-				self.slides = self.element.find('.' + config.classSlide);
-
-				// Does it have more than one slide?
-				if (self.slides.length > 1)
-				{
-					// Find all the buttons
-					if (config.buttons)
-					{
-						self.buttons = self.element.find(config.buttons);
-						self.buttonNext = self.buttons.find(config.buttonNext);
-						self.buttonPrevious = self.buttons.find(config.buttonPrevious);
-					}
-
-					// Grab first slide
-					self.slide = self.slides.eq(self.slideNumber - 1);
-
-					self.updateNextPrev();
-					self.initEvents();
-					self.initMarkers();
-
-					// Start the slideshow timer
-					timeoutStart = setTimeout(self.start, config.delay);
-				}
+				self.buttons = self.element.find(config.buttons);
+				self.buttonNext = self.buttons.find(config.buttonNext);
+				self.buttonPrevious = self.buttons.find(config.buttonPrevious);
 			}
+
+			// Grab current slide
+			self.slide = self.slides.eq(self.slideNumber - 1);
+
+			// Load all slides onto slide strip, position and display
+			self.strip.width((self.slides.length * 100) + '%');
+			self.slides.width((100 / self.slides.length) + '%');
+
+			self.initPositions();
+			self.updateNextPrev();
+			self.initEvents();
+			self.initMarkers();
+
+			// Start the slideshow timer
+			timeoutStart = setTimeout(self.start, config.delay);
 		};
 
 		self.start = function()
@@ -74,7 +72,7 @@
 
 		self.change = function(event, slideOverride)
 		{
-			self.isBackwards = !!(event.data && event.data.isBackwards);
+			self.isBackwards = !!(event && event.data && event.data.isBackwards);
 
 			// Ignore when busy and if link is disabled
 			if (!self.isBusy && (!event || event && !$(event.target).hasClass('disabled')))
@@ -104,65 +102,29 @@
 
 		self.callback = function()
 		{
-			if (typeof callback === 'function') { callback.apply(self); }
+			if (typeof callback === 'function') { callback.call(self); }
 		};
 
 		self.transition = function()
 		{
-			// In comes the new slide
-			self.transitionNext();
-
-			// Out goes the old slide
-			self.transitionCurrent(function()
-			{
-				// Update sticky class
-				self.slides.hide().removeClass(config.classActive);
-				self.slideNext.show().addClass(config.classActive);
-
-				// This is now the current slide
-				self.slide = self.slideNext;
-				self.isBusy = false;
-
-				self.callback();
-			});
+			var x = ((self.slideNumber - 1) * -100) + '%';
+			var time = (config.isCarousel)? config.slideTransition : 0;
+			
+			self.strip.animate({ left: x }, time, self.transitionEnd);
 		};
 
-		self.transitionCurrent = function(complete)
+		self.transitionEnd = function()
 		{
-			var slide = self.slide, time = config.slideTransition;
+			// Update sticky class
+			self.slides.removeClass(config.classActive);
+			self.slideNext.addClass(config.classActive);
 
-			// Stop animation and lower
-			self.slide.stop().css('z-index', 0);
+			// This is now the current slide
+			self.slide = self.slideNext;
+			self.isBusy = false;
 
-			if (config.isCarousel)
-			{
-				slide.animate({ left: ((!self.isBackwards)? '-' : '') + self.element.width() + 'px' }, time, complete);
-			}
-
-			else
-			{
-				time = time / 2;
-				slide.fadeTo(time, 0, complete);
-			}
-		};
-
-		self.transitionNext = function()
-		{
-			var slide = self.slideNext, time = config.slideTransition;
-
-			// Stop animation and raise
-			slide.stop().css('z-index', 1);
-
-			if (config.isCarousel)
-			{
-				slide.css({ left: ((self.isBackwards)? '-' : '') + self.element.width() + 'px' }).show().animate({ left: '0' }, time);
-			}
-
-			else
-			{
-				slide.fadeTo(time, 1);
-			}
-		};
+			self.callback();
+		}
 
 		self.getNextSlide = function(slideOverride)
 		{
@@ -193,24 +155,21 @@
 
 		self.updateMarkers = function(event)
 		{
-			if (markers)
+			if (!markers) { return; }
+
+			var marker = self.slideNumber - 1;
+
+			// Clicked so update
+			if (event)
 			{
-				var marker = self.slideNumber - 1;
+				// Change to the right slide
+				self.change(event, markerLinks.index(this));
+			}
 
-				// Clicked so update
-				if (event)
-				{
-					marker = markerLinks.index($(this));
-
-					// Change to the right slide
-					self.change(event, false, marker);
-				}
-
-				else
-				{
-					// Highlight the right marker
-					markerLinks.removeAttr('class').eq(marker).addClass(config.classActive);
-				}
+			else
+			{
+				// Highlight the right marker
+				markerLinks.removeAttr('class').eq(marker).addClass(config.classActive);
 			}
 		};
 
@@ -219,16 +178,28 @@
 			// Skip when looping is on or no buttons
 			if (config.canLoop || !config.buttons) { return; }
 
-			self.buttonPrevious.removeClass(classDisabled);
-			self.buttonNext.removeClass(classDisabled);
+			self.buttonPrevious.removeClass(config.classDisabled);
+			self.buttonNext.removeClass(config.classDisabled);
 
 			switch (self.slideNumber)
 			{
 				case 1:
-				self.buttonPrevious.addClass(classDisabled); break;
+				self.buttonPrevious.addClass(config.classDisabled); break;
 
 				case self.slides.length:
-				self.buttonNext.addClass(classDisabled); break;
+				self.buttonNext.addClass(config.classDisabled); break;
+			}
+		};
+
+		self.initPositions = function()
+		{
+			// Loops slides, fix positions
+			var i = self.slides.length, x;
+			while (i--)
+			{
+				// Position each slide one after the other
+				x = i * (100 / self.slides.length) + '%';
+				self.slides.eq(i).css('left', x).css('display', 'block');
 			}
 		};
 
@@ -241,18 +212,17 @@
 			markers = $('<ul />').addClass(config.classMarkers);
 
 			// Create marker links
-			for (var i = 0, j = self.slides.length; i < j; i++)
+			var length = self.slides.length;
+			while (length--)
 			{
-				markers.append($('<li><a href="#">' + (i + 1) + '</a></li>'));
+				markers.prepend($('<li><a href="#">' + (length + 1) + '</a></li>'));
 			}
 
 			// Find the new links
 			markerLinks = markers.find('a');
 
-			// Add the markers
+			// Add the markers, update
 			self.element.append(markers);
-
-			// Update the markers
 			self.updateMarkers();
 
 			// Wire up and show the markers
