@@ -46,8 +46,8 @@
 			self.strip.width((self.slides.length * 100) + '%');
 			self.slides.width((100 / self.slides.length) + '%');
 
-			self.initPositions();
 			self.updateNextPrev();
+			self.initPositions();
 			self.initEvents();
 			self.initMarkers();
 
@@ -87,8 +87,8 @@
 
 					self.updateNextPrev();
 					self.updateMarkers();
-					self.transition();
 
+					self.transition(event);
 					self.stop();
 				}
 			}
@@ -105,15 +105,16 @@
 			if (typeof callback === 'function') { callback.call(self); }
 		};
 
-		self.transition = function()
+		self.transition = function(event)
 		{
 			var x = ((self.slideNumber - 1) * -100) + '%';
 			var time = (config.isCarousel)? config.slideTransition : 0;
+			var callback = function() { self.transitionEnd(event); };
 			
-			self.strip.animate({ left: x }, time, self.transitionEnd);
+			self.strip.animate({ left: x }, time, callback);
 		};
 
-		self.transitionEnd = function()
+		self.transitionEnd = function(event)
 		{
 			// Update sticky class
 			self.slides.removeClass(config.classActive);
@@ -122,6 +123,12 @@
 			// This is now the current slide
 			self.slide = self.slideNext;
 			self.isBusy = false;
+
+			// Clicked, focus active slide
+			if (event && event.type === 'click')
+			{
+				self.slide.focus();
+			}
 
 			self.callback();
 		}
@@ -199,7 +206,7 @@
 			{
 				// Position each slide one after the other
 				x = i * (100 / self.slides.length) + '%';
-				self.slides.eq(i).css('left', x).css('display', 'block');
+				self.slides.eq(i).css('left', x).css('display', 'block').attr('tabindex', '-1');
 			}
 		};
 
