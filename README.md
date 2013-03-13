@@ -4,7 +4,7 @@ Slideshow
 How does it work?
 -----------------
 
-This slideshow will fade in/out child tags with the class "slide".
+This slideshow will move between child elements with the class "slide".
 
 Features:
 
