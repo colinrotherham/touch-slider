@@ -166,7 +166,7 @@
 	#slideshow ul a:hover,
 	#slideshow ul a:focus
 	{
-		text-decoration: none;
+		text-decoration: underline;
 	}
 
 	#slideshow ul a.sticky
