@@ -65,6 +65,7 @@
 	{
 		display: none;
 		text-align: center;
+		outline: none;
 	}
 
 	#slideshow .slide.sticky
@@ -72,7 +73,7 @@
 		display: block;
 	}
 
-	#slideshow .buttons
+	#slideshow .markers
 	{
 		position: absolute;
 		z-index: 1;
@@ -155,6 +156,17 @@
 	{
 		margin: 15px 4.6875%;
 		font-size: 0.8em;
+	}
+
+	#slideshow ul a
+	{
+		text-decoration: none;
+	}
+	
+	#slideshow ul a:hover,
+	#slideshow ul a:focus
+	{
+		text-decoration: none;
 	}
 
 	#slideshow ul a.sticky
