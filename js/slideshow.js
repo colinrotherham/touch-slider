@@ -222,7 +222,7 @@
 			var length = self.slides.length;
 			while (length--)
 			{
-				markers.prepend($('<li><a href="#">' + (length + 1) + '</a></li>'));
+				markers.prepend($('<li><a href="#" aria-role="button">' + (length + 1) + '</a></li>'));
 			}
 
 			// Find the new links
