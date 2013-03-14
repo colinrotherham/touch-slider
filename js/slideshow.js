@@ -120,7 +120,12 @@
 
 		self.transition = function(time, complete)
 		{
-			self.strip.animate({ left: getTransitionX() }, time, complete);
+			self.strip.animate({ left: self.getTransitionX() }, time, complete);
+		};
+
+		self.getTransitionX = function()
+		{
+			return ((self.slideNumber - 1) * -100) + '%';
 		};
 
 		function transitionEnd(event)
@@ -140,11 +145,6 @@
 			}
 
 			self.callback();
-		}
-
-		function getTransitionX()
-		{
-			return ((self.slideNumber - 1) * -100) + '%';
 		}
 
 		function updateNextSlide(override)
