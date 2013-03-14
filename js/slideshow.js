@@ -75,9 +75,17 @@
 		{
 			isBackwards = !!(event && event.data && event.data.isBackwards);
 
+			var element = $(this);
+
 			// Ignore when busy and if link is disabled
-			if (!isBusy && (!event || event && !$(event.target).hasClass('disabled')))
+			if (!isBusy && (!event || event && !element.hasClass(config.classDisabled)))
 			{
+				// If slide clicked, jump to slide
+				if (!element.is('a') && element.hasClass(config.classSlide))
+				{
+					override = self.slides.index(element);
+				}
+
 				updateNextSlide(override);
 
 				// Proceed if not current slide
@@ -260,6 +268,9 @@
 				self.buttonNext.bind('click', { isBackwards: false }, self.change);
 				self.buttonPrevious.bind('click', { isBackwards: true }, self.change);
 			}
+
+			// Allow slides to be clicked
+			self.slides.click(self.change);
 
 			// Listen for mouse movement
 			self.element.bind('mouseenter', self.stop);
