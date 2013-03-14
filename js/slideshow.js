@@ -140,20 +140,20 @@
 
 		function updateNextSlide(override)
 		{
-			var slide, number;
-			var count = self.slides.length;
+			var slide = self.slide, slides = self.slides,
+				number = self.slideNumber, count = slides.length;
 
 			// Prepare specific slide
 			if (typeof override !== 'undefined')
 			{
-				slide = self.slides.eq(override);
+				slide = slides.eq(override);
 				number = override + 1;
 			}
 
 			// Prepare next/previous
 			else
 			{
-				slide = (isBackwards)? self.slide.prev('.' + config.classSlide) : self.slide.next('.' + config.classSlide);
+				slide = (isBackwards)? slide.prev('.' + config.classSlide) : slide.next('.' + config.classSlide);
 				number = (isBackwards)? number - 1 : number + 1;
 
 				// Does it exist?
@@ -163,7 +163,7 @@
 					if (!config.canLoop) { isBackwards = !isBackwards; }
 
 					// Wrap around to start/end
-					slide = (isBackwards)? self.slides.eq(count - 1) : self.slides.eq(0);
+					slide = (isBackwards)? slides.eq(count - 1) : slides.eq(0);
 					number = (isBackwards)? count : 1;
 				}
 			}
