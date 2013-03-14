@@ -231,7 +231,7 @@
 			}
 
 			// Set start position for slide strip
-			self.strip.css({ left: getTransitionX() });
+			self.strip.css({ left: self.getTransitionX() });
 		}
 
 		function initMarkers()
