@@ -81,8 +81,9 @@
 			if (!isBusy && (!event || event && !element.hasClass(config.classDisabled)))
 			{
 				// If slide clicked, jump to slide
-				if (!element.is('a') && element.hasClass(config.classSlide))
+				if (element.hasClass(config.classSlide))
 				{
+					if (element.is('a')) { return; }
 					override = self.slides.index(element);
 				}
 
