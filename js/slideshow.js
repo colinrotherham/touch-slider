@@ -12,23 +12,16 @@
 		var self = this;
 
 		var markers, markerLinks;
-		var timeoutStart, timeoutSlide;
-
-		self.isBusy = false;
-		self.isBackwards = false;
+		var timeoutStart, timeoutSlide, isBusy = false, isBackwards = false;
 
 		self.init = function()
 		{
 			self.element = $(config.slideshow);
-
-			// Does this slideshow exist?
-			if (!self.element.length) { return; }
-
 			self.strip = self.element.find('.' + config.classStrip);
 			self.slides = self.element.find('.' + config.classSlide);
 
-			// Does it have more than one slide?
-			if (self.slides.length < 2) { return; }
+			// Does this slideshow not exist or have only one slide?
+			if (!self.element.length || self.slides.length < 2) { return; }
 
 			// Find all the buttons
 			if (config.buttons)
@@ -54,10 +47,10 @@
 				self.slide = self.slides.eq(self.slideNumber - 1).addClass(config.classActive);
 			}
 
-			self.updateNextPrev();
-			self.initPositions();
-			self.initEvents();
-			self.initMarkers();
+			updateNextPrev();
+			initPositions();
+			initEvents();
+			initMarkers();
 
 			// Start the slideshow timer
 			timeoutStart = setTimeout(self.start, config.delay);
@@ -78,26 +71,26 @@
 			clearTimeout(timeoutSlide);
 		};
 
-		self.change = function(event, slideOverride)
+		self.change = function(event, override)
 		{
-			self.isBackwards = !!(event && event.data && event.data.isBackwards);
+			isBackwards = !!(event && event.data && event.data.isBackwards);
 
 			// Ignore when busy and if link is disabled
-			if (!self.isBusy && (!event || event && !$(event.target).hasClass('disabled')))
+			if (!isBusy && (!event || event && !$(event.target).hasClass('disabled')))
 			{
-				self.updateNextSlide(slideOverride);
+				updateNextSlide(override);
 
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
 				{
 					// We are now busy
-					self.isBusy = true;
+					isBusy = true;
 
-					self.updateNextPrev();
-					self.updateMarkers();
+					updateNextPrev();
+					updateMarkers();
 
 					var time = (config.isCarousel)? config.slideTransition : 0;
-					var complete = function() { self.transitionEnd(event); };
+					var complete = function() { transitionEnd(event); };
 
 					self.transition(time, complete);
 					self.stop();
@@ -118,10 +111,10 @@
 
 		self.transition = function(time, complete)
 		{
-			self.strip.animate({ left: self.getTransitionX() }, time, complete);
+			self.strip.animate({ left: getTransitionX() }, time, complete);
 		};
 
-		self.transitionEnd = function(event)
+		function transitionEnd(event)
 		{
 			// Update sticky class
 			self.slides.removeClass(config.classActive);
@@ -129,7 +122,7 @@
 
 			// This is now the current slide
 			self.slide = self.slideNext;
-			self.isBusy = false;
+			isBusy = false;
 
 			// Clicked, focus active slide
 			if (event && event.type === 'click')
@@ -138,41 +131,48 @@
 			}
 
 			self.callback();
-		};
-		
-		self.getTransitionX = function()
+		}
+
+		function getTransitionX()
 		{
 			return ((self.slideNumber - 1) * -100) + '%';
-		};
+		}
 
-		self.updateNextSlide = function(slideOverride)
+		function updateNextSlide(override)
 		{
+			var slide, number;
+			var count = self.slides.length;
+
 			// Prepare specific slide
-			if (typeof slideOverride !== 'undefined')
+			if (typeof override !== 'undefined')
 			{
-				self.slideNext = self.slides.eq(slideOverride);
-				self.slideNumber = slideOverride + 1;
+				slide = self.slides.eq(override);
+				number = override + 1;
 			}
 
 			// Prepare next/previous
 			else
 			{
-				self.slideNext = (self.isBackwards)? self.slide.prev('.' + config.classSlide) : self.slide.next('.' + config.classSlide);
-				self.slideNumber = (self.isBackwards)? self.slideNumber - 1 : self.slideNumber + 1;
+				slide = (isBackwards)? self.slide.prev('.' + config.classSlide) : self.slide.next('.' + config.classSlide);
+				number = (isBackwards)? number - 1 : number + 1;
 
 				// Does it exist?
-				if (!self.slideNext.length)
+				if (!slide.length)
 				{
 					// If not looping, don't switch back to begining/end
-					if (!config.canLoop) { self.isBackwards = !self.isBackwards; }
+					if (!config.canLoop) { isBackwards = !isBackwards; }
 
-					self.slideNext = (self.isBackwards)? self.slides.eq(self.slides.length - 1) : self.slides.eq(0);
-					self.slideNumber = (self.isBackwards)? self.slides.length : 1;
+					// Wrap around to start/end
+					slide = (isBackwards)? self.slides.eq(count - 1) : self.slides.eq(0);
+					number = (isBackwards)? count : 1;
 				}
 			}
-		};
 
-		self.updateMarkers = function(event)
+			self.slideNext = slide;
+			self.slideNumber = number;
+		}
+
+		function updateMarkers(event)
 		{
 			if (!markers) { return; }
 
@@ -190,9 +190,9 @@
 				// Highlight the right marker
 				markerLinks.removeAttr('class').eq(marker).addClass(config.classActive);
 			}
-		};
+		}
 
-		self.updateNextPrev = function()
+		function updateNextPrev()
 		{
 			// Skip when looping is on or no buttons
 			if (config.canLoop || !config.buttons) { return; }
@@ -208,9 +208,9 @@
 				case self.slides.length:
 				self.buttonNext.addClass(config.classDisabled); break;
 			}
-		};
+		}
 
-		self.initPositions = function()
+		function initPositions()
 		{
 			// Loops slides, fix positions
 			var i = self.slides.length, x;
@@ -222,10 +222,10 @@
 			}
 
 			// Set start position for slide strip
-			self.strip.css({ left: self.getTransitionX() });
-		};
+			self.strip.css({ left: getTransitionX() });
+		}
 
-		self.initMarkers = function()
+		function initMarkers()
 		{
 			// Skip when no marker config
 			if (!config.classMarkers) { return; }
@@ -245,14 +245,14 @@
 
 			// Add the markers, update
 			self.element.append(markers);
-			self.updateMarkers();
+			updateMarkers();
 
 			// Wire up and show the markers
-			markerLinks.click(self.updateMarkers);
+			markerLinks.click(updateMarkers);
 			markers.show();
-		};
+		}
 
-		self.initEvents = function()
+		function initEvents()
 		{
 			// Listen for back/forward
 			if (config.buttons)
@@ -264,5 +264,5 @@
 			// Listen for mouse movement
 			self.element.bind('mouseenter', self.stop);
 			self.element.bind('mouseleave', self.start);
-		};
+		}
 	};
