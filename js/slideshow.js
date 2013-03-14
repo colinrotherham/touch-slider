@@ -85,7 +85,7 @@
 			// Ignore when busy and if link is disabled
 			if (!self.isBusy && (!event || event && !$(event.target).hasClass('disabled')))
 			{
-				self.setNextSlide(slideOverride);
+				self.updateNextSlide(slideOverride);
 
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
@@ -96,7 +96,10 @@
 					self.updateNextPrev();
 					self.updateMarkers();
 
-					self.transition(event);
+					var time = (config.isCarousel)? config.slideTransition : 0;
+					var complete = function() { self.transitionEnd(event); };
+
+					self.transition(time, complete);
 					self.stop();
 				}
 			}
@@ -113,12 +116,9 @@
 			if (typeof callback === 'function') { callback.call(self); }
 		};
 
-		self.transition = function(event)
+		self.transition = function(time, complete)
 		{
-			var time = (config.isCarousel)? config.slideTransition : 0;
-			var callback = function() { self.transitionEnd(event); };
-			
-			self.strip.animate({ left: self.getTransitionX() }, time, callback);
+			self.strip.animate({ left: self.getTransitionX() }, time, complete);
 		};
 
 		self.transitionEnd = function(event)
@@ -145,7 +145,7 @@
 			return ((self.slideNumber - 1) * -100) + '%';
 		};
 
-		self.setNextSlide = function(slideOverride)
+		self.updateNextSlide = function(slideOverride)
 		{
 			// Prepare specific slide
 			if (typeof slideOverride !== 'undefined')
