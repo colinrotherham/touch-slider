@@ -24,12 +24,8 @@
 			if (!self.element.length || self.slides.length < 2) { return; }
 
 			// Find all the buttons
-			if (config.buttons)
-			{
-				self.buttons = self.element.find(config.buttons);
-				self.buttonNext = self.buttons.find(config.buttonNext);
-				self.buttonPrevious = self.buttons.find(config.buttonPrevious);
-			}
+			self.buttonNext = self.element.find(config.buttonNext);
+			self.buttonPrevious = self.element.find(config.buttonPrevious);
 
 			// Position all slides onto slide strip and display
 			self.strip.width((self.slides.length * 100) + '%');
@@ -204,7 +200,7 @@
 		function updateNextPrev()
 		{
 			// Skip when looping is on or no buttons
-			if (config.canLoop || !config.buttons) { return; }
+			if (config.canLoop) { return; }
 
 			self.buttonPrevious.removeClass(config.classDisabled);
 			self.buttonNext.removeClass(config.classDisabled);
@@ -264,11 +260,8 @@
 		function initEvents()
 		{
 			// Listen for back/forward
-			if (config.buttons)
-			{
-				self.buttonNext.bind('click', { isBackwards: false }, self.change);
-				self.buttonPrevious.bind('click', { isBackwards: true }, self.change);
-			}
+			self.buttonNext.bind('click', { isBackwards: false }, self.change);
+			self.buttonPrevious.bind('click', { isBackwards: true }, self.change);
 
 			// Allow slides to be clicked
 			self.slides.click(self.change);

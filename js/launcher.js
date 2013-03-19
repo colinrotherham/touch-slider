@@ -9,7 +9,6 @@
 		var config =
 		{
 			slideshow: '#slideshow',
-			buttons: 'ul.buttons',
 			buttonNext: 'li.next a',
 			buttonPrevious: 'li.previous a',
 
