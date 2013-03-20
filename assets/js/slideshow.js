@@ -53,8 +53,8 @@
 			if (!self.element.length || self.slides.length < 2) { return; }
 
 			// Find all the buttons
-			self.buttonNext = self.element.find(config.buttonNext);
-			self.buttonPrevious = self.element.find(config.buttonPrevious);
+			self.buttonNext = self.element.find(config.buttonNext).show();
+			self.buttonPrevious = self.element.find(config.buttonPrevious).show();
 
 			// Position all slides onto slide strip and display
 			self.strip.width((self.slides.length * 100) + '%');

@@ -88,6 +88,12 @@
 		left: auto;
 		right: 0;
 	}
+	
+	#slideshow button,
+	#slideshow .markers
+	{
+		display: none;
+	}
 
 	#slideshow .markers
 	{
@@ -107,11 +113,6 @@
 		padding: 0;
 
 		list-style: none;
-	}
-
-	#slideshow ul
-	{
-		display: none;
 	}
 
 	#slideshow li
