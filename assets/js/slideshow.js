@@ -43,7 +43,7 @@
 		$.each(override, function(name, value) { config[name] = value; });
 
 		// Start the slideshow
-		self.init = function()
+		function init()
 		{
 			self.element = $(config.slideshow);
 			self.strip = self.element.find('.' + config.classStrip);
@@ -78,25 +78,25 @@
 			initMarkers();
 
 			// Start the slideshow timer
-			timeoutStart = setTimeout(self.start, config.delay);
-		};
+			timeoutStart = setTimeout(start, config.delay);
+		}
 
-		self.start = function()
+		function start()
 		{
 			// Only re-start when automatic
 			if (!config.isManual)
 			{
-				timeoutSlide = setTimeout(function() { self.change(); }, config.slideInterval);
+				timeoutSlide = setTimeout(function() { change(); }, config.slideInterval);
 			}
-		};
+		}
 
-		self.stop = function()
+		function stop()
 		{
 			clearTimeout(timeoutStart);
 			clearTimeout(timeoutSlide);
-		};
+		}
 
-		self.change = function(event, override)
+		function change(event, override)
 		{
 			isBackwards = !!(event && event.data && event.data.isBackwards);
 
@@ -126,27 +126,22 @@
 					var time = (config.isCarousel)? config.slideTransition : 0;
 					var complete = function() { transitionEnd(event); };
 
-					self.transition(time, complete);
-					self.stop();
+					transition(time, complete);
+					stop();
 				}
 			}
 
 			// Start slideshow again?
-			if (!event) { self.start(); }
+			if (!event) { start(); }
 
 			// Don't allow default event
 			else { event.preventDefault(); }
-		};
+		}
 
-		self.transition = function(time, complete)
+		function transition(time, complete)
 		{
-			self.strip.animate({ left: self.getTransitionX() }, time, complete);
-		};
-
-		self.getTransitionX = function()
-		{
-			return ((self.slideNumber - 1) * -100) + '%';
-		};
+			self.strip.animate({ left: getTransitionX() }, time, complete);
+		}
 
 		function transitionEnd(event)
 		{
@@ -166,6 +161,11 @@
 
 			// Run optional callback?
 			if (typeof callback === 'function') { callback.call(self); }
+		}
+
+		function getTransitionX()
+		{
+			return ((self.slideNumber - 1) * -100) + '%';
 		}
 
 		function updateNextSlide(override)
@@ -212,7 +212,7 @@
 			if (event)
 			{
 				// Change to the right slide
-				self.change(event, markerLinks.index(this));
+				change(event, markerLinks.index(this));
 			}
 
 			else
@@ -252,7 +252,7 @@
 			}
 
 			// Set start position for slide strip
-			self.strip.css({ left: self.getTransitionX() });
+			self.strip.css({ left: getTransitionX() });
 		}
 
 		function initMarkers()
@@ -285,14 +285,22 @@
 		function initEvents()
 		{
 			// Listen for back/forward
-			self.buttonNext.bind('click', { isBackwards: false }, self.change);
-			self.buttonPrevious.bind('click', { isBackwards: true }, self.change);
+			self.buttonNext.bind('click', { isBackwards: false }, change);
+			self.buttonPrevious.bind('click', { isBackwards: true }, change);
 
 			// Allow slides to be clicked
-			self.slides.click(self.change);
+			self.slides.click(change);
 
 			// Listen for mouse movement
-			self.element.bind('mouseenter', self.stop);
-			self.element.bind('mouseleave', self.start);
+			self.element.bind('mouseenter', stop);
+			self.element.bind('mouseleave', start);
 		}
+
+		// Make internal methods available outside
+		self.init = init;
+		self.start = start;
+		self.stop = stop;
+		self.change = change;
+		self.transition = transition;
+		self.getTransitionX = getTransitionX;
 	};
