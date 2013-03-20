@@ -74,7 +74,7 @@
 	{
 		display: block;
 	}
-	
+
 	#slideshow button
 	{
 		position: absolute;
@@ -82,7 +82,7 @@
 		top: 0;
 		left: 0;
 	}
-	
+
 	#slideshow button.next
 	{
 		left: auto;
@@ -128,7 +128,7 @@
 	{
 		display: block;
 	}
-	
+
 	.advanced #slideshow ul
 	{
 		display: inline-block;
@@ -164,10 +164,10 @@
 	{
 		width: 40px;
 		height: 170px;
-		
+
 		margin: 0;
 		padding: 0 10px 0 7px;
-		
+
 		background: none;
 		border: 0;
 		cursor: pointer;
@@ -176,33 +176,33 @@
 		-moz-appearance: none;
 		appearance: none;
 	}
-	
+
 	#slideshow button:hover,
 	#slideshow button:focus
 	{
 		background: #c0c0c0;
 		background: rgba(183, 183, 183, 0.7);
 	}
-	
+
 	#slideshow button b
 	{
 		display: block;
-	
+
 		width: 23px;
 		height: 36px;
-	
+
 		background: transparent url(../img/arrow.png) no-repeat 0 -36px;
 		background: rgba(0, 0, 0, 0) url(../img/arrow.svg) no-repeat 0 -36px;
 		background-size: 23px 72px;
-		
+
 		text-indent: -10000px;
 	}
-	
+
 	#slideshow button.next
 	{
 		padding: 0 7px 0 10px;
 	}
-	
+
 	#slideshow button.next b
 	{
 		background-position: 0 0;
@@ -224,7 +224,7 @@
 	{
 		text-decoration: none;
 	}
-	
+
 	#slideshow ul a:hover,
 	#slideshow ul a:focus
 	{
