@@ -5,15 +5,44 @@
 
 	var CRD = CRD || {};
 
-	CRD.Slideshow = function(config, callback)
+	CRD.Slideshow = function(override, callback)
 	{
 		'use strict';
 
-		var self = this;
+		var self = this,
 
-		var markers, markerLinks;
-		var timeoutStart, timeoutSlide, isBusy = false, isBackwards = false;
+		// Default config
+		config =
+		{
+			buttonNext: 'button.next',
+			buttonPrevious: 'button.previous',
 
+			// Classes
+			classStrip: 'strip',
+			classSlide: 'slide',
+			classActive: 'sticky',
+			classMarkers: 'markers',
+			classDisabled: 'disabled',
+
+			// Adjust timings
+			delay: 3000,
+			slideInterval: 5000,
+			slideTransition: 600,
+
+			// Allow infinite looping, auto-play or carousel style?
+			canLoop: true,
+			isManual: false,
+			isCarousel: true
+		},
+
+		markers, markerLinks,
+		timeoutStart, timeoutSlide,
+		isBusy = false, isBackwards = false;
+
+		// Override defaults with custom config?
+		$.each(override, function(name, value) { config[name] = value; });
+
+		// Start the slideshow
 		self.init = function()
 		{
 			self.element = $(config.slideshow);
