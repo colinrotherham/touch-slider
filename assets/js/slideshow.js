@@ -138,11 +138,6 @@
 			else { event.preventDefault(); }
 		};
 
-		self.callback = function()
-		{
-			if (typeof callback === 'function') { callback.call(self); }
-		};
-
 		self.transition = function(time, complete)
 		{
 			self.strip.animate({ left: self.getTransitionX() }, time, complete);
@@ -169,7 +164,8 @@
 				self.slide.focus();
 			}
 
-			self.callback();
+			// Run optional callback?
+			if (typeof callback === 'function') { callback.call(self); }
 		}
 
 		function updateNextSlide(override)
