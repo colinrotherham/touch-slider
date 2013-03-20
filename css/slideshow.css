@@ -13,7 +13,9 @@
 
 	body
 	{
-		margin: 1.25em;
+		margin: 3.125%;
+		padding: 0;
+
 		font-family: Helvetica, Arial, sans-serif;
 	}
 
@@ -71,6 +73,20 @@
 	#slideshow .slide.sticky
 	{
 		display: block;
+	}
+	
+	#slideshow button
+	{
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		left: 0;
+	}
+	
+	#slideshow button.next
+	{
+		left: auto;
+		right: 0;
 	}
 
 	#slideshow .markers
@@ -144,9 +160,50 @@
 		font-size: 2em;
 	}
 
-	#slideshow .buttons .disabled,
-	#slideshow .buttons .disabled:hover,
-	#slideshow .buttons .disabled:focus
+	#slideshow button
+	{
+		width: 43px;
+		height: 170px;
+		
+		margin: 0;
+		padding: 0 10px;
+		
+		background: none;
+		border: 0;
+		cursor: pointer;
+
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+	}
+	
+	#slideshow button:hover,
+	#slideshow button:focus
+	{
+		background: #c0c0c0;
+		background: rgba(183, 183, 183, 0.7);
+	}
+	
+	#slideshow button b
+	{
+		display: block;
+	
+		width: 23px;
+		height: 36px;
+	
+		background: transparent url(../img/arrow.png) no-repeat 0 -36px;
+		background: rgba(0, 0, 0, 0) url(../img/arrow.svg) no-repeat 0 -36px;
+		background-size: 23px 72px;
+		
+		text-indent: -10000px;
+	}
+	
+	#slideshow button.next b
+	{
+		background-position: 0 0;
+	}
+
+	#slideshow button.disabled
 	{
 		color: #afafaf;
 		cursor: default;
@@ -154,7 +211,7 @@
 
 	#slideshow ul
 	{
-		margin: 15px 4.6875%;
+		margin: 15px 10px;
 		font-size: 0.8em;
 	}
 

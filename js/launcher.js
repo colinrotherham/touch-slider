@@ -9,8 +9,8 @@
 		var config =
 		{
 			slideshow: '#slideshow',
-			buttonNext: 'li.next a',
-			buttonPrevious: 'li.previous a',
+			buttonNext: 'button.next',
+			buttonPrevious: 'button.previous',
 
 			// Classes
 			classStrip: 'strip',
