@@ -11,6 +11,10 @@
 
 		var self = this,
 
+		// Transition prefixes + default
+		prefixes = ['o', 'ms', 'Moz', 'webkit', ''],
+		prefix = prefixes[0],
+
 		// Default config
 		config =
 		{
@@ -32,7 +36,17 @@
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: true,
 			isManual: false,
-			isCarousel: true
+			isCarousel: true,
+
+			// Check support for CSS transitions
+			isCSS: (function()
+			{
+				var css = document.body.style, i = prefixes.length;
+
+				// Check vendor prefixes
+				while (i--) { if (typeof css[prefixes[i] + 'Transition'] === 'string') { prefix = prefixes[i]; }}
+				return !!prefix;
+			})()
 		},
 
 		markers, markerLinks,
@@ -123,10 +137,8 @@
 					updateNextPrev();
 					updateMarkers();
 
-					var time = (config.isCarousel)? config.slideTransition : 0;
-					var complete = function() { transitionEnd(event); };
-
-					transition(time, complete);
+					// Only transition where carousel is enabled and no CSS transitions
+					transition((config.isCarousel)? config.slideTransition : 0, function() { transitionEnd(event); });
 					stop();
 				}
 			}
@@ -140,7 +152,10 @@
 
 		function transition(time, complete)
 		{
-			self.strip.animate({ left: getTransitionX() }, time, complete);
+			self.strip.animate({ left: getTransitionX() + '%' }, (config.isCSS)? 0 : time);
+
+			// Callback
+			if (complete) { setTimeout(complete, time); }
 		}
 
 		function transitionEnd(event)
@@ -160,17 +175,17 @@
 			}
 
 			// Run optional callback?
-			if (typeof callback === 'function') { callback.call(self); }
+			if (callback) { callback.call(self); }
 		}
 
 		function getTransitionX()
 		{
-			return ((self.slideNumber - 1) * -100) + '%';
+			return ((self.slideNumber - 1) * -100);
 		}
 
 		function updateNextSlide(override)
 		{
-			var slide = self.slide, slides = self.slides,
+			var slide = self.slide, slides = self.slides, classSlide = config.classSlide,
 				number = self.slideNumber, count = slides.length;
 
 			// Prepare specific slide
@@ -183,7 +198,7 @@
 			// Prepare next/previous
 			else
 			{
-				slide = (isBackwards)? slide.prev('.' + config.classSlide) : slide.next('.' + config.classSlide);
+				slide = (isBackwards)? slide.prev('.' + classSlide) : slide.next('.' + classSlide);
 				number = (isBackwards)? number - 1 : number + 1;
 
 				// Does it exist?
@@ -204,39 +219,40 @@
 
 		function updateMarkers(event)
 		{
-			if (!markers) { return; }
-
-			var marker = self.slideNumber - 1;
-
-			// Clicked so update
-			if (event)
+			if (markers)
 			{
-				// Change to the right slide
-				change(event, markerLinks.index(this));
-			}
-
-			else
-			{
-				// Highlight the right marker
-				markerLinks.removeAttr('class').eq(marker).addClass(config.classActive);
+				var marker = self.slideNumber - 1;
+	
+				// Clicked so update
+				if (event)
+				{
+					// Change to the right slide
+					change(event, markerLinks.index(this));
+				}
+	
+				else
+				{
+					// Highlight the right marker
+					markerLinks.removeAttr('class').eq(marker).addClass(config.classActive);
+				}
 			}
 		}
 
 		function updateNextPrev()
 		{
 			// Skip when looping is on or no buttons
-			if (config.canLoop) { return; }
-
-			self.buttonPrevious.removeClass(config.classDisabled);
-			self.buttonNext.removeClass(config.classDisabled);
-
-			switch (self.slideNumber)
+			if (!config.canLoop)
 			{
-				case 1:
-				self.buttonPrevious.addClass(config.classDisabled); break;
-
-				case self.slides.length:
-				self.buttonNext.addClass(config.classDisabled); break;
+				self.buttonPrevious.add(self.buttonNext).removeClass(config.classDisabled);
+	
+				switch (self.slideNumber)
+				{
+					case 1:
+					self.buttonPrevious.addClass(config.classDisabled); break;
+	
+					case self.slides.length:
+					self.buttonNext.addClass(config.classDisabled); break;
+				}
 			}
 		}
 
@@ -248,52 +264,58 @@
 			{
 				// Position each slide one after the other
 				x = i * (100 / self.slides.length) + '%';
-				self.slides.eq(i).css('left', x).css('display', 'block').attr('tabindex', '-1');
+				self.slides.eq(i).css({ 'left': x, 'display': 'block' }).attr('tabindex', '-1');
 			}
 
 			// Set start position for slide strip
-			self.strip.css({ left: getTransitionX() });
+			transition(0);
+
+			// Enable for CSS transitions
+			if (config.isCSS)
+			{
+				var css = self.strip.get(0).style;
+				var rule = 'left ' + config.slideTransition / 1000 + 's';
+
+				setTimeout(function() { css[prefix + 'Transition'] = rule; }, 0);
+			}
 		}
 
 		function initMarkers()
 		{
 			// Skip when no marker config
-			if (!config.classMarkers) { return; }
-
-			// Add the markers
-			markers = $('<ul />').addClass(config.classMarkers);
-
-			// Create marker links
-			var length = self.slides.length;
-			while (length--)
+			if (config.classMarkers)
 			{
-				markers.prepend($('<li><a href="#" role="button">' + (length + 1) + '</a></li>'));
+				// Add the markers
+				markers = $('<ul />').addClass(config.classMarkers);
+	
+				// Create marker links
+				var i = self.slides.length;
+				while (i--)
+				{
+					markers.prepend($('<li><a href="#" role="button">' + (i + 1) + '</a></li>'));
+				}
+	
+				// Find the new links, wire up
+				markerLinks = markers.find('a').click(updateMarkers);
+	
+				// Add the markers, update
+				self.element.append(markers);
+				updateMarkers();
+	
+				// Show the markers
+				markers.show();
 			}
-
-			// Find the new links
-			markerLinks = markers.find('a');
-
-			// Add the markers, update
-			self.element.append(markers);
-			updateMarkers();
-
-			// Wire up and show the markers
-			markerLinks.click(updateMarkers);
-			markers.show();
 		}
 
 		function initEvents()
 		{
 			// Listen for back/forward
-			self.buttonNext.bind('click', { isBackwards: false }, change);
-			self.buttonPrevious.bind('click', { isBackwards: true }, change);
+			self.buttonNext.on('click', { isBackwards: false }, change);
+			self.buttonPrevious.on('click', { isBackwards: true }, change);
 
-			// Allow slides to be clicked
+			// Allow slides to be clicked, listen for movement
 			self.slides.click(change);
-
-			// Listen for mouse movement
-			self.element.bind('mouseenter', stop);
-			self.element.bind('mouseleave', start);
+			self.element.mouseenter(stop).mouseleave(start);
 		}
 
 		// Make internal methods available outside
