@@ -162,11 +162,11 @@
 
 	#slideshow button
 	{
-		width: 43px;
+		width: 40px;
 		height: 170px;
 		
 		margin: 0;
-		padding: 0 10px;
+		padding: 0 10px 0 7px;
 		
 		background: none;
 		border: 0;
@@ -196,6 +196,11 @@
 		background-size: 23px 72px;
 		
 		text-indent: -10000px;
+	}
+	
+	#slideshow button.next
+	{
+		padding: 0 7px 0 10px;
 	}
 	
 	#slideshow button.next b
