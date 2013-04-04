@@ -178,9 +178,12 @@
 			if (callback) { callback.call(self); }
 		}
 
-		function getTransitionX()
+		function getTransitionX(number, isRelative)
 		{
-			return ((self.slideNumber - 1) * -100);
+			number = (typeof number !== 'undefined')? number : self.slideNumber - 1;
+
+			// Present percentage relative to entire strip width?
+			return (isRelative)? number * (100 / self.slides.length) : number * -100;
 		}
 
 		function updateNextSlide(override)
@@ -263,7 +266,7 @@
 			while (i--)
 			{
 				// Position each slide one after the other
-				x = i * (100 / self.slides.length) + '%';
+				x = getTransitionX(i, true) + '%';
 				self.slides.eq(i).css({ 'left': x, 'display': 'block' }).attr('tabindex', '-1');
 			}
 
