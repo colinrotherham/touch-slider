@@ -18,8 +18,8 @@
 		// Default config
 		config =
 		{
-			buttonNext: 'button.next',
-			buttonPrevious: 'button.previous',
+			next: 'button.next',
+			previous: 'button.previous',
 
 			// Classes
 			classStrip: 'strip',
@@ -30,8 +30,8 @@
 
 			// Adjust timings
 			delay: 3000,
-			slideInterval: 5000,
-			slideTransition: 600,
+			interval: 5000,
+			time: 600,
 
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: true,
@@ -51,7 +51,7 @@
 
 		markers, markerLinks,
 		timeoutStart, timeoutSlide,
-		isBusy = false, isBackwards = false;
+		isBusy = false, isBack = false;
 
 		// Override defaults with custom config?
 		$.each(override, function(name, value) { config[name] = value; });
@@ -59,16 +59,17 @@
 		// Start the slideshow
 		function init()
 		{
-			self.element = $(config.slideshow);
-			self.strip = self.element.find('.' + config.classStrip);
-			self.slides = self.element.find('.' + config.classSlide);
+			var element = $(config.slideshow);
+			
+			self.strip = element.find('.' + config.classStrip);
+			self.slides = element.find('.' + config.classSlide);
 
 			// Does this slideshow not exist or have only one slide?
-			if (!self.element.length || self.slides.length < 2) { return; }
+			if (!element.length || self.slides.length < 2) { return; }
 
 			// Find all the buttons
-			self.buttonNext = self.element.find(config.buttonNext).show();
-			self.buttonPrevious = self.element.find(config.buttonPrevious).show();
+			self.next = element.find(config.next).show();
+			self.previous = element.find(config.previous).show();
 
 			// Position all slides onto slide strip and display
 			self.strip.width((self.slides.length * 100) + '%');
@@ -85,6 +86,9 @@
 				self.slideNumber = 1;
 				self.slide = self.slides.eq(self.slideNumber - 1).addClass(config.classActive);
 			}
+			
+			// Share element externally
+			self.element = element;
 
 			updateNextPrev();
 			initPositions();
@@ -100,7 +104,7 @@
 			// Only re-start when automatic
 			if (!config.isManual)
 			{
-				timeoutSlide = setTimeout(function() { change(); }, config.slideInterval);
+				timeoutSlide = setTimeout(function() { change(); }, config.interval);
 			}
 		}
 
@@ -112,7 +116,7 @@
 
 		function change(event, override)
 		{
-			isBackwards = !!(event && event.data && event.data.isBackwards);
+			isBack = !!(event && event.data && event.data.isBack);
 
 			var element = $(this);
 
@@ -138,7 +142,7 @@
 					updateMarkers();
 
 					// Only transition where carousel is enabled and no CSS transitions
-					transition((config.isCarousel)? config.slideTransition : 0, function() { transitionEnd(event); });
+					transition((config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
 					stop();
 				}
 			}
@@ -201,18 +205,18 @@
 			// Prepare next/previous
 			else
 			{
-				slide = (isBackwards)? slide.prev('.' + classSlide) : slide.next('.' + classSlide);
-				number = (isBackwards)? number - 1 : number + 1;
+				slide = (isBack)? slide.prev('.' + classSlide) : slide.next('.' + classSlide);
+				number = (isBack)? number - 1 : number + 1;
 
 				// Does it exist?
 				if (!slide.length)
 				{
 					// If not looping, don't switch back to begining/end
-					if (!config.canLoop) { isBackwards = !isBackwards; }
+					if (!config.canLoop) { isBack = !isBack; }
 
 					// Wrap around to start/end
-					slide = (isBackwards)? slides.eq(count - 1) : slides.eq(0);
-					number = (isBackwards)? count : 1;
+					slide = (isBack)? slides.eq(count - 1) : slides.eq(0);
+					number = (isBack)? count : 1;
 				}
 			}
 
@@ -246,15 +250,15 @@
 			// Skip when looping is on or no buttons
 			if (!config.canLoop)
 			{
-				self.buttonPrevious.add(self.buttonNext).removeClass(config.classDisabled);
+				self.previous.add(self.next).removeClass(config.classDisabled);
 	
 				switch (self.slideNumber)
 				{
 					case 1:
-					self.buttonPrevious.addClass(config.classDisabled); break;
+					self.previous.addClass(config.classDisabled); break;
 	
 					case self.slides.length:
-					self.buttonNext.addClass(config.classDisabled); break;
+					self.next.addClass(config.classDisabled); break;
 				}
 			}
 		}
@@ -277,7 +281,7 @@
 			if (config.isCSS)
 			{
 				var css = self.strip.get(0).style;
-				var rule = 'left ' + config.slideTransition / 1000 + 's';
+				var rule = 'left ' + config.time / 1000 + 's';
 
 				setTimeout(function() { css[prefix + 'Transition'] = rule; }, 0);
 			}
@@ -313,8 +317,8 @@
 		function initEvents()
 		{
 			// Listen for back/forward
-			self.buttonNext.on('click', { isBackwards: false }, change);
-			self.buttonPrevious.on('click', { isBackwards: true }, change);
+			self.next.on('click', { isBack: false }, change);
+			self.previous.on('click', { isBack: true }, change);
 
 			// Allow slides to be clicked, listen for movement
 			self.slides.click(change);
