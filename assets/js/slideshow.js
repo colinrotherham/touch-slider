@@ -12,7 +12,7 @@
 		var self = this,
 
 		// Transition prefixes + default
-		prefixes = ['o', 'ms', 'Moz', 'webkit', ''],
+		prefixes = ['ms', 'O', 'Moz', 'Webkit', ''],
 		prefix = prefixes[0],
 
 		// Default config
@@ -35,7 +35,7 @@
 
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: true,
-			isManual: false,
+			isManual: true,
 			isCarousel: true,
 
 			// Check support for CSS transitions
@@ -51,7 +51,7 @@
 
 		markers, markerLinks,
 		timeoutStart, timeoutSlide,
-		isBusy = false, isBack = false;
+		isBusy = false, isBack = false, style;
 
 		// Override defaults with custom config?
 		$.each(override, function(name, value) { config[name] = value; });
@@ -77,16 +77,19 @@
 
 			// Grab sticky slide
 			self.slide = self.slides.filter('.' + config.classActive);
-			self.slideNumber = self.slides.index(self.slide) + 1;
+			self.number = self.slides.index(self.slide) + 1;
 
 			// No active slide in markup
 			if (!self.slide.length)
 			{
 				// Mark first slide as active
-				self.slideNumber = 1;
-				self.slide = self.slides.eq(self.slideNumber - 1).addClass(config.classActive);
+				self.number = 1;
+				self.slide = self.slides.eq(self.number - 1).addClass(config.classActive);
 			}
-			
+
+			// Expose slide strip's CSS
+			style = self.strip[0].style;
+
 			// Share element externally
 			self.element = element;
 
@@ -130,7 +133,7 @@
 					override = self.slides.index(element);
 				}
 
-				updateNextSlide(override);
+				setNextSlide(override);
 
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
@@ -156,7 +159,15 @@
 
 		function transition(time, complete)
 		{
-			self.strip.animate({ left: getTransitionX() + '%' }, (config.isCSS)? 0 : time);
+			// Move using CSS transition
+			if (config.isCSS)
+			{
+				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
+				style[prefix + 'Transform'] = 'translateX(-' + getTransitionX(null, true) + '%)';
+			}
+			
+			// Move using jQuery
+			else { self.strip.animate({ left: getTransitionX() + '%' }, time); }
 
 			// Callback
 			if (complete) { setTimeout(complete, time); }
@@ -172,6 +183,9 @@
 			self.slide = self.slideNext;
 			isBusy = false;
 
+			// Zero transition time
+			style[prefix + 'Transition'] = '';
+
 			// Clicked, focus active slide
 			if (event && event.type === 'click')
 			{
@@ -184,16 +198,16 @@
 
 		function getTransitionX(number, isRelative)
 		{
-			number = (typeof number !== 'undefined')? number : self.slideNumber - 1;
+			number = (number === 0 || number)? number : self.number - 1;
 
 			// Present percentage relative to entire strip width?
 			return (isRelative)? number * (100 / self.slides.length) : number * -100;
 		}
 
-		function updateNextSlide(override)
+		function setNextSlide(override)
 		{
 			var slide = self.slide, slides = self.slides, classSlide = config.classSlide,
-				number = self.slideNumber, count = slides.length;
+				number = self.number, count = slides.length;
 
 			// Prepare specific slide
 			if (typeof override !== 'undefined')
@@ -221,14 +235,14 @@
 			}
 
 			self.slideNext = slide;
-			self.slideNumber = number;
+			self.number = number;
 		}
 
 		function updateMarkers(event)
 		{
 			if (markers)
 			{
-				var marker = self.slideNumber - 1;
+				var marker = self.number - 1;
 	
 				// Clicked so update
 				if (event)
@@ -252,7 +266,7 @@
 			{
 				self.previous.add(self.next).removeClass(config.classDisabled);
 	
-				switch (self.slideNumber)
+				switch (self.number)
 				{
 					case 1:
 					self.previous.addClass(config.classDisabled); break;
@@ -276,15 +290,6 @@
 
 			// Set start position for slide strip
 			transition(0);
-
-			// Enable for CSS transitions
-			if (config.isCSS)
-			{
-				var css = self.strip.get(0).style;
-				var rule = 'left ' + config.time / 1000 + 's';
-
-				setTimeout(function() { css[prefix + 'Transition'] = rule; }, 0);
-			}
 		}
 
 		function initMarkers()
