@@ -15,7 +15,10 @@
 		prefixes = ['ms', 'O', 'Moz', 'Webkit', ''],
 		prefix = prefixes[0],
 
-		// Default config
+/*
+		Default configuration
+		----------------------------------- */
+
 		config =
 		{
 			next: 'button.next',
@@ -51,52 +54,49 @@
 
 		markers, markerLinks,
 		timeoutStart, timeoutSlide,
-		isBusy = false, isBack = false, style;
+		isBusy, isBack, style;
 
 		// Override defaults with custom config?
 		$.each(override, function(name, value) { config[name] = value; });
+		
+/*
+		Start the slideshow
+		----------------------------------- */
 
-		// Start the slideshow
 		function init()
 		{
-			var element = $(config.slideshow);
-			
-			self.strip = element.find('.' + config.classStrip);
-			self.slides = element.find('.' + config.classSlide);
+			var element = $(config.slideshow),
+				slides = element.find('.' + config.classSlide),
+				strip = element.find('.' + config.classStrip);
 
-			// Does this slideshow not exist or have only one slide?
-			if (!element.length || self.slides.length < 2) { return; }
+			if (!element.length || slides.length < 2) { return; }
 
-			// Find all the buttons
+			// Grab slide with active class
+			self.slide = slides.filter('.' + config.classActive);
+			self.number = slides.index(self.slide) + 1;
+
+			// No? Grab 1st slide instead
+			if (!self.slide.length)
+			{
+				self.number = 1;
+				self.slide = slides.eq(self.number - 1).addClass(config.classActive);
+			}
+
+			// Share externally
+			self.element = element;
+			self.strip = strip;
+			self.slides = slides;
+
 			self.next = element.find(config.next).show();
 			self.previous = element.find(config.previous).show();
 
-			// Position all slides onto slide strip and display
-			self.strip.width((self.slides.length * 100) + '%');
-			self.slides.width((100 / self.slides.length) + '%');
-
-			// Grab sticky slide
-			self.slide = self.slides.filter('.' + config.classActive);
-			self.number = self.slides.index(self.slide) + 1;
-
-			// No active slide in markup
-			if (!self.slide.length)
-			{
-				// Mark first slide as active
-				self.number = 1;
-				self.slide = self.slides.eq(self.number - 1).addClass(config.classActive);
-			}
-
 			// Expose slide strip's CSS
-			style = self.strip[0].style;
+			style = strip[0].style;
 
-			// Share element externally
-			self.element = element;
-
-			updateNextPrev();
 			initPositions();
 			initEvents();
 			initMarkers();
+			updateNextPrev();
 
 			// Start the slideshow timer
 			timeoutStart = setTimeout(start, config.delay);
@@ -104,7 +104,6 @@
 
 		function start()
 		{
-			// Only re-start when automatic
 			if (!config.isManual)
 			{
 				timeoutSlide = setTimeout(function() { change(); }, config.interval);
@@ -116,6 +115,10 @@
 			clearTimeout(timeoutStart);
 			clearTimeout(timeoutSlide);
 		}
+
+/*
+		Jump to next or specific slide
+		----------------------------------- */
 
 		function change(event, override)
 		{
@@ -138,11 +141,9 @@
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
 				{
-					// We are now busy
 					isBusy = true;
 
 					updateNextPrev();
-					updateMarkers();
 
 					// Only transition where carousel is enabled and no CSS transitions
 					transition((config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
@@ -238,12 +239,14 @@
 			self.number = number;
 		}
 
+/*
+		Update markers + buttons
+		----------------------------------- */
+
 		function updateMarkers(event)
 		{
 			if (markers)
 			{
-				var marker = self.number - 1;
-	
 				// Clicked so update
 				if (event)
 				{
@@ -254,7 +257,7 @@
 				else
 				{
 					// Highlight the right marker
-					markerLinks.removeAttr('class').eq(marker).addClass(config.classActive);
+					markerLinks.removeAttr('class').eq(self.number - 1).addClass(config.classActive);
 				}
 			}
 		}
@@ -275,15 +278,23 @@
 					self.next.addClass(config.classDisabled); break;
 				}
 			}
+			
+			updateMarkers();
 		}
+
+/*
+		Initial setup
+		----------------------------------- */
 
 		function initPositions()
 		{
+			self.strip.width((self.slides.length * 100) + '%');
+			self.slides.width((100 / self.slides.length) + '%');
+		
 			// Loops slides, fix positions
 			var i = self.slides.length, x;
 			while (i--)
 			{
-				// Position each slide one after the other
 				x = getTransitionX(i, true) + '%';
 				self.slides.eq(i).css({ 'left': x, 'display': 'block' }).attr('tabindex', '-1');
 			}
@@ -310,18 +321,14 @@
 				// Find the new links, wire up
 				markerLinks = markers.find('a').click(updateMarkers);
 	
-				// Add the markers, update
+				// Add the markers, show
 				self.element.append(markers);
-				updateMarkers();
-	
-				// Show the markers
 				markers.show();
 			}
 		}
 
 		function initEvents()
 		{
-			// Listen for back/forward
 			self.next.on('click', { isBack: false }, change);
 			self.previous.on('click', { isBack: true }, change);
 
@@ -330,7 +337,10 @@
 			self.element.mouseenter(stop).mouseleave(start);
 		}
 
-		// Make internal methods available outside
+/*
+		Expose internal methods
+		----------------------------------- */
+
 		self.init = init;
 		self.start = start;
 		self.stop = stop;
