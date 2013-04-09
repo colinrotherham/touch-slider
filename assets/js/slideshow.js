@@ -43,7 +43,7 @@
 		},
 
 		markers, markerLinks,
-		timeoutStart, timeoutSlide,
+		timeoutStart, timeoutSlide, timeoutResize,
 		style, isBusy, isBack,
 
 /*
@@ -107,7 +107,9 @@
 			initPositions();
 			initEvents();
 			initMarkers();
+
 			updateNextPrev();
+			updateWidth();
 
 			// Start the slideshow timer
 			timeoutStart = setTimeout(start, config.delay);
@@ -169,13 +171,15 @@
 			else event.preventDefault();
 		}
 
-		function transition(time, complete)
+		function transition(time, complete, touchX)
 		{
 			// Move using CSS transition
 			if (isCSS)
 			{
+				touchX = touchX || 0;
+			
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
-				style[prefix + 'Transform'] = 'translateX(-' + getTransitionX(null, true) + '%)';
+				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(null, true) - touchX) * -1 + '%)';
 			}
 			
 			// Move using jQuery
@@ -400,10 +404,10 @@
 				}
 				
 				// Continue tracking touch but block scroll event
-				if (!isScrolling)
-				{
-					event.preventDefault();
-				}
+				if (!isScrolling) event.preventDefault();
+
+				// Override strip X relative to touch moved
+				transition(0, function() { }, (delta.x / self.width) * (100 / self.slides.length));
 			}
 			
 			function end(event)
@@ -415,6 +419,20 @@
 
 			// Wait for touches
 			element.on('touchstart', selector, start);
+			
+			// Track slideshow size for movement calculations
+			$(window).resize(updateWidth);
+		}
+
+		function updateWidth(event)
+		{
+			function set()
+			{
+				self.width = self.element.outerWidth();
+			}
+		
+			if (timeoutResize) clearTimeout(timeoutResize);
+			timeoutResize = setTimeout(set, (event)? 300 : 0);
 		}
 
 /*
