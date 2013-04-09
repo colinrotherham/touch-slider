@@ -39,26 +39,33 @@
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: true,
 			isManual: true,
-			isCarousel: true,
-
-			// Check support for CSS transitions
-			isCSS: (function()
-			{
-				var css = document.body.style, i = prefixes.length;
-
-				// Check vendor prefixes
-				while (i--) { if (typeof css[prefixes[i] + 'Transition'] === 'string') { prefix = prefixes[i]; }}
-				return !!prefix;
-			})()
+			isCarousel: true
 		},
 
 		markers, markerLinks,
 		timeoutStart, timeoutSlide,
-		isBusy, isBack, style;
+		style, isBusy, isBack,
+
+/*
+		Other checks
+		----------------------------------- */
+
+		// CSS transitions?
+		isCSS = (function()
+		{
+			var css = document.body.style, i = prefixes.length;
+
+			// Check vendor prefixes
+			while (i--) { if (typeof css[prefixes[i] + 'Transition'] === 'string') prefix = prefixes[i]; }
+			return !!prefix;
+		})(),
+
+		// Touch events?
+		isTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
 
 		// Override defaults with custom config?
 		$.each(override, function(name, value) { config[name] = value; });
-		
+
 /*
 		Start the slideshow
 		----------------------------------- */
@@ -69,7 +76,7 @@
 				slides = element.find('.' + config.classSlide),
 				strip = element.find('.' + config.classStrip);
 
-			if (!element.length || slides.length < 2) { return; }
+			if (!element.length || slides.length < 2) return;
 
 			// Grab slide with active class
 			self.slide = slides.filter('.' + config.classActive);
@@ -87,8 +94,12 @@
 			self.strip = strip;
 			self.slides = slides;
 
-			self.next = element.find(config.next).show();
-			self.previous = element.find(config.previous).show();
+			// Show buttons if not touch
+			if (!isTouch)
+			{
+				self.next = element.find(config.next).show();
+				self.previous = element.find(config.previous).show();
+			}
 
 			// Expose slide strip's CSS
 			style = strip[0].style;
@@ -132,7 +143,7 @@
 				// If slide clicked, jump to slide
 				if (element.hasClass(config.classSlide))
 				{
-					if (element.is('a')) { return; }
+					if (element.is('a')) return;
 					override = self.slides.index(element);
 				}
 
@@ -152,26 +163,26 @@
 			}
 
 			// Start slideshow again?
-			if (!event) { start(); }
+			if (!event) start();
 
 			// Don't allow default event
-			else { event.preventDefault(); }
+			else event.preventDefault();
 		}
 
 		function transition(time, complete)
 		{
 			// Move using CSS transition
-			if (config.isCSS)
+			if (isCSS)
 			{
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
 				style[prefix + 'Transform'] = 'translateX(-' + getTransitionX(null, true) + '%)';
 			}
 			
 			// Move using jQuery
-			else { self.strip.animate({ left: getTransitionX() + '%' }, time); }
+			else self.strip.animate({ left: getTransitionX() + '%' }, time);
 
 			// Callback
-			if (complete) { setTimeout(complete, time); }
+			if (complete) setTimeout(complete, time);
 		}
 
 		function transitionEnd(event)
@@ -194,7 +205,7 @@
 			}
 
 			// Run optional callback?
-			if (callback) { callback.call(self); }
+			if (callback) callback.call(self);
 		}
 
 		function getTransitionX(number, isRelative)
@@ -227,7 +238,7 @@
 				if (!slide.length)
 				{
 					// If not looping, don't switch back to begining/end
-					if (!config.canLoop) { isBack = !isBack; }
+					if (!config.canLoop) isBack = !isBack;
 
 					// Wrap around to start/end
 					slide = (isBack)? slides.eq(count - 1) : slides.eq(0);
@@ -329,12 +340,81 @@
 
 		function initEvents()
 		{
-			self.next.on('click', { isBack: false }, change);
-			self.previous.on('click', { isBack: true }, change);
-
-			// Allow slides to be clicked, listen for movement
-			self.slides.click(change);
+			// listen for mouse movement
 			self.element.mouseenter(stop).mouseleave(start);
+
+			if (!isTouch)
+			{
+				// Allow slides to be clicked
+				self.slides.click(change);
+
+				// Wire up next/previous
+				self.next.on('click', { isBack: false }, change);
+				self.previous.on('click', { isBack: true }, change);
+			}
+
+			// Enable touch?
+			else initTouch();
+		}
+
+		function initTouch()
+		{
+			var touch, delta, isScrolling,
+
+			// Track touches here
+			element = self.element,
+			selector = '.' + config.classStrip;
+
+			function start(event)
+			{
+				var originalEvent = event.originalEvent,
+					touches = originalEvent.touches[0];
+
+				// Log touch start, empty delta
+				touch = { x: touches.pageX, y: touches.pageY, time: +new Date() };
+				delta = {};
+
+				// Reset scroll detection
+				isScrolling = undefined;
+
+				// Wait for movement
+				element.on('touchmove', selector, move);
+				element.on('touchend', selector, end);
+			}
+			
+			function move(event)
+			{
+				var originalEvent = event.originalEvent,
+					touches = originalEvent.touches[0];
+
+				// Single touch point, no pinch-zoom
+				if (touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1) return;
+
+				// Movement since touch
+				delta = { x: touches.pageX - touch.x, y: touches.pageY - touch.y }
+
+				// Are we scrolling? i.e. Moving up/down more than left/right
+				if (typeof isScrolling === 'undefined')
+				{
+					isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
+				}
+				
+				// Continue tracking touch but block scroll event
+				if (!isScrolling)
+				{
+					event.preventDefault();
+				}
+			}
+			
+			function end(event)
+			{
+				// Stop waiting
+				element.off('touchmove', selector, move);
+				element.off('touchend', selector, end);
+			}
+
+			// Wait for touches
+			element.on('touchstart', selector, start);
 		}
 
 /*
