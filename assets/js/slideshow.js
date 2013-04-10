@@ -380,10 +380,6 @@
 
 				// Reset scroll detection
 				isScrolling = undefined;
-
-				// Wait for movement
-				element.on('touchmove', selector, move);
-				element.on('touchend', selector, end);
 			}
 			
 			function move(event)
@@ -412,13 +408,23 @@
 			
 			function end()
 			{
-				// Stop waiting
-				element.off('touchmove', selector, move);
-				element.off('touchend', selector, end);
+				if (isScrolling) return;
+				
+				// TODO: Jump forward, back or stay on slide depending on swipe
+				change();
+			}
+			
+			function click(event)
+			{
+				// Prevent click being registered after valid swipe
+				if (!isScrolling) event.preventDefault();
 			}
 
 			// Wait for touches
 			element.on('touchstart', selector, start);
+			element.on('touchmove', selector, move);
+			element.on('touchend touchcancel', selector, end);
+			element.on('click', selector, click);
 			
 			// Track slideshow size for movement calculations
 			$(window).resize(updateWidth);
