@@ -13,7 +13,7 @@
 
 		// Transition prefixes + default
 		prefixes = ['ms', 'O', 'Moz', 'Webkit', ''],
-		prefix = prefixes[0],
+		prefix = prefixes[prefixes.length],
 
 /*
 		Default configuration
