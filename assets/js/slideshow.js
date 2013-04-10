@@ -395,7 +395,7 @@
 				if (touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1) return;
 
 				// Movement since touch
-				delta = { x: touches.pageX - touch.x, y: touches.pageY - touch.y }
+				delta = { x: touches.pageX - touch.x, y: touches.pageY - touch.y };
 
 				// Are we scrolling? i.e. Moving up/down more than left/right
 				if (typeof isScrolling === 'undefined')
@@ -410,7 +410,7 @@
 				transition(0, function() { }, (delta.x / self.width) * (100 / self.slides.length));
 			}
 			
-			function end(event)
+			function end()
 			{
 				// Stop waiting
 				element.off('touchmove', selector, move);
