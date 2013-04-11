@@ -56,7 +56,7 @@
 			var css = document.body.style, i = prefixes.length;
 
 			// Check vendor prefixes
-			while (i--) { if (typeof css[prefixes[i] + 'Transition'] === 'string') prefix = prefixes[i]; }
+			while (i--) { if (typeof css[prefixes[i] + 'Transition'] === 'string') { prefix = prefixes[i]; break; } }
 			return !!prefix;
 		})(),
 
