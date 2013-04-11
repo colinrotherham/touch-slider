@@ -362,6 +362,8 @@
 
 			function start(event)
 			{
+				if (isBusy) return;
+			
 				var originalEvent = event.originalEvent,
 					touches = originalEvent.touches[0];
 
@@ -371,6 +373,9 @@
 
 				// Reset scroll detection
 				isScrolling = undefined;
+
+				element.on('touchmove', selector, move);
+				element.on('touchend touchcancel', selector, end);
 			}
 			
 			function move(event)
@@ -400,7 +405,10 @@
 			function end()
 			{
 				if (isScrolling) return;
-				
+
+				element.off('touchmove', selector);
+				element.off('touchend touchcancel', selector);
+
 				// TODO: Jump forward, back or stay on slide depending on swipe
 				change();
 			}
@@ -413,8 +421,6 @@
 
 			// Wait for touches
 			element.on('touchstart', selector, start);
-			element.on('touchmove', selector, move);
-			element.on('touchend touchcancel', selector, end);
 			element.on('click', selector, click);
 			
 			// Track slideshow size for movement calculations
