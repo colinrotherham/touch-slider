@@ -13,7 +13,7 @@
 
 		// Transition prefixes + default
 		prefixes = ['ms', 'O', 'Moz', 'Webkit', ''],
-		prefix = prefixes[prefixes.length],
+		prefix = prefixes[prefixes.length], style,
 
 /*
 		Default configuration
@@ -44,7 +44,7 @@
 
 		element, slides, strip, markers, markerLinks,
 		timeoutStart, timeoutSlide, timeoutResize,
-		style, isBusy, isBack,
+		isBusy, isBack,
 
 /*
 		Other checks
@@ -168,16 +168,17 @@
 			if (isCSS)
 			{
 				touchX = touchX || 0;
-			
+
+				// Callback when complete
+				strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
+
+				// Move using CSS animation
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
 				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(null, true) - touchX) * -1 + '%)';
 			}
 			
 			// Move using jQuery
-			else strip.animate({ left: getTransitionX() + '%' }, time);
-
-			// Callback
-			if (complete) setTimeout(complete, time);
+			else strip.animate({ left: getTransitionX() + '%' }, time, complete);
 		}
 
 		function transitionEnd(event)
