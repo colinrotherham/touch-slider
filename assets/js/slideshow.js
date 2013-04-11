@@ -78,6 +78,9 @@
 
 			if (!element.length || slides.length < 2) return;
 
+			// Expose slide strip's CSS
+			style = strip[0].style;
+
 			// Grab slide with active class
 			self.slide = slides.filter('.' + config.classActive);
 			self.number = slides.index(self.slide) + 1;
@@ -89,8 +92,8 @@
 				self.slide = slides.eq(self.number - 1).addClass(config.classActive);
 			}
 
-			// Expose slide strip's CSS
-			style = strip[0].style;
+			// Touch requires carousel mode
+			if (isTouch) config.isCarousel = true;
 
 			initPositions();
 			initEvents();
