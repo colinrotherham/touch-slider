@@ -42,7 +42,7 @@
 			isCarousel: true
 		},
 
-		markers, markerLinks,
+		element, slides, strip, markers, markerLinks,
 		timeoutStart, timeoutSlide, timeoutResize,
 		style, isBusy, isBack,
 
@@ -72,9 +72,9 @@
 
 		function init()
 		{
-			var element = $(config.slideshow),
-				slides = element.find('.' + config.classSlide),
-				strip = element.find('.' + config.classStrip);
+			element = $(config.slideshow);
+			slides = element.find('.' + config.classSlide);
+			strip = element.find('.' + config.classStrip);
 
 			if (!element.length || slides.length < 2) return;
 
@@ -87,18 +87,6 @@
 			{
 				self.number = 1;
 				self.slide = slides.eq(self.number - 1).addClass(config.classActive);
-			}
-
-			// Share externally
-			self.element = element;
-			self.strip = strip;
-			self.slides = slides;
-
-			// Show buttons if not touch
-			if (!isTouch)
-			{
-				self.next = element.find(config.next).show();
-				self.previous = element.find(config.previous).show();
 			}
 
 			// Expose slide strip's CSS
@@ -137,16 +125,16 @@
 		{
 			isBack = !!(event && event.data && event.data.isBack);
 
-			var element = $(this);
+			var slide = $(this);
 
 			// Ignore when busy and if link is disabled
-			if (!isBusy && (!event || event && !element.hasClass(config.classDisabled)))
+			if (!isBusy && (!event || event && !slide.hasClass(config.classDisabled)))
 			{
 				// If slide clicked, jump to slide
-				if (element.hasClass(config.classSlide))
+				if (slide.hasClass(config.classSlide))
 				{
-					if (element.is('a')) return;
-					override = self.slides.index(element);
+					if (slide.is('a')) return;
+					override = slides.index(slide);
 				}
 
 				setNextSlide(override);
@@ -183,7 +171,7 @@
 			}
 			
 			// Move using jQuery
-			else self.strip.animate({ left: getTransitionX() + '%' }, time);
+			else strip.animate({ left: getTransitionX() + '%' }, time);
 
 			// Callback
 			if (complete) setTimeout(complete, time);
@@ -192,7 +180,7 @@
 		function transitionEnd(event)
 		{
 			// Update sticky class
-			self.slides.removeClass(config.classActive);
+			slides.removeClass(config.classActive);
 			self.slideNext.addClass(config.classActive);
 
 			// This is now the current slide
@@ -217,12 +205,12 @@
 			number = (number === 0 || number)? number : self.number - 1;
 
 			// Present percentage relative to entire strip width?
-			return (isRelative)? number * (100 / self.slides.length) : number * -100;
+			return (isRelative)? number * (100 / slides.length) : number * -100;
 		}
 
 		function setNextSlide(override)
 		{
-			var slide = self.slide, slides = self.slides, classSlide = config.classSlide,
+			var slide = self.slide, classSlide = config.classSlide,
 				number = self.number, count = slides.length;
 
 			// Prepare specific slide
@@ -289,7 +277,7 @@
 					case 1:
 					self.previous.addClass(config.classDisabled); break;
 	
-					case self.slides.length:
+					case slides.length:
 					self.next.addClass(config.classDisabled); break;
 				}
 			}
@@ -303,15 +291,15 @@
 
 		function initPositions()
 		{
-			self.strip.width((self.slides.length * 100) + '%');
-			self.slides.width((100 / self.slides.length) + '%');
+			strip.width((slides.length * 100) + '%');
+			slides.width((100 / slides.length) + '%');
 		
 			// Loops slides, fix positions
-			var i = self.slides.length, x;
+			var i = slides.length, x;
 			while (i--)
 			{
 				x = getTransitionX(i, true) + '%';
-				self.slides.eq(i).css({ 'left': x, 'display': 'block' }).attr('tabindex', '-1');
+				slides.eq(i).css({ 'left': x, 'display': 'block' }).attr('tabindex', '-1');
 			}
 
 			// Set start position for slide strip
@@ -327,7 +315,7 @@
 				markers = $('<ul />').addClass(config.classMarkers);
 	
 				// Create marker links
-				var i = self.slides.length;
+				var i = slides.length;
 				while (i--)
 				{
 					markers.prepend($('<li><a href="#" role="button">' + (i + 1) + '</a></li>'));
@@ -337,7 +325,7 @@
 				markerLinks = markers.find('a').click(updateMarkers);
 	
 				// Add the markers, show
-				self.element.append(markers);
+				element.append(markers);
 				markers.show();
 			}
 		}
@@ -345,16 +333,16 @@
 		function initEvents()
 		{
 			// listen for mouse movement
-			self.element.mouseenter(stop).mouseleave(start);
+			element.mouseenter(stop).mouseleave(start);
 
 			if (!isTouch)
 			{
 				// Allow slides to be clicked
-				self.slides.click(change);
+				slides.click(change);
 
 				// Wire up next/previous
-				self.next.on('click', { isBack: false }, change);
-				self.previous.on('click', { isBack: true }, change);
+				self.next = element.find(config.next).on('click', { isBack: false }, change).show();
+				self.previous = element.find(config.previous).on('click', { isBack: true }, change).show();
 			}
 
 			// Enable touch?
@@ -366,7 +354,6 @@
 			var touch, delta, isScrolling,
 
 			// Track touches here
-			element = self.element,
 			selector = '.' + config.classStrip;
 
 			function start(event)
@@ -403,7 +390,7 @@
 				if (!isScrolling) event.preventDefault();
 
 				// Override strip X relative to touch moved
-				transition(0, function() { }, (delta.x / self.width) * (100 / self.slides.length));
+				transition(0, function() { }, (delta.x / self.width) * (100 / slides.length));
 			}
 			
 			function end()
@@ -434,7 +421,7 @@
 		{
 			function set()
 			{
-				self.width = self.element.outerWidth();
+				self.width = element.outerWidth();
 			}
 		
 			if (timeoutResize) clearTimeout(timeoutResize);
@@ -442,8 +429,12 @@
 		}
 
 /*
-		Expose internal methods
+		Expose internals
 		----------------------------------- */
+
+		self.element = element;
+		self.strip = strip;
+		self.slides = slides;
 
 		self.init = init;
 		self.start = start;
