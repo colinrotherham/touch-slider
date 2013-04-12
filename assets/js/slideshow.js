@@ -129,7 +129,10 @@
 
 		function change(event, options)
 		{
-			var slide = $(this), override;
+			var slide = $(this),
+			override = options && options.slide;
+
+			// Remember direction for later
 			isPrev = !!(options && options.isPrev);
 
 			// Ignore when busy and if link is disabled
@@ -148,12 +151,12 @@
 				if (!self.slide.is(self.slideNext))
 				{
 					isBusy = true;
+					stop();
 
 					updateNextPrev();
 
 					// Only transition where carousel is enabled and no CSS transitions
 					transition((config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
-					stop();
 				}
 			}
 
@@ -166,6 +169,12 @@
 
 		function transition(time, complete, touchX)
 		{
+			// Add extra time when wrapping back around
+			if ((isPrev && self.number === slides.length) || (!isPrev && self.number === 1))
+			{
+				time *= 1.5;
+			}
+
 			// Move using CSS transition
 			if (isCSS && config.isCarousel)
 			{
@@ -362,7 +371,7 @@
 			// Track touches here
 			selector = '.' + config.classStrip;
 
-			function touch(event)
+			function begin(event)
 			{
 				if (isBusy) return;
 
@@ -405,10 +414,10 @@
 					stop();
 
 					// Swiping forward or backwards?
-					isPrev = (delta.x > 0)? true : false;
+					isPrev = delta.x > 0;
 
 					// Add resistance to first and last slide
-					if ((isPrev && !self.number - 1) || (!isPrev && self.number === slides.length))
+					if ((isPrev && self.number === 1) || (!isPrev && self.number === slides.length))
 						delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
 
 					// Override strip X relative to touch moved
@@ -418,13 +427,21 @@
 
 			function end()
 			{
-				if (isScrolling) return;
+				if (!isScrolling)
+				{
+					var duration = +new Date() - touch.time,
+						isEnough = duration < 250 && Math.abs(delta.x) > 20 || Math.abs(delta.x) > self.width / 3;
+
+					// Change slide
+					if (isEnough)
+						change(undefined, { isPrev: isPrev });
+
+					// Stay on current
+					else transition(config.time);
+				}
 
 				element.off('touchmove', selector);
 				element.off('touchend touchcancel', selector);
-
-				// TODO: Small swipes stay on slide
-				change(undefined, { isPrev: isPrev });
 			}
 
 			function click(event)
@@ -434,7 +451,7 @@
 			}
 
 			// Wait for touches
-			element.on('touchstart', selector, touch);
+			element.on('touchstart', selector, begin);
 			element.on('click', selector, click);
 
 			// Track slideshow size for movement calculations
