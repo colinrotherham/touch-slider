@@ -397,11 +397,14 @@
 					isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
 				}
 
-				// Continue tracking touch but block scroll event
-				if (!isScrolling) event.preventDefault();
+				// If tracking touch, block scrolling
+				if (!isScrolling)
+				{
+					event.preventDefault();
 
-				// Override strip X relative to touch moved
-				transition(0, function() { }, (delta.x / self.width) * (100 / slides.length));
+					// Override strip X relative to touch moved
+					transition(0, function() { }, (delta.x / self.width) * (100 / slides.length));
+				}
 			}
 
 			function end()
@@ -411,8 +414,8 @@
 				element.off('touchmove', selector);
 				element.off('touchend touchcancel', selector);
 
-				// TODO: Jump forward, back or stay on slide depending on swipe
-				change();
+				// TODO: Small swipes stay on slide
+				change(undefined, { isPrev: (delta.x > 0)? true : false });
 			}
 
 			function click(event)
