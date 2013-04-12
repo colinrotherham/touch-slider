@@ -154,8 +154,8 @@
 			// Start slideshow again?
 			if (!event) { start(); }
 
-			// Don't allow default event
-			else { event.preventDefault(); }
+			// Only allow default events on current slide
+			else if (!element.is(self.slide)) event.preventDefault();
 		}
 
 		function transition(time, complete)
