@@ -34,7 +34,7 @@
 			// Adjust timings
 			delay: 3000,
 			interval: 5000,
-			time: 600,
+			time: 400,
 
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: true,
