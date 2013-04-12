@@ -165,7 +165,7 @@
 		function transition(time, complete, touchX)
 		{
 			// Move using CSS transition
-			if (isCSS)
+			if (isCSS && config.isCarousel)
 			{
 				touchX = touchX || 0;
 
@@ -176,7 +176,7 @@
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
 				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(null, true) - touchX) * -1 + '%)';
 			}
-			
+
 			// Move using jQuery
 			else strip.animate({ left: getTransitionX() + '%' }, time, complete);
 		}
