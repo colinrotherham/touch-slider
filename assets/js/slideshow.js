@@ -362,7 +362,7 @@
 			// Track touches here
 			selector = '.' + config.classStrip;
 
-			function start(event)
+			function touch(event)
 			{
 				if (isBusy) return;
 
@@ -402,6 +402,8 @@
 				{
 					event.preventDefault();
 
+					stop();
+
 					// Swiping forward or backwards?
 					isPrev = (delta.x > 0)? true : false;
 
@@ -432,7 +434,7 @@
 			}
 
 			// Wait for touches
-			element.on('touchstart', selector, start);
+			element.on('touchstart', selector, touch);
 			element.on('click', selector, click);
 
 			// Track slideshow size for movement calculations
