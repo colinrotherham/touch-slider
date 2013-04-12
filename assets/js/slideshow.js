@@ -172,7 +172,7 @@
 				touchX = touchX || 0;
 
 				// Callback when complete
-				strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
+				if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
 
 				// Move using CSS animation
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
@@ -402,8 +402,15 @@
 				{
 					event.preventDefault();
 
+					// Swiping forward or backwards?
+					isPrev = (delta.x > 0)? true : false;
+
+					// Add resistance to first and last slide
+					if ((isPrev && !self.number - 1) || (!isPrev && self.number === slides.length))
+						delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
+
 					// Override strip X relative to touch moved
-					transition(0, function() { }, (delta.x / self.width) * (100 / slides.length));
+					transition(0, undefined, (delta.x / self.width) * (100 / slides.length));
 				}
 			}
 
@@ -415,7 +422,7 @@
 				element.off('touchend touchcancel', selector);
 
 				// TODO: Small swipes stay on slide
-				change(undefined, { isPrev: (delta.x > 0)? true : false });
+				change(undefined, { isPrev: isPrev });
 			}
 
 			function click(event)
