@@ -44,7 +44,7 @@
 
 		element, slides, strip, markers, markerLinks,
 		timeoutStart, timeoutSlide, timeoutResize,
-		isBusy, isBack,
+		isBusy, isPrev,
 
 /*
 		Other checks
@@ -124,11 +124,13 @@
 		Jump to next or specific slide
 		----------------------------------- */
 
-		function change(event, override)
-		{
-			isBack = !!(event && event.data && event.data.isBack);
+		function next(event) { change(event, { isPrev: false }); }
+		function prev(event) { change(event, { isPrev: true }); }
 
-			var slide = $(this);
+		function change(event, options)
+		{
+			var slide = $(this), override;
+			isPrev = !!(options && options.isPrev);
 
 			// Ignore when busy and if link is disabled
 			if (!isBusy && (!event || event && !slide.hasClass(config.classDisabled)))
@@ -227,18 +229,18 @@
 			// Prepare next/previous
 			else
 			{
-				slide = (isBack)? slide.prev('.' + classSlide) : slide.next('.' + classSlide);
-				number = (isBack)? number - 1 : number + 1;
+				slide = (isPrev)? slide.prev('.' + classSlide) : slide.next('.' + classSlide);
+				number = (isPrev)? number - 1 : number + 1;
 
 				// Does it exist?
 				if (!slide.length)
 				{
 					// If not looping, don't switch back to begining/end
-					if (!config.canLoop) isBack = !isBack;
+					if (!config.canLoop) isPrev = !isPrev;
 
 					// Wrap around to start/end
-					slide = (isBack)? slides.eq(count - 1) : slides.eq(0);
-					number = (isBack)? count : 1;
+					slide = (isPrev)? slides.eq(count - 1) : slides.eq(0);
+					number = (isPrev)? count : 1;
 				}
 			}
 
@@ -258,7 +260,7 @@
 				if (event)
 				{
 					// Change to the right slide
-					change(event, markerLinks.index(this));
+					change(event, { slide: markerLinks.index(this) });
 				}
 
 				else
@@ -274,12 +276,12 @@
 			// Skip when looping is on or no buttons
 			if (!config.canLoop)
 			{
-				self.previous.add(self.next).removeClass(config.classDisabled);
+				self.prev.add(self.next).removeClass(config.classDisabled);
 
 				switch (self.number)
 				{
 					case 1:
-					self.previous.addClass(config.classDisabled); break;
+					self.prev.addClass(config.classDisabled); break;
 
 					case slides.length:
 					self.next.addClass(config.classDisabled); break;
@@ -345,8 +347,8 @@
 				slides.click(change);
 
 				// Wire up next/previous
-				self.next = element.find(config.next).on('click', { isBack: false }, change).show();
-				self.previous = element.find(config.previous).on('click', { isBack: true }, change).show();
+				self.next = element.find(config.next).on('click', next).show();
+				self.prev = element.find(config.previous).on('click', prev).show();
 			}
 
 			// Enable touch?
@@ -447,9 +449,12 @@
 		self.slides = slides;
 
 		self.init = init;
+
 		self.start = start;
 		self.stop = stop;
-		self.change = change;
+		self.next = next;
+		self.prev = prev;
+
 		self.transition = transition;
 		self.getTransitionX = getTransitionX;
 	};
