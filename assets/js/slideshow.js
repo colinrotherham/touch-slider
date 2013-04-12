@@ -260,7 +260,7 @@
 					// Change to the right slide
 					change(event, markerLinks.index(this));
 				}
-	
+
 				else
 				{
 					// Highlight the right marker
@@ -275,17 +275,17 @@
 			if (!config.canLoop)
 			{
 				self.previous.add(self.next).removeClass(config.classDisabled);
-	
+
 				switch (self.number)
 				{
 					case 1:
 					self.previous.addClass(config.classDisabled); break;
-	
+
 					case slides.length:
 					self.next.addClass(config.classDisabled); break;
 				}
 			}
-			
+
 			updateMarkers();
 		}
 
@@ -297,7 +297,7 @@
 		{
 			strip.width((slides.length * 100) + '%');
 			slides.width((100 / slides.length) + '%');
-		
+
 			// Loops slides, fix positions
 			var i = slides.length, x;
 			while (i--)
@@ -317,17 +317,17 @@
 			{
 				// Add the markers
 				markers = $('<ul />').addClass(config.classMarkers);
-	
+
 				// Create marker links
 				var i = slides.length;
 				while (i--)
 				{
 					markers.prepend($('<li><a href="#" role="button">' + (i + 1) + '</a></li>'));
 				}
-	
+
 				// Find the new links, wire up
 				markerLinks = markers.find('a').click(updateMarkers);
-	
+
 				// Add the markers, show
 				element.append(markers);
 				markers.show();
@@ -363,7 +363,7 @@
 			function start(event)
 			{
 				if (isBusy) return;
-			
+
 				var originalEvent = event.originalEvent,
 					touches = originalEvent.touches[0];
 
@@ -377,7 +377,7 @@
 				element.on('touchmove', selector, move);
 				element.on('touchend touchcancel', selector, end);
 			}
-			
+
 			function move(event)
 			{
 				var originalEvent = event.originalEvent,
@@ -394,14 +394,14 @@
 				{
 					isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
 				}
-				
+
 				// Continue tracking touch but block scroll event
 				if (!isScrolling) event.preventDefault();
 
 				// Override strip X relative to touch moved
 				transition(0, function() { }, (delta.x / self.width) * (100 / slides.length));
 			}
-			
+
 			function end()
 			{
 				if (isScrolling) return;
@@ -412,7 +412,7 @@
 				// TODO: Jump forward, back or stay on slide depending on swipe
 				change();
 			}
-			
+
 			function click(event)
 			{
 				// Prevent click being registered after valid swipe
@@ -422,7 +422,7 @@
 			// Wait for touches
 			element.on('touchstart', selector, start);
 			element.on('click', selector, click);
-			
+
 			// Track slideshow size for movement calculations
 			$(window).resize(updateWidth);
 		}
@@ -433,7 +433,7 @@
 			{
 				self.width = element.outerWidth();
 			}
-		
+
 			if (timeoutResize) clearTimeout(timeoutResize);
 			timeoutResize = setTimeout(set, (event)? 300 : 0);
 		}
