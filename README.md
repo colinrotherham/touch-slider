@@ -15,7 +15,7 @@ Features:
 \* e.g. Perhaps style these as the little dots below the slideshow
 
 When the script runs it has a three-second delay, then you'll get
-a wait time of five seconds per slide and a 600ms transition time.
+a wait time of five seconds per slide and a 400ms transition time.
 
 Customise as you like!
 
