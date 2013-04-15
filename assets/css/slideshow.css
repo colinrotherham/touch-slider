@@ -13,7 +13,7 @@
 
 	body
 	{
-		margin: 3.125%;
+		margin: 15px 3.125%;
 		padding: 0;
 
 		font-family: Helvetica, Arial, sans-serif;
@@ -43,13 +43,16 @@
 
 		margin: 0 auto;
 		max-width: 600px;
-		height: 215px;
+	}
+
+	#slideshow .strip
+	{
+		position: relative;
 	}
 
 	#slideshow .strip,
 	#slideshow .slide
 	{
-		position: absolute;
 		left: 0;
 		top: 0;
 
@@ -58,20 +61,15 @@
 	}
 
 	#slideshow .strip,
-	#slideshow button
+	#slideshow > button
 	{
 		-webkit-perspective: 1000;
 		-webkit-backface-visibility: hidden;
 	}
 
-	#slideshow .slides
-	{
-		position: relative;
-		height: 170px;
-	}
-
 	#slideshow .slide
 	{
+		position: absolute;
 		display: none;
 		text-align: center;
 		outline: none;
@@ -82,12 +80,14 @@
 		display: block;
 	}
 
-	#slideshow button
+	#slideshow > button
 	{
 		position: absolute;
 		z-index: 1;
 		top: 0;
 		left: 0;
+
+		padding: 0;
 	}
 
 	#slideshow button.next
@@ -96,18 +96,14 @@
 		right: 0;
 	}
 
-	#slideshow button,
-	#slideshow .markers
+	#slideshow > button
 	{
 		display: none;
 	}
 
 	#slideshow .markers
 	{
-		position: absolute;
-		z-index: 1;
-		bottom: 0;
-		right: 0;
+		text-align: right;
 	}
 
 	#slideshow ul,
@@ -142,6 +138,12 @@
 	Theme
 	----------------------------------- */
 
+	#slideshow .strip,
+	#slideshow > button
+	{
+		padding-bottom: 75%;
+	}
+
 	#slideshow .slide
 	{
 		background: #CFCFCF;
@@ -155,21 +157,21 @@
 	#slideshow .slide p
 	{
 		position: absolute;
-		top: 35%;
+		top: 50%;
 		left: 0;
+
 		width: 100%;
+		height: 40px;
+		margin-top: -20px;
 
 		font-weight: bold;
 		font-size: 2em;
+		line-height: 40px;
 	}
 
 	#slideshow button
 	{
-		width: 40px;
-		height: 170px;
-
 		margin: 0;
-		padding: 0 10px 0 7px;
 
 		background: none;
 		border: 0;
@@ -180,19 +182,33 @@
 		appearance: none;
 	}
 
-	#slideshow button:hover,
-	#slideshow button:focus
+	#slideshow > button
+	{
+		width: 40px;
+
+		padding-right: 10px;
+		padding-left: 7px;
+	}
+
+	#slideshow > button:hover,
+	#slideshow > button:focus
 	{
 		background: #c0c0c0;
 		background: rgba(183, 183, 183, 0.7);
 	}
 
-	#slideshow button b
+	#slideshow > button b
 	{
+		position: absolute;
+		top: 50%;
+		left: 7px;
+
 		display: block;
 
 		width: 23px;
 		height: 36px;
+
+		margin-top: -13px;
 
 		background: transparent url(../img/arrow.png) no-repeat 0 -36px;
 		background: rgba(0, 0, 0, 0) url(../img/arrow.svg) no-repeat 0 -36px;
@@ -203,7 +219,13 @@
 
 	#slideshow button.next
 	{
-		padding: 0 7px 0 10px;
+		padding-right: 7px;
+		padding-left: 10px;
+	}
+	
+	#slideshow button.next b
+	{
+		left: 10px;
 	}
 
 	#slideshow button.next b
@@ -217,24 +239,42 @@
 		cursor: default;
 	}
 
-	#slideshow ul
+	#slideshow .markers
 	{
 		margin: 15px 10px;
+
+		text-align: center;
 		font-size: 0.8em;
 	}
 
-	#slideshow ul a
+	#slideshow .markers button
 	{
-		text-decoration: none;
+		display: inline-block;
+		padding: 0;
+
+		width: 10px;
+		height: 10px;
+
+		background: #575757;
+		border-radius: 50%;
+
+		text-indent: -10000px;
+		opacity: 0.3;
+	}
+	
+	#slideshow .markers button + button
+	{
+		margin-left: 5px;
 	}
 
-	#slideshow ul a:hover,
-	#slideshow ul a:focus
+	#slideshow .markers button:hover,
+	#slideshow .markers button:focus
 	{
-		text-decoration: underline;
+		opacity: 0.75;
 	}
 
-	#slideshow ul a.sticky
+	#slideshow .markers button.sticky
 	{
-		color: #3172dd;
+		background-color: #3172dd;
+		opacity: 0.75;
 	}
