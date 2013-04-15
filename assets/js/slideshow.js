@@ -364,10 +364,11 @@
 
 			function start(event)
 			{
-				if (isBusy) return;
-
 				var originalEvent = event.originalEvent,
 					touches = originalEvent.touches[0];
+
+				// If busy, end transition now
+				if (isBusy) transitionEnd();
 
 				// Log touch start, empty delta
 				touch = { x: touches.pageX, y: touches.pageY, time: +new Date() };
