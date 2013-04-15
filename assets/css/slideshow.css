@@ -196,6 +196,12 @@
 		background: #c0c0c0;
 		background: rgba(183, 183, 183, 0.7);
 	}
+	
+	#slideshow > button::-moz-focus-inner
+	{
+		margin: -1px;
+		padding: 0;
+	}
 
 	#slideshow > button b
 	{
