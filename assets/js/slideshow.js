@@ -93,7 +93,11 @@
 			}
 
 			// Touch requires carousel mode
-			if (isTouch) config.isCarousel = true;
+			if (isTouch)
+			{
+				config.canLoop = false;
+				config.isCarousel = true;
+			}
 
 			initPositions();
 			initEvents();
@@ -144,8 +148,8 @@
 
 				setNextSlide(override);
 
-				// Proceed if not current slide
-				if (!self.slide.is(self.slideNext))
+				// Proceed if not current slide (allowed if touch, for swipe resistance)
+				if (!self.slide.is(self.slideNext) || isTouch)
 				{
 					isBusy = true;
 
