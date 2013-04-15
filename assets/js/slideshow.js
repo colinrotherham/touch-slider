@@ -146,6 +146,9 @@
 					override = slides.index(element);
 				}
 
+				// Has an override been provided?
+				else override = options && options.slide;
+
 				// Determine next slide
 				setNextSlide(override);
 
