@@ -174,12 +174,6 @@
 
 		function transition(time, complete, touchX)
 		{
-			// Add extra time when wrapping back around
-			if ((isPrev && self.number === slides.length) || (!isPrev && self.number === 1))
-			{
-				time *= 1.5;
-			}
-
 			// Move using CSS transition
 			if (isCSS && config.isCarousel)
 			{
@@ -441,12 +435,8 @@
 					var duration = +new Date() - touch.time,
 						isEnough = duration < 250 && Math.abs(delta.x) > 20 || Math.abs(delta.x) > self.width / 3;
 
-					// Change slide
-					if (isEnough)
-						change(undefined, { isPrev: isPrev });
-
-					// Stay on current
-					else transition(config.time);
+					// Stay on slide or progress?
+					change(undefined, isEnough? { isPrev: isPrev } : { slide: self.number - 1 });
 				}
 
 				element.off('touchmove', selector);
