@@ -133,19 +133,20 @@
 
 		function change(event, options)
 		{
-			var slide = $(this), override;
+			var element = $(this), override;
 			isPrev = !!(options && options.isPrev);
 
 			// Ignore when busy and if link is disabled
-			if (!isBusy && (!event || event && !slide.hasClass(config.classDisabled)))
+			if (!isBusy && (!event || event && !element.hasClass(config.classDisabled)))
 			{
 				// If slide clicked, jump to slide
-				if (slide.hasClass(config.classSlide))
+				if (element.hasClass(config.classSlide))
 				{
-					if (slide.is('a')) return;
-					override = slides.index(slide);
+					if (element.is('a')) return;
+					override = slides.index(element);
 				}
 
+				// Determine next slide
 				setNextSlide(override);
 
 				// Proceed if not current slide (allowed if touch, for swipe resistance)
