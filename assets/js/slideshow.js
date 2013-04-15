@@ -42,7 +42,7 @@
 			isCarousel: true
 		},
 
-		element, slides, strip, markers, markerLinks, buttons, buttonPrev, buttonNext,
+		element, slides, strip, markers, markerButtons, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize,
 		isBusy, isPrev,
 
@@ -268,13 +268,13 @@
 				if (event)
 				{
 					// Change to the right slide
-					change(event, { slide: markerLinks.index(this) });
+					change(event, { slide: markerButtons.index(this) });
 				}
 
 				else
 				{
 					// Highlight the right marker
-					markerLinks.removeAttr('class').eq(self.number - 1).addClass(config.classActive);
+					markerButtons.removeAttr('class').eq(self.number - 1).addClass(config.classActive);
 				}
 			}
 		}
@@ -326,21 +326,18 @@
 			if (config.classMarkers)
 			{
 				// Add the markers
-				markers = $('<ul />').addClass(config.classMarkers);
+				markers = $('<div />').addClass(config.classMarkers).on('click', 'button', updateMarkers);
 
 				// Create marker links
 				var i = slides.length;
 				while (i--)
 				{
-					markers.prepend($('<li><a href="#" role="button">' + (i + 1) + '</a></li>'));
+					markers.prepend($('<button>' + (i + 1) + '</button>'));
 				}
 
-				// Find the new links, wire up
-				markerLinks = markers.find('a').click(updateMarkers);
-
-				// Add the markers, show
+				// Find the new links, wire up, add
+				markerButtons = markers.find('button');
 				element.append(markers);
-				markers.show();
 			}
 		}
 
@@ -355,11 +352,11 @@
 				slides.click(change);
 
 				// Wire up next/previous
-				buttonNext = element.find(config.next).on('click', next).show();
-				buttonPrev = element.find(config.previous).on('click', prev).show();
+				buttonNext = element.find(config.next).on('click', next);
+				buttonPrev = element.find(config.previous).on('click', prev);
 
 				// Both buttons
-				buttons = buttonPrev.add(buttonNext);
+				buttons = buttonPrev.add(buttonNext).css('display', 'block');
 			}
 
 			// Enable touch?
