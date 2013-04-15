@@ -414,7 +414,7 @@
 					isPrev = (delta.x > 0)? true : false;
 
 					// Add resistance to first and last slide
-					if ((isPrev && !self.number - 1) || (!isPrev && self.number === slides.length))
+					if ((isPrev && !(self.number - 1)) || (!isPrev && self.number === slides.length))
 						delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
 
 					// Override strip X relative to touch moved
