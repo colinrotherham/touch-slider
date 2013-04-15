@@ -42,7 +42,7 @@
 			isCarousel: true
 		},
 
-		element, slides, strip, markers, markerLinks,
+		element, slides, strip, markers, markerLinks, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize,
 		isBusy, isPrev,
 
@@ -274,17 +274,17 @@
 		function updateNextPrev()
 		{
 			// Skip when looping is on or no buttons
-			if (!config.canLoop)
+			if (!config.canLoop && !isTouch)
 			{
-				self.prev.add(self.next).removeClass(config.classDisabled);
+				buttons.removeClass(config.classDisabled);
 
 				switch (self.number)
 				{
 					case 1:
-					self.prev.addClass(config.classDisabled); break;
+					buttonPrev.addClass(config.classDisabled); break;
 
 					case slides.length:
-					self.next.addClass(config.classDisabled); break;
+					buttonNext.addClass(config.classDisabled); break;
 				}
 			}
 
@@ -347,8 +347,11 @@
 				slides.click(change);
 
 				// Wire up next/previous
-				self.next = element.find(config.next).on('click', next).show();
-				self.prev = element.find(config.previous).on('click', prev).show();
+				buttonNext = element.find(config.next).on('click', next).show();
+				buttonPrev = element.find(config.previous).on('click', prev).show();
+
+				// Both buttons
+				buttons = buttonPrev.add(buttonNext);
 			}
 
 			// Enable touch?
