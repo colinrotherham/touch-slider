@@ -336,7 +336,7 @@
 			if (config.classMarkers)
 			{
 				// Add the markers
-				markers = $('<div />').addClass(config.classMarkers).on('click touchstart', 'button', updateMarkers);
+				markers = $('<div />').addClass(config.classMarkers).on('click touchend', 'button', updateMarkers);
 
 				// Create marker links
 				var i = slides.length;
