@@ -336,7 +336,7 @@
 			if (config.classMarkers)
 			{
 				// Add the markers
-				markers = $('<div />').addClass(config.classMarkers).on('click', 'button', updateMarkers);
+				markers = $('<div />').addClass(config.classMarkers).on('click touchstart', 'button', updateMarkers);
 
 				// Create marker links
 				var i = slides.length;
@@ -381,6 +381,9 @@
 			{
 				var originalEvent = event.originalEvent,
 					touches = originalEvent.touches[0];
+
+				// Don't track touches on markers
+				if (markers.has(event.target).length) return;
 
 				// If busy, end transition now
 				if (isBusy) transitionEnd();
