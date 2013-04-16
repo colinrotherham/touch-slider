@@ -247,7 +247,8 @@
 
 	#slideshow .markers
 	{
-		margin: 15px 10px;
+		height: 15px;
+		padding: 15px 10px;
 
 		text-align: center;
 		font-size: 0.8em;
@@ -267,20 +268,26 @@
 		text-indent: -10000px;
 		opacity: 0.3;
 	}
-	
+
 	#slideshow .markers button + button
 	{
-		margin-left: 5px;
-	}
-
-	#slideshow .markers button:hover,
-	#slideshow .markers button:focus
-	{
-		opacity: 0.75;
+		margin-left: 10px;
 	}
 
 	#slideshow .markers button.sticky
 	{
 		background-color: #3172dd;
 		opacity: 0.75;
+	}
+
+	/* Bigger markers for touch */
+	#slideshow.touch .markers button
+	{
+		width: 15px;
+		height: 15px;
+	}
+
+	#slideshow.touch .markers button + button
+	{
+		margin-left: 10px;
 	}

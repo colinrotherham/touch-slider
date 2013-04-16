@@ -30,6 +30,7 @@
 			classActive: 'sticky',
 			classMarkers: 'markers',
 			classDisabled: 'disabled',
+			classTouch: 'touch',
 
 			// Adjust timings
 			delay: 3000,
@@ -97,6 +98,9 @@
 			{
 				config.canLoop = false;
 				config.isCarousel = true;
+
+				// Tell CSS touch is enabled
+				element.addClass(config.classTouch);
 			}
 
 			initPositions();
