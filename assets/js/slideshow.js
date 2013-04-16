@@ -158,7 +158,7 @@
 				setNextSlide(override);
 
 				// Proceed if not current slide (allowed if touch, for swipe resistance)
-				if (!self.slide.is(self.slideNext) || isTouch)
+				if (!self.slide.is(self.slideNext))
 				{
 					isBusy = true;
 					stop();
@@ -261,6 +261,11 @@
 
 			self.slideNext = slide;
 			self.number = number;
+		}
+
+		function isEnd()
+		{
+			return (isPrev && self.number === 1) || (!isPrev && self.number === slides.length);
 		}
 
 /*
@@ -419,8 +424,7 @@
 					isPrev = delta.x > 0;
 
 					// Add resistance to first and last slide
-					if ((isPrev && self.number === 1) || (!isPrev && self.number === slides.length))
-						delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
+					if (isEnd()) delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
 
 					// Override strip X relative to touch moved
 					transition(0, undefined, (delta.x / self.width) * (100 / slides.length));
@@ -434,8 +438,11 @@
 					var duration = +new Date() - touch.time,
 						isEnough = duration < 250 && Math.abs(delta.x) > 20 || Math.abs(delta.x) > self.width / 3;
 
-					// Stay on slide or progress?
-					change(undefined, isEnough? { isPrev: isPrev } : { slide: self.number - 1 });
+					// Progress to next slide
+					if (isEnough && !isEnd()) change(undefined, { isPrev: isPrev });
+
+					// Stay on slide
+					else transition(config.time);
 				}
 
 				element.off('touchmove');
