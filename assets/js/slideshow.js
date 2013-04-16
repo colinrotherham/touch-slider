@@ -366,10 +366,7 @@
 
 		function initTouch()
 		{
-			var touch, delta, isScrolling,
-
-			// Track touches here
-			selector = '.' + config.classStrip;
+			var touch, delta, isScrolling;
 
 			function begin(event)
 			{
@@ -386,8 +383,8 @@
 				// Reset scroll detection
 				isScrolling = undefined;
 
-				element.on('touchmove', selector, move);
-				element.on('touchend touchcancel', selector, end);
+				element.on('touchmove', move);
+				element.on('touchend touchcancel', end);
 			}
 
 			function move(event)
@@ -437,8 +434,8 @@
 					change(undefined, isEnough? { isPrev: isPrev } : { slide: self.number - 1 });
 				}
 
-				element.off('touchmove', selector);
-				element.off('touchend touchcancel', selector);
+				element.off('touchmove');
+				element.off('touchend touchcancel');
 			}
 
 			function click(event)
@@ -448,8 +445,8 @@
 			}
 
 			// Wait for touches
-			element.on('touchstart', selector, begin);
-			element.on('click', selector, click);
+			element.on('touchstart', begin);
+			element.on('click', click);
 
 			// Track slideshow size for movement calculations
 			$(window).resize(updateWidth);
