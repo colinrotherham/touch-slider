@@ -104,6 +104,7 @@
 			initMarkers();
 
 			updateNextPrev();
+			updateMarkers();
 			updateWidth();
 
 			// Start the slideshow timer
@@ -210,6 +211,8 @@
 				self.slide.focus();
 			}
 
+			updateMarkers();
+
 			// Run optional callback?
 			if (callback) callback.call(self);
 		}
@@ -295,8 +298,6 @@
 					buttonNext.addClass(config.classDisabled); break;
 				}
 			}
-
-			updateMarkers();
 		}
 
 /*
