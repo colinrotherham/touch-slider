@@ -455,7 +455,7 @@
 			function click(event)
 			{
 				// Prevent click being registered after valid swipe
-				if (!isScrolling) event.preventDefault();
+				if (!isScrolling && isBusy) event.preventDefault();
 			}
 
 			// Wait for touches
