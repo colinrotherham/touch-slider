@@ -44,7 +44,17 @@
 		margin: 0 auto;
 		max-width: 600px;
 
+		/* No iOS tap highlight */
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+		/* No text selection */
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+
+		/* No IE10 default touch actions */
+		-ms-touch-action: none;
 	}
 
 	#slideshow .strip
