@@ -62,7 +62,7 @@
 		})(),
 
 		// Touch events?
-		isTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
+		isTouch = ('ontouchstart' in window) || navigator.msPointerEnabled || window.DocumentTouch && document instanceof DocumentTouch;
 
 		// Override defaults with custom config?
 		$.each(override, function(name, value) { config[name] = value; });
@@ -380,7 +380,7 @@
 			function begin(event)
 			{
 				var originalEvent = event.originalEvent,
-					touches = originalEvent.touches[0];
+					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
 				// Don't track touches on markers
 				if (markers.has(event.target).length) return;
@@ -389,26 +389,26 @@
 				if (isBusy) transitionEnd();
 
 				// Log touch start, empty delta
-				touch = { x: touches.pageX, y: touches.pageY, time: +new Date() };
+				touch = { x: touches.pageX || touches.screenX, y: touches.pageY || touches.screenY, time: +new Date() };
 				delta = {};
 
 				// Reset scroll detection
 				isScrolling = undefined;
 
-				element.on('touchmove', move);
-				element.on('touchend touchcancel', end);
+				element.on('touchmove MSPointerMove', move);
+				element.on('touchend touchcancel MSPointerUp MSPointerOut', end);
 			}
 
 			function move(event)
 			{
 				var originalEvent = event.originalEvent,
-					touches = originalEvent.touches[0];
+					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
 				// Single touch point, no pinch-zoom
 				if (touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1) return;
 
 				// Movement since touch
-				delta = { x: touches.pageX - touch.x, y: touches.pageY - touch.y };
+				delta = { x: (touches.pageX || touches.screenX) - touch.x, y: (touches.pageY || touches.screenY) - touch.y };
 
 				// Are we scrolling? i.e. Moving up/down more than left/right
 				if (typeof isScrolling === 'undefined')
@@ -448,8 +448,8 @@
 					else transition(config.time);
 				}
 
-				element.off('touchmove');
-				element.off('touchend touchcancel');
+				element.off('touchmove MSPointerMove');
+				element.off('touchend touchcancel MSPointerUp MSPointerOut');
 			}
 
 			function click(event)
@@ -459,7 +459,7 @@
 			}
 
 			// Wait for touches
-			element.on('touchstart', begin);
+			element.on('touchstart MSPointerDown', begin);
 			element.on('click', click);
 
 			// Track slideshow size for movement calculations
