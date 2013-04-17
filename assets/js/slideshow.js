@@ -39,7 +39,7 @@
 
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: true,
-			isManual: true,
+			isManual: false,
 			isCarousel: true
 		},
 
