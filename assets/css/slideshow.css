@@ -275,7 +275,7 @@
 		height: 10px;
 
 		background: #575757;
-		border-radius: 50%;
+		border-radius: 5px;
 
 		text-indent: -10000px;
 		opacity: 0.3;
@@ -295,8 +295,10 @@
 	/* Bigger markers for touch */
 	#slideshow.touch .markers button
 	{
-		width: 15px;
-		height: 15px;
+		width: 16px;
+		height: 16px;
+
+		border-radius: 8px;
 	}
 
 	#slideshow.touch .markers button + button
