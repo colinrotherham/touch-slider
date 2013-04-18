@@ -376,8 +376,11 @@
 		function initTouch()
 		{
 			var touch, delta, isScrolling,
-				eventsTouchMove = 'touchmove MSPointerMove',
-				eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut';
+
+			// Listen for these events
+			eventsTouchStart = 'touchstart MSPointerDown',
+			eventsTouchMove = 'touchmove MSPointerMove',
+			eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut';
 
 			function begin(event)
 			{
@@ -461,7 +464,7 @@
 			}
 
 			// Wait for touches
-			element.on('touchstart MSPointerDown', begin);
+			element.on(eventsTouchStart, begin);
 			element.on('click', click);
 
 			// Track slideshow size for movement calculations
