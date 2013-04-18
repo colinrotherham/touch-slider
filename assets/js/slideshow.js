@@ -494,6 +494,8 @@
 
 		self.start = start;
 		self.stop = stop;
+
+		self.change = change;
 		self.next = next;
 		self.prev = prev;
 
