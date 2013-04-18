@@ -375,7 +375,9 @@
 
 		function initTouch()
 		{
-			var touch, delta, isScrolling;
+			var touch, delta, isScrolling,
+				eventsTouchMove = 'touchmove MSPointerMove',
+				eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut';
 
 			function begin(event)
 			{
@@ -395,8 +397,8 @@
 				// Reset scroll detection
 				isScrolling = undefined;
 
-				element.on('touchmove MSPointerMove', move);
-				element.on('touchend touchcancel MSPointerUp MSPointerOut', end);
+				element.on(eventsTouchMove, move);
+				element.on(eventsTouchEnd, end);
 			}
 
 			function move(event)
@@ -448,8 +450,8 @@
 					else transition(config.time);
 				}
 
-				element.off('touchmove MSPointerMove');
-				element.off('touchend touchcancel MSPointerUp MSPointerOut');
+				element.off(eventsTouchMove, move);
+				element.off(eventsTouchEnd, end);
 			}
 
 			function click(event)
