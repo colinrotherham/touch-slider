@@ -5,7 +5,7 @@
 
 	var CRD = CRD || {};
 
-	CRD.Slideshow = function(override, callback)
+	CRD.Slideshow = function(userConfig, callback)
 	{
 		'use strict';
 
@@ -45,7 +45,7 @@
 
 		element, slides, strip, markers, markerButtons, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize,
-		isBusy, isPrev,
+		isBusy, isOffset, isPrev, count,
 
 /*
 		Other checks
@@ -65,7 +65,7 @@
 		isTouch = ('ontouchstart' in window) || navigator.msPointerEnabled || window.DocumentTouch && document instanceof DocumentTouch;
 
 		// Override defaults with custom config?
-		$.each(override, function(name, value) { config[name] = value; });
+		$.each(userConfig, function(name, value) { config[name] = value; });
 
 /*
 		Start the slideshow
@@ -77,7 +77,10 @@
 			slides = element.find('.' + config.classSlide);
 			strip = element.find('.' + config.classStrip);
 
-			if (!element.length || slides.length < 2) return;
+			// Number of slides
+			count = slides.length;
+
+			if (!element.length || count < 2) return;
 
 			// Expose slide strip's CSS
 			style = strip[0].style;
@@ -103,13 +106,19 @@
 				element.addClass(config.classTouch);
 			}
 
+			// Set widths
+			strip.width((count * 100) + '%');
+			slides.width((100 / count) + '%');
+
 			initPositions();
 			initEvents();
 			initMarkers();
 
 			updateNextPrev();
 			updateMarkers();
-			updateWidth();
+
+			// Set start position for slide strip
+			transition(0);
 
 			// Start the slideshow timer
 			timeoutStart = setTimeout(start, config.delay);
@@ -142,7 +151,7 @@
 				override = options && options.slide;
 
 			// Remember direction for later
-			isPrev = !!(options && options.isPrev);
+			isPrev = options && options.isPrev;
 
 			// Ignore when busy and if link is disabled
 			if (!isBusy && (!event || event && !element.hasClass(config.classDisabled)))
@@ -179,6 +188,8 @@
 
 		function transition(time, complete, touchX)
 		{
+			var position = (config.canLoop && time)? setPositionOffset() : self.number;
+
 			// Move using CSS transition
 			if (isCSS && config.isCarousel)
 			{
@@ -189,11 +200,11 @@
 
 				// Move using CSS animation
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
-				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(null, true) - touchX) * -1 + '%)';
+				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(position - 1, true) - touchX) * -1 + '%)';
 			}
 
 			// Move using jQuery
-			else strip.animate({ left: getTransitionX() + '%' }, time, complete);
+			else strip.animate({ left: getTransitionX(position - 1) + '%' }, time, complete);
 		}
 
 		function transitionEnd(event)
@@ -209,13 +220,21 @@
 			// Zero transition time
 			style[prefix + 'Transition'] = '';
 
-			// Clicked, focus active slide
-			if (event && event.type === 'click')
+			// If temporarily offset, restore position
+			if (config.canLoop && isOffset)
 			{
-				self.slide.focus();
+				// Finished, remove offset
+				isOffset = false;
+
+				initPositions();
+				transition(0);
 			}
 
 			updateMarkers();
+
+			// Clicked, focus active slide
+			if (event && event.type === 'click')
+				self.slide.focus();
 
 			// Run optional callback?
 			if (callback) callback.call(self);
@@ -223,20 +242,20 @@
 
 		function getTransitionX(number, isRelative)
 		{
-			number = (number === 0 || number)? number : self.number - 1;
-
 			// Present percentage relative to entire strip width?
-			return (isRelative)? number * (100 / slides.length) : number * -100;
+			return (isRelative)? number * (100 / count) : number * -100;
 		}
 
 		function setNextSlide(override)
 		{
-			var slide = self.slide, classSlide = config.classSlide,
-				number = self.number, count = slides.length;
+			var slide = self.slide, number = self.number,
+				classSlide = config.classSlide;
 
 			// Prepare specific slide
 			if (typeof override !== 'undefined')
 			{
+				isPrev = (override < number)? true : false;
+
 				slide = slides.eq(override);
 				number = override + 1;
 			}
@@ -265,8 +284,50 @@
 
 		function isEnd()
 		{
-			return (isPrev && self.number === 1) || (!isPrev && self.number === slides.length);
+			return (isPrev && self.number === 1) || (!isPrev && self.number === count);
 		}
+
+
+/*
+		Set slide numbers + positions
+		----------------------------------- */
+
+		function setPosition(slide, x)
+		{
+			slide.css({ 'left': x, 'display': 'block' }).attr('tabindex', '-1').data('x', x);
+		}
+
+		function setPositionOffset()
+		{
+			var position = self.number, slide, x;
+
+			// Looping from the end to the start
+			if (!isPrev && position === 1)
+			{
+				position = count + 1;
+				slide = slides.eq(0);
+			}
+
+			// Looping from the start to the end
+			else if (isPrev && position === count)
+			{
+				position = 0;
+				slide = slides.eq(count - 1);
+			}
+
+			// Offset this slide
+			if (slide)
+			{
+				x = getTransitionX(position - 1, true);
+				slide.css('left', x + '%').data('x', x);
+
+				// Mark as temporarily offset
+				isOffset = true;
+			}
+
+			return position;
+		}
+
 
 /*
 		Update markers + buttons
@@ -303,7 +364,7 @@
 					case 1:
 					buttonPrev.addClass(config.classDisabled); break;
 
-					case slides.length:
+					case count:
 					buttonNext.addClass(config.classDisabled); break;
 				}
 			}
@@ -315,19 +376,19 @@
 
 		function initPositions()
 		{
-			strip.width((slides.length * 100) + '%');
-			slides.width((100 / slides.length) + '%');
+			var i = count, xOld, xNew, slide;
 
 			// Loops slides, fix positions
-			var i = slides.length, x;
 			while (i--)
 			{
-				x = getTransitionX(i, true) + '%';
-				slides.eq(i).css({ 'left': x, 'display': 'block' }).attr('tabindex', '-1');
-			}
+				slide = slides.eq(i);
 
-			// Set start position for slide strip
-			transition(0);
+				xOld = slide.data('x');
+				xNew = getTransitionX(i, true) + '%';
+
+				// Only set position if it's changed
+				if (xNew !== xOld) setPosition(slide, xNew);
+			}
 		}
 
 		function initMarkers()
@@ -339,7 +400,7 @@
 				markers = $('<div />').addClass(config.classMarkers).on('click touchend', 'button', updateMarkers);
 
 				// Create marker links
-				var i = slides.length;
+				var i = count;
 				while (i--)
 				{
 					markers.prepend($('<button>' + (i + 1) + '</button>'));
@@ -410,32 +471,30 @@
 					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
 				// Single touch point, no pinch-zoom
-				if (touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1) return;
+				if (touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1)
+					return;
 
 				// Movement since touch
 				delta = { x: (touches.pageX || touches.screenX) - touch.x, y: (touches.pageY || touches.screenY) - touch.y };
 
 				// Are we scrolling? i.e. Moving up/down more than left/right
 				if (typeof isScrolling === 'undefined')
-				{
 					isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
-				}
 
 				// If tracking touch, block scrolling
 				if (!isScrolling)
 				{
 					event.preventDefault();
-
 					stop();
 
 					// Swiping forward or backwards?
 					isPrev = delta.x > 0;
 
 					// Add resistance to first and last slide
-					if (isEnd()) delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
+					if (!config.canLoop && isEnd()) delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
 
 					// Override strip X relative to touch moved
-					transition(0, undefined, (delta.x / self.width) * (100 / slides.length));
+					transition(0, undefined, (delta.x / self.width) * (100 / count));
 				}
 			}
 
@@ -468,6 +527,7 @@
 			element.on('click', click);
 
 			// Track slideshow size for movement calculations
+			updateWidth();
 			$(window).resize(updateWidth);
 		}
 
