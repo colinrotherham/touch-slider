@@ -73,6 +73,7 @@
 	}
 
 	#slideshow .strip,
+	#slideshow .slide,
 	#slideshow > button
 	{
 		-webkit-perspective: 1000;
@@ -108,7 +109,8 @@
 		right: 0;
 	}
 
-	#slideshow > button
+	#slideshow > button,
+	.advanced #slideshow > button.disabled
 	{
 		display: none;
 	}
@@ -194,21 +196,15 @@
 		appearance: none;
 	}
 
-	#slideshow > button
+	.advanced #slideshow > button
 	{
+		display: block;
 		width: 40px;
 
 		padding-right: 10px;
 		padding-left: 7px;
 	}
 
-	#slideshow > button:hover,
-	#slideshow > button:focus
-	{
-		background: #c0c0c0;
-		background: rgba(183, 183, 183, 0.7);
-	}
-	
 	#slideshow > button::-moz-focus-inner
 	{
 		margin: -1px;
@@ -251,12 +247,6 @@
 		background-position: 0 0;
 	}
 
-	#slideshow button.disabled
-	{
-		color: #afafaf;
-		cursor: default;
-	}
-
 	#slideshow .markers
 	{
 		height: 15px;
@@ -269,6 +259,10 @@
 	#slideshow .markers button
 	{
 		display: inline-block;
+
+		*display: block;
+		*float: left;
+
 		padding: 0;
 
 		width: 10px;
