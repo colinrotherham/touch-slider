@@ -39,10 +39,10 @@
 	#slideshow
 	{
 		position: relative;
-		overflow: hidden;
+		/*overflow: hidden;*/
 
 		margin: 0 auto;
-		max-width: 600px;
+		max-width: 225px;
 
 		/* No iOS tap highlight */
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
