@@ -553,4 +553,5 @@
 		// Make most useful helper methods public
 		self.getTransitionX = getTransitionX;
 		self.getIndexOffset = getIndexOffset;
+		self.getPositionOffset = getPositionOffset;
 	};
