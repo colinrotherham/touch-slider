@@ -540,11 +540,13 @@
 
 		self.start = start;
 		self.stop = stop;
-
-		self.change = change;
 		self.next = next;
 		self.prev = prev;
 
+		self.change = change;
 		self.transition = transition;
+
+		// Make most useful helper methods public
 		self.getTransitionX = getTransitionX;
+		self.getIndexOffset = getIndexOffset;
 	};
