@@ -138,7 +138,7 @@
 
 		function change(event, options)
 		{
-			var element = $(this),
+			var target = $(this),
 				override = options && options.slide, index = self.index;
 
 			// Ignore when busy
@@ -148,10 +148,10 @@
 				isPrev = options && options.isPrev;
 
 				// If slide clicked, jump to slide
-				if (element.hasClass(config.classSlide))
+				if (target.hasClass(config.classSlide))
 				{
-					if (element.is('a')) return;
-					override = slides.index(element);
+					if (target.is('a')) return;
+					override = slides.index(target);
 				}
 
 				// Determine next slide
@@ -172,7 +172,7 @@
 			if (!event) start();
 
 			// Only allow default events on current slide
-			else if (!element.is(self.slide)) event.preventDefault();
+			else if (!target.is(self.slide)) event.preventDefault();
 		}
 
 		function transition(index, time, complete, touchX)
