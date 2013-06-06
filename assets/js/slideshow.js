@@ -5,7 +5,7 @@
 
 	var CRD = CRD || {};
 
-	CRD.Slideshow = function(userConfig, callback)
+	CRD.Slideshow = function(userConfig, callbackEnd, callbackStart)
 	{
 		'use strict';
 
@@ -190,6 +190,9 @@
 			// Move using CSS transition
 			if (isCSS && config.isCarousel)
 			{
+				// Run optional transition callback?
+				if (callbackStart) callbackStart.call(self);
+
 				touchX = touchX || 0;
 
 				// Callback when complete
@@ -226,8 +229,8 @@
 			if (event && event.type === 'click')
 				self.slide.focus();
 
-			// Run optional callback?
-			if (callback) callback.call(self);
+			// Run optional transitionEnd callback?
+			if (callbackEnd) callbackEnd.call(self);
 		}
 
 		function setNextSlide(override)

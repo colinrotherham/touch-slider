@@ -46,6 +46,12 @@ Alternatively, set a callback to run after each transition:
 new CRD.Slideshow({ slideshow: '#slideshow' }, function() { /* Do something */ }).init();
 ```
 
+Alternatively, set a callback to run before and after each transition:
+
+``` js
+new CRD.Slideshow({ slideshow: '#slideshow' }, function() { /* After transition */ }, function() { /* Before transition */ }).init();
+```
+
 Alternatively, override the default configuration:
 
 ``` js
