@@ -113,6 +113,11 @@
 			// Set start positions
 			updateNextPrev();
 			initPositions();
+
+			// Expose internal elements
+			self.element = element;
+			self.strip = strip;
+			self.slides = slides;
 		}
 
 		function start()
@@ -531,10 +536,6 @@
 /*
 		Expose internals
 		----------------------------------- */
-
-		self.element = element;
-		self.strip = strip;
-		self.slides = slides;
 
 		self.init = init;
 
