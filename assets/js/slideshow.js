@@ -180,6 +180,8 @@
 			if (index === null)
 				index = getIndexOffset(self.index);
 
+			time = time || 0;
+
 			// Move using CSS transition
 			if (isCSS && config.isCarousel)
 			{
