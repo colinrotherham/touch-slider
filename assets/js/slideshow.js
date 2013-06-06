@@ -415,11 +415,11 @@
 
 			function begin(event)
 			{
-				var originalEvent = event.originalEvent,
+				var ignoreTouch = markers.add(buttons), originalEvent = event.originalEvent,
 					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
-				// Don't track touches on markers
-				if (markers.has(event.target).length) return;
+				// Don't track touches on markers or next/prev
+				if (ignoreTouch.has(event.target).length || ignoreTouch.is(event.target)) return;
 
 				// If busy, end transition now
 				if (isBusy) transitionEnd();
