@@ -37,7 +37,7 @@
 			time: 400,
 
 			// Allow infinite looping, auto-play or carousel style?
-			canLoop: true,
+			canLoop: false,
 			isManual: true,
 			isCarousel: true
 		},
