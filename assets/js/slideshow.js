@@ -223,32 +223,6 @@
 			if (callback) callback.call(self);
 		}
 
-		function getTransitionX(index, isRelative)
-		{
-			// Present percentage relative to entire strip width?
-			return (isRelative)? index * (100 / count) : index * -100;
-		}
-
-		// If index is too high/low, wrap it around
-		function getIndexWrapped(index)
-		{
-			// Wrap index if it goes out of bounds
-			if (index >= count) index = index - count;
-			if (index < 0) index = count + index;
-
-			return index;
-		}
-
-		function getIndexOffset(index)
-		{
-			return getIndexWrapped(self.index + (config.canLoop? indexStart - index : 0));
-		}
-
-		function getPositionOffset(index)
-		{
-			return getIndexWrapped(config.canLoop? index - indexStart + self.index : index);
-		}
-
 		function setNextSlide(override)
 		{
 			var index = self.index;
@@ -329,6 +303,37 @@
 			updateMarkers();
 		}
 
+
+/*
+		Utility methods
+		----------------------------------- */
+
+		function getTransitionX(index, isRelative)
+		{
+			// Present percentage relative to entire strip width?
+			return (isRelative)? index * (100 / count) : index * -100;
+		}
+
+		function getIndexWrapped(index)
+		{
+			// Wrap index if it goes out of bounds
+			if (index >= count) index = index - count;
+			if (index < 0) index = count + index;
+
+			return index;
+		}
+
+		function getIndexOffset(index)
+		{
+			return getIndexWrapped(self.index + (config.canLoop? indexStart - index : 0));
+		}
+
+		function getPositionOffset(index)
+		{
+			return getIndexWrapped(config.canLoop? index - indexStart + self.index : index);
+		}
+
+
 /*
 		Initial setup
 		----------------------------------- */
@@ -393,6 +398,11 @@
 			// Start the slideshow timer
 			timeoutStart = setTimeout(start, config.delay);
 		}
+
+
+/*
+		Initial setup, touch support
+		----------------------------------- */
 
 		function initTouch()
 		{
