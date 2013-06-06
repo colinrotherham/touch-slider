@@ -152,8 +152,7 @@
 	Theme
 	----------------------------------- */
 
-	#slideshow .strip,
-	#slideshow > button
+	#slideshow .strip
 	{
 		padding-bottom: 75%;
 	}
@@ -198,9 +197,17 @@
 
 	.advanced #slideshow > button
 	{
-		display: block;
-		width: 40px;
+		position: absolute;
+		top: 30%;
 
+		display: block;
+
+		width: 40px;
+		height: 36px;
+	}
+
+	.advanced #slideshow > button
+	{
 		padding-right: 10px;
 		padding-left: 7px;
 	}
@@ -211,18 +218,12 @@
 		padding: 0;
 	}
 
-	#slideshow > button b
+	.advanced #slideshow > button b
 	{
-		position: absolute;
-		top: 50%;
-		left: 7px;
-
 		display: block;
 
 		width: 23px;
 		height: 36px;
-
-		margin-top: -13px;
 
 		background: transparent url(../img/arrow.png) no-repeat 0 -36px;
 		background: rgba(0, 0, 0, 0) url(../img/arrow.svg) no-repeat 0 -36px;
