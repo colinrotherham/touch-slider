@@ -198,12 +198,14 @@
 	.advanced #slideshow > button
 	{
 		position: absolute;
-		top: 30%;
+		top: 50%;
 
 		display: block;
 
 		width: 40px;
 		height: 36px;
+
+		margin-top: -40px;
 	}
 
 	.advanced #slideshow > button
