@@ -12,8 +12,7 @@
 		var self = this,
 
 		// Transition prefixes + default
-		prefixes = ['ms', 'O', 'Moz', 'Webkit', ''],
-		prefix = prefixes[prefixes.length], style,
+		prefixes = ['ms', 'O', 'Moz', 'Webkit', ''], prefix = '', style,
 
 /*
 		Default configuration
@@ -45,7 +44,8 @@
 
 		element, slides, strip, markers, markerButtons, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize,
-		isBusy, isScrolling, isPrev, count, offset = 0,
+		count, indexStart, indexOffset,
+		isBusy, isScrolling, isPrev,
 
 /*
 		Other checks
@@ -87,21 +87,22 @@
 
 			// Grab slide with active class
 			self.slide = slides.filter('.' + config.classActive);
-			self.number = slides.index(self.slide) + 1;
+			self.index = slides.index(self.slide);
 
 			// No? Grab 1st slide instead
 			if (!self.slide.length)
 			{
-				self.number = 1;
-				self.slide = slides.eq(self.number - 1).addClass(config.classActive);
+				self.index = 0;
+				self.slide = slides.eq(self.index);
 			}
+
+			// Find center point and initial offset
+			indexStart = (config.canLoop)? Math.floor((count - 1) / 2) : 0;
+			indexOffset = 0;
 
 			// Set widths
 			strip.width((count * 100) + '%');
 			slides.width((100 / count) + '%');
-
-			// Offset position
-			if (config.canLoop) offset = Math.floor(count / 2);
 
 			// Kick off touch support
 			if (isTouch) initTouch();
@@ -138,7 +139,7 @@
 		function change(event, options)
 		{
 			var element = $(this),
-				index = options && options.slide;
+				override = options && options.slide, index = self.index;
 
 			// Ignore when busy
 			if (!isBusy)
@@ -150,15 +151,11 @@
 				if (element.hasClass(config.classSlide))
 				{
 					if (element.is('a')) return;
-					index = slides.index(element);
-
-					console.log('Clicked on', index + 1);
+					override = slides.index(element);
 				}
 
 				// Determine next slide
-				setNextSlide(index);
-
-				console.log('Up next', self.number);
+				setNextSlide(override);
 
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
@@ -167,7 +164,7 @@
 					stop();
 
 					// Only transition where carousel is enabled and no CSS transitions
-					transition(self.number - 1, (config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
+					transition(getIndexOffset(index), (config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
 				}
 			}
 
@@ -180,16 +177,16 @@
 
 		function transition(index, time, complete, touchX)
 		{
+			if (index === null)
+				index = getIndexOffset(self.index);
+
 			// Move using CSS transition
 			if (isCSS && config.isCarousel)
 			{
 				touchX = touchX || 0;
 
 				// Callback when complete
-				//if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
-				if (complete) setTimeout(complete, time);
-
-				console.log('Move strip to slot', index + 1);
+				if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
 
 				// Move using CSS animation
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
@@ -213,11 +210,8 @@
 			// Zero transition time
 			style[prefix + 'Transition'] = '';
 
-			// If temporarily offset, restore position
-			if (config.canLoop)
-			{
-				initPositions();
-			}
+			// Restore original positions
+			if (config.canLoop) initPositions();
 
 			updateNextPrev();
 
@@ -234,11 +228,10 @@
 			// Present percentage relative to entire strip width?
 			return (isRelative)? index * (100 / count) : index * -100;
 		}
-		
-		function getOffsetIndex(index)
-		{
-			index = (index - offset) + self.number - 1;
 
+		// If index is too high/low, wrap it around
+		function getIndexWrapped(index)
+		{
 			// Wrap index if it goes out of bounds
 			if (index >= count) index = index - count;
 			if (index < 0) index = count + index;
@@ -246,9 +239,19 @@
 			return index;
 		}
 
+		function getIndexOffset(index)
+		{
+			return getIndexWrapped(self.index + (config.canLoop? indexStart - index : 0));
+		}
+
+		function getPositionOffset(index)
+		{
+			return getIndexWrapped(config.canLoop? index - indexStart + self.index : index);
+		}
+
 		function setNextSlide(override)
 		{
-			var index = self.number - 1;
+			var index = self.index;
 
 			// Prepare specific slide by index
 			if (typeof override !== 'undefined')
@@ -270,12 +273,12 @@
 			}
 
 			self.slideNext = slides.eq(index);
-			self.number = index + 1;
+			self.index = index;
 		}
 
 		function isEnd()
 		{
-			return !config.canLoop && ((isPrev && self.number === 1) || (!isPrev && self.number === count));
+			return !config.canLoop && ((isPrev && self.index === 0) || (!isPrev && self.index === count - 1));
 		}
 
 
@@ -290,14 +293,14 @@
 				// Clicked so update
 				if (event)
 				{
-					// Change to the right slide
+					// Change to the correct slide
 					change(event, { slide: markerButtons.index(this) });
 				}
 
 				else
 				{
 					// Highlight the right marker
-					markerButtons.removeAttr('class').eq(self.number - 1).addClass(config.classActive);
+					markerButtons.removeAttr('class').eq(self.index).addClass(config.classActive);
 				}
 			}
 		}
@@ -311,12 +314,12 @@
 			{
 				buttons.removeClass(buttonClass);
 
-				switch (self.number)
+				switch (self.index)
 				{
-					case 1:
+					case 0:
 					button = buttonPrev; break;
 
-					case count:
+					case count - 1:
 					button = buttonNext; break;
 				}
 
@@ -332,14 +335,13 @@
 
 		function initPositions()
 		{
-			var i = count, index,
-				xOld, xNew, slide;
+			var i = count, slide,
+				xOld, xNew;
 
 			// Loops slides, fix positions
 			while (i--)
 			{
-				index = getOffsetIndex(i);
-				slide = slides.eq(index);
+				slide = slides.eq(getPositionOffset(i));
 
 				xOld = slide.data('x');
 				xNew = getTransitionX(i, true) + '%';
@@ -349,7 +351,7 @@
 			}
 
 			// Move strip
-			transition((config.canLoop)? offset : self.number - 1, 0);
+			transition((config.canLoop)? indexStart : self.index);
 		}
 
 		function initMarkers()
@@ -455,7 +457,7 @@
 					if (!config.canLoop && isEnd()) delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
 
 					// Override strip X relative to touch moved
-					transition(self.number - 1, 0, undefined, (delta.x / self.width) * (100 / count));
+					transition(null, null, null, (delta.x / self.width) * (100 / count));
 				}
 			}
 
@@ -475,7 +477,10 @@
 
 					// Stay on slide
 					else if (distance > 0)
-						transition(self.number - 1, config.time);
+					{
+						// Offset requested position?
+						transition(null, config.time);
+					}
 				}
 
 				element.off(eventsTouchMove, move);
