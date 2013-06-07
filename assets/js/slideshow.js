@@ -191,7 +191,7 @@
 			if (isCSS && config.isCarousel)
 			{
 				// Run optional transition callback?
-				if (callbackStart) callbackStart.call(self);
+				if (callbackStart && complete) callbackStart.call(self);
 
 				touchX = touchX || 0;
 
