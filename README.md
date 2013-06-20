@@ -8,7 +8,7 @@ Features
 2. Markers below the slideshow show which slide is active\*
 3. Fully responsive + flexible, no reliance on JavaScript to resize
 4. GPU accelerated where available (i.e. CSS Translate/Transition)
-5. Otionally provide a callback to run after each transition
+5. Optionally provide a callback to run after each transition
 
 \* e.g. Styled as the little dots, iOS-style
 
