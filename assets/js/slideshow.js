@@ -36,6 +36,9 @@
 			interval: 5000,
 			time: 400,
 
+			// Custom display type
+			display: 'block',
+
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: false,
 			isManual: true,
@@ -365,7 +368,7 @@
 				xNew = getTransitionX(i, true) + '%';
 
 				// Only set position if it's changed
-				if (xNew !== xOld) slide.css({ 'left': xNew, 'display': 'block' }).attr('tabindex', '-1').data('x', xNew);
+				if (xNew !== xOld) slide.css({ 'left': xNew, 'display': config.display }).attr('tabindex', '-1').data('x', xNew);
 			}
 
 			// Move strip
