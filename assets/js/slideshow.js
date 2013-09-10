@@ -428,7 +428,7 @@
 
 			function begin(event)
 			{
-				var ignoreTouch = markers.add(buttons), originalEvent = event.originalEvent,
+				var ignoreTouch = buttons || markers && markers.add(buttons), originalEvent = event.originalEvent,
 					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
 				// Don't track touches on markers or next/prev
