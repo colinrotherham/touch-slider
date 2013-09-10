@@ -118,6 +118,9 @@
 			self.element = element;
 			self.strip = strip;
 			self.slides = slides;
+
+			// Enabled
+			element.removeClass(config.classDisabled);
 		}
 
 		function start()

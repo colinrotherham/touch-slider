@@ -109,12 +109,6 @@
 		right: 0;
 	}
 
-	#slideshow > button,
-	.advanced #slideshow > button.disabled
-	{
-		display: none;
-	}
-
 	#slideshow .markers
 	{
 		text-align: right;
@@ -206,10 +200,6 @@
 		height: 36px;
 
 		margin-top: -40px;
-	}
-
-	.advanced #slideshow > button
-	{
 		padding-right: 10px;
 		padding-left: 7px;
 	}
@@ -220,7 +210,7 @@
 		padding: 0;
 	}
 
-	.advanced #slideshow > button b
+	#slideshow > button b
 	{
 		display: block;
 
@@ -257,6 +247,12 @@
 
 		text-align: center;
 		font-size: 0.8em;
+	}
+
+	/* Hide buttons when disabled */
+	#slideshow.disabled > button
+	{
+		display: none;
 	}
 
 	#slideshow .markers button
