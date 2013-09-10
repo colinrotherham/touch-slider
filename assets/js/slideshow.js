@@ -292,7 +292,7 @@
 		function updateNextPrev()
 		{
 			var button, buttonClass = config.classDisabled;
-		
+
 			// Skip when looping is on
 			if (!config.canLoop)
 			{
@@ -519,7 +519,7 @@
 				{
 					self.width = element.outerWidth();
 				}
-	
+
 				if (timeoutResize) clearTimeout(timeoutResize);
 				timeoutResize = setTimeout(set, (event)? 300 : 0);
 			}
