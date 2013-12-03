@@ -193,12 +193,12 @@
 
 			time = time || 0;
 
+			// Run optional transition callback?
+			if (callbackStart && complete) callbackStart.call(self);
+
 			// Move using CSS transition
 			if (isCSS && config.isCarousel)
 			{
-				// Run optional transition callback?
-				if (callbackStart && complete) callbackStart.call(self);
-
 				touchX = touchX || 0;
 
 				// Callback when complete
