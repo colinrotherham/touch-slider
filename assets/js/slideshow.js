@@ -188,29 +188,34 @@
 
 		function transition(index, time, complete, touchX)
 		{
-			if (index === null)
-				index = getIndexOffset(self.index);
-
-			time = time || 0;
-
 			// Run optional transition callback?
-			if (callbackStart && complete) callbackStart.call(self);
+			var proceed = (callbackStart && complete)?
+				callbackStart.call(self) : true;
 
-			// Move using CSS transition
-			if (isCSS && config.isCarousel)
+			// Don't run if callback has returned false
+			if (proceed || typeof proceed === 'undefined')
 			{
-				touchX = touchX || 0;
+				if (index === null)
+					index = getIndexOffset(self.index);
 
-				// Callback when complete
-				if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
+				time = time || 0;
 
-				// Move using CSS animation
-				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
-				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(index, true) - touchX) * -1 + '%)';
+				// Move using CSS transition
+				if (isCSS && config.isCarousel)
+				{
+					touchX = touchX || 0;
+
+					// Callback when complete
+					if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
+
+					// Move using CSS animation
+					style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
+					style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(index, true) - touchX) * -1 + '%)';
+				}
+
+				// Move using jQuery
+				else strip.stop(true, true).animate({ left: getTransitionX(index) + '%' }, time, complete);
 			}
-
-			// Move using jQuery
-			else strip.stop(true, true).animate({ left: getTransitionX(index) + '%' }, time, complete);
 		}
 
 		function transitionEnd(event)
