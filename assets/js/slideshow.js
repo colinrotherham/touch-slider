@@ -174,8 +174,13 @@
 					isBusy = true;
 					stop();
 
-					// Only transition where carousel is enabled and no CSS transitions
-					transition(getIndexOffset(index), (config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
+					// Run optional transition callback?
+					var proceed = (callbackStart)?
+						callbackStart.call(self, event) : true;
+
+					// Don't run if callback has returned false
+					if (proceed || typeof proceed === 'undefined')
+						transition(getIndexOffset(index), (config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
 				}
 			}
 
@@ -188,34 +193,26 @@
 
 		function transition(index, time, complete, touchX)
 		{
-			// Run optional transition callback?
-			var proceed = (callbackStart && complete)?
-				callbackStart.call(self) : true;
+			if (index === null)
+				index = getIndexOffset(self.index);
 
-			// Don't run if callback has returned false
-			if (proceed || typeof proceed === 'undefined')
+			time = time || 0;
+
+			// Move using CSS transition
+			if (isCSS && config.isCarousel)
 			{
-				if (index === null)
-					index = getIndexOffset(self.index);
+				touchX = touchX || 0;
 
-				time = time || 0;
+				// Callback when complete
+				if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
 
-				// Move using CSS transition
-				if (isCSS && config.isCarousel)
-				{
-					touchX = touchX || 0;
-
-					// Callback when complete
-					if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
-
-					// Move using CSS animation
-					style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
-					style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(index, true) - touchX) * -1 + '%)';
-				}
-
-				// Move using jQuery
-				else strip.stop(true, true).animate({ left: getTransitionX(index) + '%' }, time, complete);
+				// Move using CSS animation
+				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
+				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(index, true) - touchX) * -1 + '%)';
 			}
+
+			// Move using jQuery
+			else strip.stop(true, true).animate({ left: getTransitionX(index) + '%' }, time, complete);
 		}
 
 		function transitionEnd(event)
@@ -241,7 +238,7 @@
 				self.slide.focus();
 
 			// Run optional transitionEnd callback?
-			if (callbackEnd) callbackEnd.call(self);
+			if (callbackEnd) callbackEnd.call(self, event);
 		}
 
 		function setNextSlide(override)
