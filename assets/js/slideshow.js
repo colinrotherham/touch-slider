@@ -233,12 +233,15 @@
 
 			updateNextPrev();
 
-			// Clicked, focus active slide
-			if (event && event.type === 'click')
-				self.slide.focus();
+			if (event)
+			{
+				// Clicked, focus active slide
+				if (event.type === 'click')
+					self.slide.focus();
 
-			// Run optional transitionEnd callback?
-			if (callbackEnd) callbackEnd.call(self, event);
+				// Run optional transitionEnd callback?
+				if (callbackEnd) callbackEnd.call(self, event);
+			}
 		}
 
 		function setNextSlide(override)
@@ -501,7 +504,7 @@
 
 					// Progress to next slide
 					if (isEnough && !isEnd())
-						change(undefined, { isPrev: isPrev });
+						change(event, { isPrev: isPrev });
 
 					// Stay on slide
 					else if (distance > 0)
