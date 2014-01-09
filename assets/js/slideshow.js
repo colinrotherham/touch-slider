@@ -67,8 +67,18 @@
 		// Touch events?
 		isTouch = ('ontouchstart' in window) || navigator.msPointerEnabled || window.DocumentTouch && document instanceof DocumentTouch;
 
-		// Override defaults with custom config?
-		$.each(userConfig, function(name, value) { config[name] = value; });
+		// Override defaults with new config?
+		updateConfig(userConfig || {});
+
+/*
+		Update config values
+		----------------------------------- */
+
+		function updateConfig(newConfig)
+		{
+			$.each(newConfig, function(name, value) { config[name] = value; });
+		}
+
 
 /*
 		Start the slideshow
@@ -204,11 +214,16 @@
 				touchX = touchX || 0;
 
 				// Callback when complete
-				if (complete) strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
+				if (time && complete)
+					strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
 
 				// Move using CSS animation
 				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
 				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(index, true) - touchX) * -1 + '%)';
+
+				// No transition time, run callback immediately
+				if (!time && complete)
+					complete();
 			}
 
 			// Move using jQuery
@@ -565,4 +580,7 @@
 		self.getTransitionX = getTransitionX;
 		self.getIndexOffset = getIndexOffset;
 		self.getPositionOffset = getPositionOffset;
+
+		// Allow config override after init
+		self.updateConfig = updateConfig;
 	};

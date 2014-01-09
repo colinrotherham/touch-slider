@@ -57,3 +57,12 @@ Alternatively, override the default configuration:
 ``` js
 new CRD.Slideshow({ slideshow: '#slideshow', delay: 3000, interval: 5000, time: 600, canLoop: true, isManual: false }).init();
 ```
+
+…or override timings of an already-running slideshow:
+
+``` js
+var slideshow = new CRD.Slideshow({ slideshow: '#slideshow' });
+
+slideshow.init();
+slideshow.updateConfig({ delay: 3000, interval: 5000, time: 600 });
+```
