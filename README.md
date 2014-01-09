@@ -40,6 +40,11 @@ Starting the slideshow (as shown in launcher.js):
 new CRD.Slideshow({ slideshow: '#slideshow' }).init();
 ```
 
+Adjusting how many slides to step by when moving next/prev
+``` js
+new CRD.Slideshow({ slideshow: '#slideshow', step: 2 }).init();
+```
+
 Alternatively, set a callback to run after each transition:
 
 ``` js

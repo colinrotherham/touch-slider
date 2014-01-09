@@ -31,6 +31,9 @@
 			classDisabled: 'disabled',
 			classTouch: 'touch',
 
+			// How many to step next/prev by
+			step: 1,
+
 			// Adjust timings
 			delay: 3000,
 			interval: 5000,
@@ -261,7 +264,8 @@
 
 		function setNextSlide(override)
 		{
-			var index = self.index;
+			var index = self.index,
+				indexLast = count - 1;
 
 			// Prepare specific slide by index
 			if (typeof override !== 'undefined')
@@ -273,13 +277,15 @@
 			// Prepare next
 			else if (!isPrev)
 			{
-				index = (index === count - 1)? ((config.canLoop)? 0 : count - 1) : index + 1;
+				index = index + config.step;
+				index = (index >= indexLast)? (config.canLoop? getIndexWrapped(index) : indexLast) : index;
 			}
 
-			// Prepare next
+			// Prepare prev
 			else
 			{
-				index = (index === 0)? ((config.canLoop)? count - 1 : 0) : index - 1;
+				index = index - config.step;
+				index = (index <= 0)? (config.canLoop? getIndexWrapped(index) : 0) : index;
 			}
 
 			self.slideNext = slides.eq(index);
