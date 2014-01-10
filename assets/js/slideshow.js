@@ -157,8 +157,8 @@
 		Jump to next or specific slide
 		----------------------------------- */
 
-		function next(event) { change(event, { isPrev: false }); }
-		function prev(event) { change(event, { isPrev: true }); }
+		function next(event) { change.call(this, event, { isPrev: false }); }
+		function prev(event) { change.call(this, event, { isPrev: true }); }
 
 		function change(event, options)
 		{
@@ -179,7 +179,7 @@
 				}
 
 				// Determine next slide
-				setNextSlide(override);
+				setNextSlide.call(this, override);
 
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
@@ -264,8 +264,10 @@
 
 		function setNextSlide(override)
 		{
-			var index = self.index,
-				indexLast = count - 1;
+			var target = $(this),
+				index = self.index,
+				indexLast = count - 1,
+				step = target.is(buttons)? config.step : 1;
 
 			// Prepare specific slide by index
 			if (typeof override !== 'undefined')
@@ -277,14 +279,14 @@
 			// Prepare next
 			else if (!isPrev)
 			{
-				index = index + config.step;
+				index = index + step;
 				index = (index >= indexLast)? (config.canLoop? getIndexWrapped(index) : indexLast) : index;
 			}
 
 			// Prepare prev
 			else
 			{
-				index = index - config.step;
+				index = index - step;
 				index = (index <= 0)? (config.canLoop? getIndexWrapped(index) : 0) : index;
 			}
 
@@ -310,7 +312,7 @@
 				if (event)
 				{
 					// Change to the correct slide
-					change(event, { slide: markerButtons.index(this) });
+					change.call(this, event, { slide: markerButtons.index(this) });
 				}
 
 				else
@@ -525,7 +527,7 @@
 
 					// Progress to next slide
 					if (isEnough && !isEnd())
-						change(event, { isPrev: isPrev });
+						change.call(this, event, { isPrev: isPrev });
 
 					// Stay on slide
 					else if (distance > 0)
