@@ -51,7 +51,7 @@
 		element, slides, strip, markers, markerButtons, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize,
 		count, indexStart, indexOffset,
-		isBusy, isScrolling, isPrev,
+		isBusy, isScrolling, isPrev, isTouch,
 
 /*
 		Other checks
@@ -65,13 +65,8 @@
 			// Check vendor prefixes
 			while (i--) { if (typeof css[prefixes[i] + 'Transition'] === 'string') { prefix = prefixes[i]; break; } }
 			return !!prefix;
-		})(),
+		})();
 
-		// Touch events?
-		isTouch = ('ontouchstart' in window) || navigator.msPointerEnabled || window.DocumentTouch && document instanceof DocumentTouch;
-
-		// Override defaults with new config?
-		updateConfig(userConfig || {});
 
 /*
 		Update config values
@@ -80,6 +75,10 @@
 		function updateConfig(newConfig)
 		{
 			$.each(newConfig, function(name, value) { config[name] = value; });
+
+			// Use config-provided touch settings or detect?
+			isTouch = typeof config.isTouch !== 'undefined'?
+				!!config.isTouch : ('ontouchstart' in window) || navigator.msPointerEnabled || window.DocumentTouch && document instanceof DocumentTouch;
 		}
 
 
@@ -568,6 +567,13 @@
 			updateWidth();
 			$(window).resize(updateWidth);
 		}
+
+
+/*
+		Update config from user
+		----------------------------------- */
+
+		updateConfig(userConfig || {});
 
 
 /*
