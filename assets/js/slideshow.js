@@ -116,8 +116,8 @@
 			indexOffset = 0;
 
 			// Set widths
-			strip.width((count * 100) + '%');
-			slides.width((100 / count) + '%');
+			strip.outerWidth((count * 100) + '%');
+			slides.outerWidth((100 / count) + '%');
 
 			// Kick off touch support
 			if (isTouch) initTouch();
