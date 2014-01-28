@@ -162,7 +162,7 @@
 		function change(event, options)
 		{
 			var target = $(this),
-				override = options && options.slide, index = self.index;
+				index = self.index;
 
 			// Ignore when busy
 			if (!isBusy)
@@ -170,15 +170,8 @@
 				// Remember direction for later
 				isPrev = options && options.isPrev;
 
-				// If slide clicked, jump to slide
-				if (target.hasClass(config.classSlide))
-				{
-					if (target.is('a')) return;
-					override = slides.index(target);
-				}
-
-				// Determine next slide
-				setNextSlide.call(this, override);
+				// Determine next slide (optionally override)
+				setNextSlide.call(this, options && options.slide);
 
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
@@ -199,8 +192,8 @@
 			// Start slideshow again?
 			if (!event) start();
 
-			// Only allow default events on current slide
-			else if (!target.is(self.slide)) event.preventDefault();
+			// Stop default action
+			else event.preventDefault();
 		}
 
 		function transition(index, time, complete, touchX)
@@ -425,9 +418,6 @@
 
 		function initEvents()
 		{
-			// Allow slides to be clicked
-			slides.on('click touchend', change);
-
 			// Listen for mouse movement
 			element.mouseenter(stop).mouseleave(start);
 
