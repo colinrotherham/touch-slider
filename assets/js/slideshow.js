@@ -580,8 +580,9 @@
 		self.change = change;
 		self.transition = transition;
 
-		// Make most useful helper methods public
+		// Make helper methods public
 		self.getTransitionX = getTransitionX;
+		self.getIndexWrapped = getIndexWrapped;
 		self.getIndexOffset = getIndexOffset;
 		self.getPositionOffset = getPositionOffset;
 
