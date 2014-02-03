@@ -22,12 +22,12 @@
 		{
 			next: 'button.next',
 			previous: 'button.previous',
+			markers: '.markers',
 
 			// Classes
 			classStrip: 'strip',
 			classSlide: 'slide',
 			classActive: 'sticky',
-			classMarkers: 'markers',
 			classDisabled: 'disabled',
 			classTouch: 'touch',
 
@@ -398,10 +398,10 @@
 		function initMarkers()
 		{
 			// Skip when no marker config
-			if (config.classMarkers)
+			if (config.markers)
 			{
 				// Add the markers
-				markers = $('<div />').addClass(config.classMarkers).on('click touchend', 'button', updateMarkers);
+				markers = $(config.markers).on('click touchend', 'button', updateMarkers);
 
 				// Create marker links
 				var i = count;
