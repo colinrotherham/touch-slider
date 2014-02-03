@@ -101,7 +101,7 @@
 			style = strip[0].style;
 
 			// Grab slide with active class
-			self.slide = slides.filter('.' + config.classActive);
+			self.slide = slides.filter('.' + config.classActive).first();
 			self.index = slides.index(self.slide);
 
 			// No? Grab 1st slide instead
