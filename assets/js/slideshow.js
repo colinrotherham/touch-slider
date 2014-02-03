@@ -412,7 +412,6 @@
 
 				// Find the new links, wire up, add
 				markerButtons = markers.find('button');
-				element.append(markers);
 			}
 		}
 
