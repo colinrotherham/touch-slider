@@ -422,8 +422,8 @@
 			element.mouseenter(stop).mouseleave(start);
 
 			// Wire up next/previous
-			buttonNext = element.find(config.next).on('click touchend', next);
-			buttonPrev = element.find(config.previous).on('click touchend', prev);
+			buttonNext = $(config.next).on('click touchend', next);
+			buttonPrev = $(config.previous).on('click touchend', prev);
 
 			// Both buttons
 			buttons = buttonPrev.add(buttonNext);
