@@ -441,9 +441,9 @@
 			var touch, delta,
 
 			// Listen for these events
-			eventsTouchStart = 'touchstart MSPointerDown',
-			eventsTouchMove = 'touchmove MSPointerMove',
-			eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut';
+			eventsTouchStart = 'touchstart pointerdown MSPointerDown',
+			eventsTouchMove = 'touchmove pointermove MSPointerMove',
+			eventsTouchEnd = 'touchend touchleave touchcancel pointerup MSPointerUp pointerout MSPointerOut';
 
 			function begin(event)
 			{
