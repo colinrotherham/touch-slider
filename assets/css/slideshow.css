@@ -52,14 +52,15 @@
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-
-		/* No IE10 default touch actions */
-		-ms-touch-action: none;
 	}
 
 	#slideshow .strip
 	{
 		position: relative;
+
+		/* Specify IE touch actions */
+		-ms-touch-action: pan-y;
+		touch-action: pan-y;
 	}
 
 	#slideshow .strip,
