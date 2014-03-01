@@ -443,7 +443,7 @@
 			// Listen for these events
 			eventsTouchStart = 'touchstart pointerdown MSPointerDown',
 			eventsTouchMove = 'touchmove pointermove MSPointerMove',
-			eventsTouchEnd = 'touchend touchleave touchcancel pointerup MSPointerUp pointerout MSPointerOut';
+			eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut MSPointerCancel pointerup pointerleave pointercancel';
 
 			function begin(event)
 			{
