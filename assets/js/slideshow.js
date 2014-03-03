@@ -51,7 +51,7 @@
 		element, slides, strip, markers, markerButtons, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize,
 		count, indexStart, indexOffset,
-		isBusy, isScrolling, isPrev, isTouch,
+		isBusy, isFrameRequested, isScrolling, isPrev, isTouch,
 
 /*
 		Other checks
@@ -198,31 +198,45 @@
 
 		function transition(index, time, complete, touchX)
 		{
-			if (index === null)
-				index = getIndexOffset(self.index);
-
-			time = time || 0;
-
-			// Move using CSS transition
-			if (isCSS && config.isCarousel)
+			// Transition when frame is available
+			function onFrame()
 			{
-				touchX = touchX || 0;
+				// Frame arrived
+				isFrameRequested = false;
 
-				// Callback when complete
-				if (time && complete)
-					strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
+				if (index === null)
+					index = getIndexOffset(self.index);
 
-				// Move using CSS animation
-				style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
-				style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(index, true) - touchX) * -1 + '%)';
+				time = time || 0;
 
-				// No transition time, run callback immediately
-				if (!time && complete)
-					complete();
+				// Move using CSS transition
+				if (isCSS && config.isCarousel)
+				{
+					touchX = touchX || 0;
+
+					// Callback when complete
+					if (time && complete)
+						strip.one(prefix.toLowerCase() + 'TransitionEnd transitionend', complete);
+
+					// Move using CSS animation
+					style[prefix + 'Transition'] = (time)? time / 1000 + 's' : '';
+					style[prefix + 'Transform'] = 'translateX(' + (getTransitionX(index, true) - touchX) * -1 + '%)';
+
+					// No transition time, run callback immediately
+					if (!time && complete)
+						complete();
+				}
+
+				// Move using jQuery
+				else strip.stop(true, true).animate({ left: getTransitionX(index) + '%' }, time, complete);
 			}
 
-			// Move using jQuery
-			else strip.stop(true, true).animate({ left: getTransitionX(index) + '%' }, time, complete);
+			// Request frame where possible
+			if (window.requestAnimationFrame)
+				requestAnimationFrame(onFrame);
+
+			// Or run immediately (lower performance)
+			else onFrame();
 		}
 
 		function transitionEnd(event)
@@ -440,10 +454,10 @@
 		{
 			var touch, delta,
 
-			// Listen for these events
-			eventsTouchStart = 'touchstart pointerdown MSPointerDown',
-			eventsTouchMove = 'touchmove pointermove MSPointerMove',
-			eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut MSPointerCancel pointerup pointerleave pointercancel';
+				// Listen for these events
+				eventsTouchStart = 'touchstart pointerdown MSPointerDown',
+				eventsTouchMove = 'touchmove pointermove MSPointerMove',
+				eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut MSPointerCancel pointerup pointerleave pointercancel';
 
 			function begin(event)
 			{
@@ -498,8 +512,13 @@
 					// Add resistance to first and last slide
 					if (!config.canLoop && isEnd()) delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
 
-					// Override strip X relative to touch moved
-					transition(null, null, null, (delta.x / self.width) * (100 / count));
+					if (!isFrameRequested)
+					{
+						isFrameRequested = true;
+
+						// Override strip X relative to touch moved
+						transition(null, null, null, (delta.x / self.width) * (100 / count));
+					}
 				}
 			}
 
