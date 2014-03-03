@@ -485,40 +485,37 @@
 				var originalEvent = event.originalEvent,
 					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
-				// Single touch point, no pinch-zoom
-				if (touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1)
-					return;
+					// Waiting for frame, or multiple touch points or pinch-zoom
+					if (isFrameRequested || touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1)
+						return;
 
-				// Movement since touch
-				delta = { x: (touches.pageX || touches.screenX) - touch.x, y: (touches.pageY || touches.screenY) - touch.y };
+					// Movement since touch
+					delta = { x: (touches.pageX || touches.screenX) - touch.x, y: (touches.pageY || touches.screenY) - touch.y };
 
-				// Are we scrolling? i.e. Moving up/down more than left/right
-				if (typeof isScrolling === 'undefined')
-					isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
+					// Are we scrolling? i.e. Moving up/down more than left/right
+					if (typeof isScrolling === 'undefined')
+						isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
 
-				// If tracking touch, block scrolling
-				if (!isScrolling)
-				{
-					event.preventDefault();
-					stop();
-
-					// Swiping forward or backwards?
-					isPrev = delta.x > 0;
-
-					// Mark as busy
-					isBusy = true;
-
-					// Add resistance to first and last slide
-					if (!config.canLoop && isEnd()) delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
-
-					if (!isFrameRequested)
+					// If tracking touch, block scrolling
+					if (!isScrolling)
 					{
+						event.preventDefault();
+						stop();
+
+						// Swiping forward or backwards?
+						isPrev = delta.x > 0;
+
+						// Mark as busy
+						isBusy = true;
 						isFrameRequested = true;
+
+						// Add resistance to first and last slide
+						if (!config.canLoop && isEnd())
+							delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
 
 						// Override strip X relative to touch moved
 						transition(null, null, null, (delta.x / self.width) * (100 / count));
 					}
-				}
 			}
 
 			function end()
