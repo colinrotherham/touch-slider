@@ -161,8 +161,7 @@
 
 		function change(event, options)
 		{
-			var target = $(this),
-				index = self.index;
+			var index = self.index;
 
 			// Ignore when busy
 			if (!isBusy)
