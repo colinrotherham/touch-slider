@@ -132,7 +132,7 @@
 			element.removeClass(config.classDisabled);
 		}
 
-		function hashchange(event)
+		function hashchange()
 		{
 			var slide = self.slide;
 			initSlides();
@@ -140,20 +140,18 @@
 			// Slide has changed
 			if (slide !== self.slide)
 			{
-				setTimeout(function()
+				offload(function()
 				{
 					element.scrollTop(0);
 					element.scrollLeft(0);
-				}, 0);
+				});
 			}
 		}
 
 		function start()
 		{
 			if (!config.isManual)
-			{
-				timeoutSlide = setTimeout(function() { change(); }, config.interval);
-			}
+				timeoutSlide = offload(function() { change(); }, config.interval);
 		}
 
 		function stop()
@@ -161,6 +159,12 @@
 			clearTimeout(timeoutStart);
 			clearTimeout(timeoutSlide);
 		}
+
+		function offload(fn, time)
+		{
+			return setTimeout(fn, time || 0);
+		}
+
 
 /*
 		Jump to next or specific slide
@@ -270,9 +274,7 @@
 			{
 				// Clicked, focus active slide
 				if (event.type === 'click')
-				{
-					setTimeout(function() { self.slide.focus(); }, 0);
-				}
+					offload(function() { self.slide.focus(); });
 
 				// Run optional transitionEnd callback?
 				if (callbackEnd) callbackEnd.call(self, event);
@@ -484,7 +486,7 @@
 			buttons = buttonPrev.add(buttonNext);
 
 			// Start the slideshow timer
-			timeoutStart = setTimeout(start, config.delay);
+			timeoutStart = offload(start, config.delay);
 		}
 
 
@@ -601,7 +603,7 @@
 				}
 
 				if (timeoutResize) clearTimeout(timeoutResize);
-				timeoutResize = setTimeout(set, (event)? 300 : 0);
+				timeoutResize = offload(set, (event)? 300 : 0);
 			}
 
 			// For smooth animation, touch must use carousel mode
