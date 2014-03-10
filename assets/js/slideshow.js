@@ -111,17 +111,14 @@
 
 			initEvents();
 			initMarkers();
+			initPositions();
+			initSlides();
 
 			// Kick off touch support
 			if (isTouch) initTouch();
 
-			// Focus & hashchange management
-			$(window).on('hashchange', hashchange);
-			hashchange();
-
-			// Set start positions
+			// Set button & marker state
 			updateNextPrev();
-			initPositions();
 
 			// Expose internal elements
 			self.element = element;
@@ -130,22 +127,9 @@
 
 			// Enabled
 			element.removeClass(config.classDisabled);
-		}
 
-		function hashchange()
-		{
-			var slide = self.slide;
-			initSlides();
-
-			// Slide has changed
-			if (slide !== self.slide)
-			{
-				offload(function()
-				{
-					element.scrollTop(0);
-					element.scrollLeft(0);
-				});
-			}
+			// Focus & hashchange management
+			$(window).on('hashchange', initSlides);
 		}
 
 		function start()
@@ -175,7 +159,8 @@
 
 		function change(event, options)
 		{
-			var index = self.index;
+			var index = self.index,
+				time = (config.isCarousel)? config.time : 0;
 
 			// Ignore when busy
 			if (!isBusy)
@@ -189,16 +174,22 @@
 				// Proceed if not current slide
 				if (!self.slide.is(self.slideNext))
 				{
-					isBusy = true;
-					stop();
-
 					// Run optional transition callback?
 					var proceed = (callbackStart)?
 						callbackStart.call(self, event) : true;
 
 					// Don't run if callback has returned false
 					if (proceed || typeof proceed === 'undefined')
-						transition(getIndexOffset(index), (config.isCarousel)? config.time : 0, function() { transitionEnd(event); });
+					{
+						isBusy = true;
+						stop();
+
+						// On init or hash change, no transition time
+						if (!event || event.type === 'hashchange')
+							time = 0;
+
+						transition(getIndexOffset(index), time, function() { transitionEnd(event); });
+					}
 				}
 			}
 
@@ -272,8 +263,8 @@
 
 			if (event)
 			{
-				// Clicked, focus active slide
-				if (event.type === 'click')
+				// Click or hash change, focus active slide
+				if (event.type === 'click' || event.type === 'hashchange')
 					offload(function() { self.slide.focus(); });
 
 				// Run optional transitionEnd callback?
@@ -401,27 +392,25 @@
 		Initial setup
 		----------------------------------- */
 
-		function initSlides()
+		function initSlides(event)
 		{
-			var slide;
+			var slide, index;
 
-			// Grab slide with active class
-			self.slide = slides.filter('.' + config.classActive).first();
-			self.index = slides.index(self.slide);
+			// Default to 1st slide with active class
+			if (!self.slide)
+			{
+				self.slide = slides.filter('.' + config.classActive).first();
+				self.index = slides.index(self.slide);
+			}
 
 			// Grab slide matching hash
 			if (location.hash)
 			{
 				slide = slides.filter(location.hash);
+				index = slides.index(slide);
 
-				if (slide.length)
-				{
-					self.slideNext = slide;
-					self.index = slides.index(slide);
-
-					transition(self.index, 0, transitionEnd);
-					transitionEnd();
-				}
+				if (slide.length && self.index !== index)
+					change(event, { slide: index });
 			}
 
 			// No? Grab 1st slide instead
@@ -430,6 +419,13 @@
 				self.index = 0;
 				self.slide = slides.eq(self.index);
 			}
+
+			// Reset browser trying to jump to slide before transition
+			offload(function()
+			{
+				element.scrollTop(0);
+				element.scrollLeft(0);
+			});
 		}
 
 		function initPositions()
