@@ -111,8 +111,8 @@
 
 			initEvents();
 			initMarkers();
-			initPositions();
 			initSlides();
+			initPositions();
 
 			// Kick off touch support
 			if (isTouch) initTouch();
