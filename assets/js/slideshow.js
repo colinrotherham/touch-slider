@@ -95,35 +95,29 @@
 			// Number of slides
 			count = slides.length;
 
-			if (!element.length || count < 2) return;
+			if (!element.length || count < 2)
+				return;
 
 			// Expose slide strip's CSS
 			style = strip[0].style;
-
-			// Grab slide with active class
-			self.slide = slides.filter('.' + config.classActive).first();
-			self.index = slides.index(self.slide);
-
-			// No? Grab 1st slide instead
-			if (!self.slide.length)
-			{
-				self.index = 0;
-				self.slide = slides.eq(self.index);
-			}
-
-			// Find center point and initial offset
-			indexStart = (config.canLoop)? Math.floor((count - 1) / 2) : 0;
-			indexOffset = 0;
 
 			// Set widths
 			strip.outerWidth((count * 100) + '%');
 			slides.outerWidth((100 / count) + '%');
 
-			// Kick off touch support
-			if (isTouch) initTouch();
+			// Find center point and initial offset
+			indexStart = (config.canLoop)? Math.floor((count - 1) / 2) : 0;
+			indexOffset = 0;
 
 			initEvents();
 			initMarkers();
+
+			// Kick off touch support
+			if (isTouch) initTouch();
+
+			// Focus & hashchange management
+			$(window).on('hashchange', hashchange);
+			hashchange();
 
 			// Set start positions
 			updateNextPrev();
@@ -136,6 +130,22 @@
 
 			// Enabled
 			element.removeClass(config.classDisabled);
+		}
+
+		function hashchange(event)
+		{
+			var slide = self.slide;
+			initSlides();
+
+			// Slide has changed
+			if (slide !== self.slide)
+			{
+				setTimeout(function()
+				{
+					element.scrollTop(0);
+					element.scrollLeft(0);
+				}, 0);
+			}
 		}
 
 		function start()
@@ -203,7 +213,7 @@
 				// Frame arrived
 				isFrameRequested = false;
 
-				if (index === null)
+				if (!index && index !== 0)
 					index = getIndexOffset(self.index);
 
 				time = time || 0;
@@ -260,7 +270,9 @@
 			{
 				// Clicked, focus active slide
 				if (event.type === 'click')
-					self.slide.focus();
+				{
+					setTimeout(function() { self.slide.focus(); }, 0);
+				}
 
 				// Run optional transitionEnd callback?
 				if (callbackEnd) callbackEnd.call(self, event);
@@ -386,6 +398,37 @@
 /*
 		Initial setup
 		----------------------------------- */
+
+		function initSlides()
+		{
+			var slide;
+
+			// Grab slide with active class
+			self.slide = slides.filter('.' + config.classActive).first();
+			self.index = slides.index(self.slide);
+
+			// Grab slide matching hash
+			if (location.hash)
+			{
+				slide = slides.filter(location.hash);
+
+				if (slide.length)
+				{
+					self.slideNext = slide;
+					self.index = slides.index(slide);
+
+					transition(self.index, 0, transitionEnd);
+					transitionEnd();
+				}
+			}
+
+			// No? Grab 1st slide instead
+			if (!self.slide.length)
+			{
+				self.index = 0;
+				self.slide = slides.eq(self.index);
+			}
+		}
 
 		function initPositions()
 		{
