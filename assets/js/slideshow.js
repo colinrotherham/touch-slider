@@ -239,8 +239,8 @@
 				else strip.stop(true, true).animate({ left: getTransitionX(index) + '%' }, time, complete);
 			}
 
-			// Request frame where possible
-			if (window.requestAnimationFrame)
+			// Request next frame when using touch
+			if (typeof touchX !== 'undefined' && window.requestAnimationFrame)
 				requestAnimationFrame(onFrame);
 
 			// Or run immediately (lower performance)
