@@ -105,6 +105,10 @@
 			strip.outerWidth((count * 100) + '%');
 			slides.outerWidth((100 / count) + '%');
 
+			// Did outerWidth fail?
+			if (!slides.first().width())
+				slides.width((100 / count) + '%');
+
 			// Find center point and initial offset
 			indexStart = (config.canLoop)? Math.floor((count - 1) / 2) : 0;
 			indexOffset = 0;
