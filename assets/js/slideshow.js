@@ -49,7 +49,7 @@
 		},
 
 		element, slides, strip, markers, markerButtons, buttons, buttonPrev, buttonNext,
-		timeoutStart, timeoutSlide, timeoutResize,
+		timeoutStart, timeoutSlide, timeoutResize, requestFrame,
 		count, indexStart, indexOffset,
 		isBusy, isFrameRequested, isScrolling, isPrev, isTouch,
 
@@ -65,6 +65,12 @@
 			// Check vendor prefixes
 			while (i--) { if (typeof css[prefixes[i] + 'Transition'] === 'string') { prefix = prefixes[i]; break; } }
 			return !!prefix;
+		})(),
+
+		// Has requestAnimationFrame support?
+		isRAF = (function()
+		{
+			return !!(window.requestAnimationFrame && window.cancelAnimationFrame);
 		})();
 
 
@@ -240,8 +246,11 @@
 			}
 
 			// Request next frame when using touch
-			if (typeof touchX !== 'undefined' && window.requestAnimationFrame)
-				requestAnimationFrame(onFrame);
+			if (isRAF && typeof touchX !== 'undefined')
+			{
+				isFrameRequested = true;
+				requestFrame = requestAnimationFrame(onFrame);
+			}
 
 			// Or run immediately (lower performance)
 			else onFrame();
@@ -552,7 +561,6 @@
 
 						// Mark as busy
 						isBusy = true;
-						isFrameRequested = true;
 
 						// Add resistance to first and last slide
 						if (!config.canLoop && isEnd())
@@ -572,6 +580,10 @@
 
 					// No longer busy
 					isBusy = false;
+
+					// Alear frame request ready for final frame
+					if (isRAF)
+						cancelAnimationFrame(requestFrame);
 
 					// Progress to next slide
 					if (isEnough && !isEnd())
