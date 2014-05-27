@@ -194,8 +194,8 @@
 						isBusy = true;
 						stop();
 
-						// On init or hash change, no transition time
-						if (!event || event.type === 'hashchange')
+						// On hash change, no transition time
+						if (event && event.type === 'hashchange')
 							time = 0;
 
 						transition(getIndexOffset(index), time, function() { transitionEnd(event); });
