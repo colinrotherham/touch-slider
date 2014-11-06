@@ -107,13 +107,16 @@
 			// Expose slide strip's CSS
 			style = strip[0].style;
 
+			var slide = slides.first(),
+				slideWidth = (100 / count) + '%';
+
 			// Set widths
 			strip.outerWidth((count * 100) + '%');
-			slides.outerWidth((100 / count) + '%');
+			slides.outerWidth(slideWidth);
 
-			// Did outerWidth fail?
-			if (!slides.first().width())
-				slides.width((100 / count) + '%');
+			// Test buggy jQuery width calculations, use .width() instead
+			if (!slide.width() || (slide.get(0).style.width.slice(0, 10) !== slideWidth.slice(0, 10)))
+				slides.width(slideWidth);
 
 			// Find center point and initial offset
 			indexStart = (config.canLoop)? Math.floor((count - 1) / 2) : 0;
