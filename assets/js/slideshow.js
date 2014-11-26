@@ -23,6 +23,7 @@
 			next: 'button.next',
 			previous: 'button.previous',
 			markers: '.markers',
+			numbers: '.numbers',
 
 			// Classes
 			classStrip: 'strip',
@@ -48,7 +49,7 @@
 			isCarousel: true
 		},
 
-		element, slides, strip, markers, markerButtons, buttons, buttonPrev, buttonNext,
+		element, slides, strip, markers, markerButtons, numbers, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize, requestFrame,
 		count, indexStart, indexOffset,
 		isBusy, isFrameRequested, isScrolling, isPrev, isTouch,
@@ -347,6 +348,11 @@
 					markerButtons.removeAttr('class').eq(self.index).addClass(config.classActive);
 				}
 			}
+
+			if (numbers)
+			{
+				numbers.html('<strong>' + (self.index + 1) + '</strong>/<strong>' + count + '</strong>');
+			}
 		}
 
 		function updateNextPrev()
@@ -482,6 +488,13 @@
 
 				// Find the new links, wire up, add
 				markerButtons = markers.find('button');
+			}
+
+			// Skip when no number config
+			if (config.numbers)
+			{
+				// Add the numbers
+				numbers = $(config.numbers).text('1/9');
 			}
 		}
 
