@@ -115,7 +115,7 @@
 			slides.outerWidth(slideWidth);
 
 			// Test buggy jQuery width calculations, use .width() instead
-			if (!slide.width() || (slide.get(0).style.width.slice(0, 7) !== slideWidth.slice(0, 7)))
+			if (!slide.width() || (slide.get(0).style.width.slice(0, 6) !== slideWidth.slice(0, 6)))
 				slides.width(slideWidth);
 
 			// Find center point and initial offset
