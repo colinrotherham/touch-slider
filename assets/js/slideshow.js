@@ -62,8 +62,8 @@
 		},
 
 		element, slides, strip, markers, markerButtons, numbers, buttons, buttonPrev, buttonNext,
-		timeoutStart, timeoutSlide, timeoutResize, requestFrame,
-		breakpoint, count, indexStart, indexOffset,
+		timeoutStart, timeoutSlide, timeoutResize, timeoutBreakpoint, requestFrame,
+		count, indexStart, indexOffset,
 		isBusy, isFrameRequested, isScrolling, isPrev, isTouch,
 
 /*
@@ -102,11 +102,89 @@
 
 
 /*
+		Update slideshow breakpoint/width
+		----------------------------------- */
+
+		function updateBreakpoint(event) {
+
+			function update()
+			{
+				var minWidth, maxWidth,
+					breakpointMatched;
+
+				self.viewportWidth = Math.floor(document.documentElement.clientWidth);
+
+				// Check breakpoints
+				if (config.breakpoints)
+				{
+					$.each(config.breakpoints, function(index, breakpointConfig)
+					{
+						if (breakpointConfig.range)
+						{
+							minWidth = breakpointConfig.range[0];
+							maxWidth = breakpointConfig.range[1];
+
+							if (self.viewportWidth >= minWidth && (!maxWidth || self.viewportWidth <= maxWidth))
+							{
+								breakpointMatched = index;
+								return;
+							}
+						}
+					});
+
+					// Found a breakpoint?
+					if (typeof breakpointMatched !== 'undefined')
+					{
+						// Set initial breakpoint
+						if (!event)
+							self.breakpoint = breakpointMatched;
+
+						// Run callback on resize event
+						if (event && config.breakpoints[breakpointMatched].callback && self.breakpoint !== breakpointMatched)
+						{
+							self.breakpoint = breakpointMatched;
+							config.breakpoints[breakpointMatched].callback();
+						}
+					}
+				}
+			}
+
+			if (timeoutBreakpoint) clearTimeout(timeoutBreakpoint);
+			timeoutBreakpoint = offload(update, (event)? 300 : 0);
+		}
+
+		function updateWidth(event)
+		{
+			function update()
+			{
+				self.width = element.outerWidth();
+			}
+
+			if (timeoutResize) clearTimeout(timeoutResize);
+			timeoutResize = offload(update, (event)? 300 : 0);
+		}
+
+
+/*
 		Start the slideshow
 		----------------------------------- */
 
 		function init()
 		{
+			// Is this the first run?
+			var isFirstRun = element?
+				false : true;
+
+			// Already build? Tear down and start again
+			if (!isFirstRun) {
+
+				isBusy = false;
+				change.call(this, undefined, { slide: 0 });
+
+				slides.removeAttr('style');
+				strip.removeAttr('style');
+			}
+
 			element = $(config.slideshow);
 			slides = element.find('.' + config.classSlide);
 			strip = element.find('.' + config.classStrip);
@@ -135,13 +213,18 @@
 			indexStart = (config.canLoop)? Math.floor((count - 1) / 2) : 0;
 			indexOffset = 0;
 
-			initEvents();
 			initMarkers();
 			initSlides();
 			initPositions();
 
-			// Kick off touch support
-			if (isTouch) initTouch();
+			// Don't bind events twice
+			if (isFirstRun)
+			{
+				initEvents();
+
+				// Kick off touch support
+				if (isTouch) initTouch();
+			}
 
 			// Set button & marker state
 			updateNextPrev();
@@ -153,9 +236,6 @@
 
 			// Enabled
 			element.removeClass(config.classDisabled);
-
-			// Focus & hashchange management
-			$(window).on('hashchange', initSlides);
 		}
 
 		function start()
@@ -489,7 +569,7 @@
 			if (config.markers)
 			{
 				// Add the markers
-				markers = $(config.markers).on('click touchend', 'button', updateMarkers);
+				markers = $(config.markers);
 
 				// Create marker links
 				var i = count;
@@ -524,6 +604,17 @@
 
 			// Start the slideshow timer
 			timeoutStart = offload(start, config.delay);
+
+			// Listen for marker clicks
+			if (config.markers && markers.length)
+				markers.on('click touchend', 'button', updateMarkers);
+
+			// Focus & hashchange management
+			$(window).on('hashchange', initSlides);
+
+			// Track slideshow size for movement/breakpoint calculations
+			updateWidth();
+			$(window).resize(updateWidth);
 		}
 
 
@@ -635,72 +726,27 @@
 				if (!isScrolling && isBusy) event.preventDefault();
 			}
 
-			function updateWidth(event)
-			{
-				function update()
-				{
-					var minWidth, maxWidth,
-						breakpointMatched;
-
-					self.width = element.outerWidth();
-					self.viewportWidth = Math.floor(document.documentElement.clientWidth);
-
-					// Check breakpoints
-					if (config.breakpoints)
-					{
-						$.each(config.breakpoints, function(index, breakpointConfig)
-						{
-							if (breakpointConfig.range)
-							{
-								minWidth = breakpointConfig.range[0];
-								maxWidth = breakpointConfig.range[1];
-
-								if (self.viewportWidth >= minWidth && (!maxWidth || self.viewportWidth <= maxWidth))
-								{
-									breakpointMatched = index;
-									return;
-								}
-							}
-						});
-
-						// Found a breakpoint?
-						if (typeof breakpointMatched !== 'undefined')
-						{
-							// Set initial breakpoint
-							if (!event)
-								breakpoint = breakpointMatched;
-
-							// Run callback on resize event
-							if (event && config.breakpoints[breakpointMatched].callback && breakpoint !== breakpointMatched)
-							{
-								breakpoint = breakpointMatched;
-								config.breakpoints[breakpointMatched].callback();
-							}
-						}
-					}
-				}
-
-				if (timeoutResize) clearTimeout(timeoutResize);
-				timeoutResize = offload(update, (event)? 300 : 0);
-			}
-
 			// For smooth animation, touch must use carousel mode
 			config.isCarousel = true;
 
 			// Wait for touches + tell CSS touch is enabled
 			element.on(eventsTouchStart, begin).on('click', click).addClass(config.classTouch);
-
-			// Track slideshow size for movement calculations
-			updateWidth();
-			$(window).resize(updateWidth);
 		}
 
 
 /*
-		Update config from user
+		Update config from user etc
 		----------------------------------- */
 
 		updateConfig(userConfig || {});
+
+
+/*
+		Update breakpoint info
+		----------------------------------- */
+
+		$(window).resize(updateBreakpoint);
+		updateBreakpoint();
 
 
 /*
