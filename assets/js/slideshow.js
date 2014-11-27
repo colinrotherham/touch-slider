@@ -46,12 +46,24 @@
 			// Allow infinite looping, auto-play or carousel style?
 			canLoop: false,
 			isManual: true,
-			isCarousel: true
+			isCarousel: true,
+
+			// Run callbacks at defined breakpoints
+			breakpoints:
+			[
+				/*{
+					range: [0, 767],
+					callback: function()
+					{
+						console.log('Mobile');
+					}
+				}*/
+			]
 		},
 
 		element, slides, strip, markers, markerButtons, numbers, buttons, buttonPrev, buttonNext,
 		timeoutStart, timeoutSlide, timeoutResize, requestFrame,
-		count, indexStart, indexOffset,
+		breakpoint, count, indexStart, indexOffset,
 		isBusy, isFrameRequested, isScrolling, isPrev, isTouch,
 
 /*
@@ -625,13 +637,51 @@
 
 			function updateWidth(event)
 			{
-				function set()
+				function update()
 				{
+					var minWidth, maxWidth,
+						breakpointMatched;
+
 					self.width = element.outerWidth();
+					self.viewportWidth = Math.floor(document.documentElement.clientWidth);
+
+					// Check breakpoints
+					if (config.breakpoints)
+					{
+						$.each(config.breakpoints, function(index, breakpointConfig)
+						{
+							if (breakpointConfig.range)
+							{
+								minWidth = breakpointConfig.range[0];
+								maxWidth = breakpointConfig.range[1];
+
+								if (self.viewportWidth >= minWidth && (!maxWidth || self.viewportWidth <= maxWidth))
+								{
+									breakpointMatched = index;
+									return;
+								}
+							}
+						});
+
+						// Found a breakpoint?
+						if (typeof breakpointMatched !== 'undefined')
+						{
+							// Set initial breakpoint
+							if (!event)
+								breakpoint = breakpointMatched;
+
+							// Run callback on resize event
+							if (event && config.breakpoints[breakpointMatched].callback && breakpoint !== breakpointMatched)
+							{
+								breakpoint = breakpointMatched;
+								config.breakpoints[breakpointMatched].callback();
+							}
+						}
+					}
 				}
 
 				if (timeoutResize) clearTimeout(timeoutResize);
-				timeoutResize = offload(set, (event)? 300 : 0);
+				timeoutResize = offload(update, (event)? 300 : 0);
 			}
 
 			// For smooth animation, touch must use carousel mode
