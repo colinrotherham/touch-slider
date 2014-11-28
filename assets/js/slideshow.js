@@ -114,6 +114,10 @@
 
 				self.viewportWidth = Math.floor(document.documentElement.clientWidth);
 
+				// Only continue if slideshow exists
+				if (!element || !element.length)
+					return;
+
 				// Check breakpoints
 				if (config.breakpoints)
 				{
