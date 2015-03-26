@@ -2,21 +2,21 @@
 	Sample reset
 	----------------------------------- */
 
-	html, body, p
+	html, body
 	{
 		margin: 0;
 		padding: 0;
-		border: 0;
-		vertical-align: baseline;
-		background: transparent;
+		height: 100%;
 	}
 
 	body
 	{
-		margin: 15px 3.125%;
-		padding: 0;
-
 		font-family: Helvetica, Arial, sans-serif;
+	}
+
+	p
+	{
+		vertical-align: baseline;
 	}
 
 	a
@@ -36,13 +36,12 @@
 	Structure
 	----------------------------------- */
 
-	#slideshow
+	.slideshow
 	{
 		position: relative;
 		overflow: hidden;
 
 		margin: 0 auto;
-		max-width: 600px;
 
 		/* No iOS tap highlight */
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -54,7 +53,7 @@
 		user-select: none;
 	}
 
-	#slideshow .strip
+	.slideshow .strip
 	{
 		position: relative;
 
@@ -63,8 +62,8 @@
 		touch-action: pan-y;
 	}
 
-	#slideshow .strip,
-	#slideshow .slide
+	.slideshow .strip,
+	.slideshow .slide
 	{
 		left: 0;
 		top: 0;
@@ -73,15 +72,15 @@
 		height: 100%;
 	}
 
-	#slideshow .strip,
-	#slideshow .slide,
-	#slideshow > button
+	.slideshow .strip,
+	.slideshow .slide,
+	.slideshow > button
 	{
 		-webkit-perspective: 1000;
 		-webkit-backface-visibility: hidden;
 	}
 
-	#slideshow .slide
+	.slideshow .slide
 	{
 		position: absolute;
 		display: none;
@@ -89,12 +88,12 @@
 		outline: none;
 	}
 
-	#slideshow .slide.sticky
+	.slideshow .slide.sticky
 	{
 		display: block;
 	}
 
-	#slideshow > button
+	.slideshow > button
 	{
 		position: absolute;
 		z-index: 1;
@@ -104,19 +103,19 @@
 		padding: 0;
 	}
 
-	#slideshow button.next
+	.slideshow button.next
 	{
 		left: auto;
 		right: 0;
 	}
 
-	#slideshow .markers
+	.slideshow .markers
 	{
 		text-align: right;
 	}
 
-	#slideshow ul,
-	#slideshow li
+	.slideshow ul,
+	.slideshow li
 	{
 		display: block;
 		overflow: hidden;
@@ -127,17 +126,17 @@
 		list-style: none;
 	}
 
-	#slideshow li
+	.slideshow li
 	{
 		float: left;
 	}
 
-	#slideshow li + li
+	.slideshow li + li
 	{
 		margin-left: 10px;
 	}
 
-	.advanced #slideshow ul
+	.advanced .slideshow ul
 	{
 		display: inline-block;
 	}
@@ -147,37 +146,24 @@
 	Theme
 	----------------------------------- */
 
-	#slideshow .strip
+	.slideshow
 	{
-		padding-bottom: 75%;
+		height: 100%;
 	}
 
-	#slideshow .slide
+	.slideshow .strip
 	{
-		background: #CFCFCF;
+		height: 100%;
 	}
 
-	#slideshow .slide:nth-child(even)
+	.slideshow .slide
 	{
-		background: #DFDFDF;
+		overflow: hidden;
+		background-position: 50% 50%;
+		background-size: cover;
 	}
 
-	#slideshow .slide p
-	{
-		position: absolute;
-		top: 50%;
-		left: 0;
-
-		width: 100%;
-		height: 40px;
-		margin-top: -20px;
-
-		font-weight: bold;
-		font-size: 2em;
-		line-height: 40px;
-	}
-
-	#slideshow button
+	.slideshow button
 	{
 		margin: 0;
 
@@ -190,7 +176,7 @@
 		appearance: none;
 	}
 
-	.advanced #slideshow > button
+	.advanced .slideshow > button
 	{
 		position: absolute;
 		top: 50%;
@@ -200,18 +186,18 @@
 		width: 40px;
 		height: 36px;
 
-		margin-top: -40px;
+		margin-top: -36px;
 		padding-right: 10px;
 		padding-left: 7px;
 	}
 
-	#slideshow > button::-moz-focus-inner
+	.slideshow > button::-moz-focus-inner
 	{
 		margin: -1px;
 		padding: 0;
 	}
 
-	#slideshow > button b
+	.slideshow > button b
 	{
 		display: block;
 
@@ -225,24 +211,27 @@
 		text-indent: -10000px;
 	}
 
-	#slideshow button.next
+	.slideshow button.next
 	{
 		padding-right: 7px;
 		padding-left: 10px;
 	}
 
-	#slideshow button.next b
+	.slideshow button.next b
 	{
 		left: 10px;
 	}
 
-	#slideshow button.next b
+	.slideshow button.next b
 	{
 		background-position: 0 0;
 	}
 
-	#slideshow .markers
+	.slideshow .markers
 	{
+		position: relative;
+		top: -45px;
+
 		height: 15px;
 		padding: 15px 10px;
 
@@ -251,12 +240,12 @@
 	}
 
 	/* Hide buttons when disabled */
-	#slideshow.disabled > button
+	.slideshow.disabled > button
 	{
 		display: none;
 	}
 
-	#slideshow .markers button
+	.slideshow .markers button
 	{
 		display: inline-block;
 
@@ -268,26 +257,32 @@
 		width: 10px;
 		height: 10px;
 
-		background: #575757;
+		background: white;
 		border-radius: 5px;
 
 		text-indent: -10000px;
-		opacity: 0.3;
+		opacity: 0.4;
 	}
 
-	#slideshow .markers button + button
+	.slideshow .markers button + button
 	{
 		margin-left: 10px;
 	}
 
-	#slideshow .markers button.sticky
+	.slideshow .markers button.sticky
 	{
 		background-color: #3172dd;
-		opacity: 0.75;
+		opacity: 1;
 	}
 
 	/* Bigger markers for touch */
-	#slideshow.touch .markers button
+	.slideshow.touch .markers
+	{
+		top: -65px;
+		padding: 25px 10px;
+	}
+
+	.slideshow.touch .markers button
 	{
 		width: 16px;
 		height: 16px;
@@ -295,7 +290,14 @@
 		border-radius: 8px;
 	}
 
-	#slideshow.touch .markers button + button
+	.slideshow.touch .markers button + button
 	{
-		margin-left: 10px;
+		margin-left: 15px;
 	}
+
+	.slide-1	{ background-image: url(../img/example1.jpg); }
+	.slide-2	{ background-image: url(../img/example2.jpg); }
+	.slide-3	{ background-image: url(../img/example3.jpg); }
+	.slide-4	{ background-image: url(../img/example4.jpg); }
+	.slide-5	{ background-image: url(../img/example5.jpg); }
+	.slide-6	{ background-image: url(../img/example6.jpg); }
