@@ -61,6 +61,7 @@
 
 		gulp.src('./src/scss/*.scss')
 			.pipe(sass(options.sass))
+			.on('error', console.error.bind(console))
 			.pipe(prefix(options.prefix))
 			.pipe(minifyCSS(options.minifyCSS))
 			.pipe(rename({ suffix: '.min' }))
@@ -76,6 +77,7 @@
 
 		gulp.src('./src/js/slideshow.js')
 			.pipe(uglify())
+			.on('error', console.error.bind(console))
 			.pipe(rename({ suffix: '.min' }))
 			.pipe(gulp.dest('./dist/assets/js'));
 	});
