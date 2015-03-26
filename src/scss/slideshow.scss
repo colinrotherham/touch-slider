@@ -69,29 +69,4 @@
 		.markers {
 			text-align: right;
 		}
-
-		ul,
-		li {
-			display: block;
-			overflow: hidden;
-
-			margin: 0;
-			padding: 0;
-
-			list-style: none;
-		}
-
-		ul {
-			.advanced & {
-				display: inline-block;
-			}
-		}
-
-		li {
-			float: left;
-
-			+ li {
-				margin-left: 10px;
-			}
-		}
 	}
