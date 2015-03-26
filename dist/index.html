@@ -10,7 +10,8 @@
 		<meta name="MobileOptimized" content="320">
 
 		<!-- CSS includes -->
-		<link rel="stylesheet" href="assets/css/slideshow.css" />
+		<link rel="stylesheet" href="assets/css/slideshow.min.css" />
+		<link rel="stylesheet" href="assets/css/demo.min.css" />
 
 		<!-- Initialise advanced UI -->
 		<script>document.documentElement.className = 'advanced';</script>
@@ -33,8 +34,10 @@
 		</div>
 
 		<!-- Script includes -->
-		<script src="assets/js/jquery-1.11.0.min.js"></script>
+		<script src="assets/js/jquery.min.js"></script>
 		<script src="assets/js/slideshow.min.js"></script>
-		<script src="assets/js/launcher.js"></script>
+
+		<!-- Create and init the slideshow -->
+		<script> new CRD.Slideshow({ slideshow: '.slideshow', canLoop: true }).init();</script>
 	</body>
 </html>
