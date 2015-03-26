@@ -5,8 +5,8 @@
 
 	var CRD = CRD || {};
 
-	CRD.Slideshow = function(userConfig, callbackEnd, callbackStart)
-	{
+	CRD.Slideshow = function(userConfig, callbackEnd, callbackStart) {
+
 		'use strict';
 
 		var self = this,
@@ -18,8 +18,7 @@
 		Default configuration
 		----------------------------------- */
 
-		config =
-		{
+		config = {
 			next: 'button.next',
 			previous: 'button.previous',
 			markers: '.markers',
@@ -49,12 +48,10 @@
 			isCarousel: true,
 
 			// Run callbacks at defined breakpoints
-			breakpoints:
-			[
+			breakpoints: [
 				/*{
 					range: [0, 767],
-					callback: function()
-					{
+					callback: function() {
 						console.log('Mobile');
 					}
 				}*/
@@ -71,8 +68,7 @@
 		----------------------------------- */
 
 		// CSS transitions?
-		isCSS = (function()
-		{
+		isCSS = (function() {
 			var css = document.body.style, i = prefixes.length;
 
 			// Check vendor prefixes
@@ -81,8 +77,7 @@
 		})(),
 
 		// Has requestAnimationFrame support?
-		isRAF = (function()
-		{
+		isRAF = (function() {
 			return !!(window.requestAnimationFrame && window.cancelAnimationFrame);
 		})();
 
@@ -91,8 +86,7 @@
 		Update config values
 		----------------------------------- */
 
-		function updateConfig(newConfig)
-		{
+		function updateConfig(newConfig) {
 			$.each(newConfig, function(name, value) { config[name] = value; });
 
 			// Use config-provided touch settings or detect?
@@ -107,25 +101,24 @@
 
 		function updateBreakpoint(event) {
 
-			function update()
-			{
+			function update() {
+
 				var minWidth, maxWidth,
 					breakpointMatched;
 
 				self.viewportWidth = Math.floor(document.documentElement.clientWidth);
 
 				// Check breakpoints
-				if (config.breakpoints)
-				{
-					$.each(config.breakpoints, function(index, breakpointConfig)
-					{
-						if (breakpointConfig.range)
-						{
+				if (config.breakpoints) {
+
+					$.each(config.breakpoints, function(index, breakpointConfig) {
+
+						if (breakpointConfig.range) {
+
 							minWidth = breakpointConfig.range[0];
 							maxWidth = breakpointConfig.range[1];
 
-							if (self.viewportWidth >= minWidth && (!maxWidth || self.viewportWidth <= maxWidth))
-							{
+							if (self.viewportWidth >= minWidth && (!maxWidth || self.viewportWidth <= maxWidth)) {
 								breakpointMatched = index;
 								return;
 							}
@@ -133,15 +126,14 @@
 					});
 
 					// Found a breakpoint?
-					if (typeof breakpointMatched !== 'undefined')
-					{
+					if (typeof breakpointMatched !== 'undefined') {
+
 						// Set initial breakpoint
 						if (!event)
 							self.breakpoint = breakpointMatched;
 
 						// Run callback on resize event
-						if (event && config.breakpoints[breakpointMatched].callback && self.breakpoint !== breakpointMatched)
-						{
+						if (event && config.breakpoints[breakpointMatched].callback && self.breakpoint !== breakpointMatched) {
 							self.breakpoint = breakpointMatched;
 
 							// Only continue if slideshow exists
@@ -156,10 +148,9 @@
 			timeoutBreakpoint = offload(update, (event)? 300 : 0);
 		}
 
-		function updateWidth(event)
-		{
-			function update()
-			{
+		function updateWidth(event) {
+
+			function update() {
 				self.width = element.outerWidth();
 			}
 
@@ -172,13 +163,13 @@
 		Start the slideshow
 		----------------------------------- */
 
-		function init()
-		{
+		function init() {
+
 			// Is this the first run?
 			var isFirstRun = element?
 				false : true;
 
-			// Already build? Tear down and start again
+			// Already built? Tear down and start again
 			if (!isFirstRun) {
 
 				isBusy = false;
@@ -221,8 +212,7 @@
 			initPositions();
 
 			// Don't bind events twice
-			if (isFirstRun)
-			{
+			if (isFirstRun) {
 				initEvents();
 
 				// Kick off touch support
@@ -241,20 +231,18 @@
 			element.removeClass(config.classDisabled);
 		}
 
-		function start()
-		{
+		function start() {
+
 			if (!config.isManual)
 				timeoutSlide = offload(function() { change(); }, config.interval);
 		}
 
-		function stop()
-		{
+		function stop() {
 			clearTimeout(timeoutStart);
 			clearTimeout(timeoutSlide);
 		}
 
-		function offload(fn, time)
-		{
+		function offload(fn, time) {
 			return setTimeout(fn, time || 0);
 		}
 
@@ -266,14 +254,14 @@
 		function next(event) { change.call(this, event, { isPrev: false }); }
 		function prev(event) { change.call(this, event, { isPrev: true }); }
 
-		function change(event, options)
-		{
+		function change(event, options) {
+
 			var index = self.index,
 				time = (config.isCarousel)? config.time : 0;
 
 			// Ignore when busy
-			if (!isBusy)
-			{
+			if (!isBusy) {
+
 				// Remember direction for later
 				isPrev = options && options.isPrev;
 
@@ -281,15 +269,15 @@
 				setNextSlide.call(this, options && options.slide);
 
 				// Proceed if not current slide
-				if (!self.slide.is(self.slideNext))
-				{
+				if (!self.slide.is(self.slideNext)) {
+
 					// Run optional transition callback?
 					var proceed = (callbackStart)?
 						callbackStart.call(self, event) : true;
 
 					// Don't run if callback has returned false
-					if (proceed || typeof proceed === 'undefined')
-					{
+					if (proceed || typeof proceed === 'undefined') {
+
 						isBusy = true;
 						stop();
 
@@ -309,11 +297,11 @@
 			else event.preventDefault();
 		}
 
-		function transition(index, time, complete, touchX)
-		{
+		function transition(index, time, complete, touchX) {
+
 			// Transition when frame is available
-			function onFrame()
-			{
+			function onFrame() {
+
 				// Frame arrived
 				isFrameRequested = false;
 
@@ -323,8 +311,8 @@
 				time = time || 0;
 
 				// Move using CSS transition
-				if (isCSS && config.isCarousel)
-				{
+				if (isCSS && config.isCarousel) {
+
 					touchX = touchX || 0;
 
 					// Callback when complete
@@ -345,8 +333,8 @@
 			}
 
 			// Request next frame when using touch
-			if (isRAF && typeof touchX !== 'undefined')
-			{
+			if (isRAF && typeof touchX !== 'undefined') {
+
 				isFrameRequested = true;
 				requestFrame = requestAnimationFrame(onFrame);
 			}
@@ -355,8 +343,8 @@
 			else onFrame();
 		}
 
-		function transitionEnd(event)
-		{
+		function transitionEnd(event) {
+
 			// This is now the current slide
 			self.slide = self.slideNext;
 			isBusy = false;
@@ -373,8 +361,8 @@
 
 			updateNextPrev();
 
-			if (event)
-			{
+			if (event) {
+
 				// Click or hash change, focus active slide
 				if (event.type === 'click' || event.type === 'hashchange')
 					offload(function() { self.slide.focus(); });
@@ -384,30 +372,27 @@
 			}
 		}
 
-		function setNextSlide(override)
-		{
+		function setNextSlide(override) {
+
 			var target = $(this),
 				index = self.index,
 				indexLast = count - 1,
 				step = target.is(buttons)? config.step : 1;
 
 			// Prepare specific slide by index
-			if (typeof override !== 'undefined')
-			{
+			if (typeof override !== 'undefined') {
 				isPrev = (override < index)? true : false;
 				index = override;
 			}
 
 			// Prepare next
-			else if (!isPrev)
-			{
+			else if (!isPrev) {
 				index = index + step;
 				index = (index >= indexLast)? (config.canLoop? getIndexWrapped(index) : indexLast) : index;
 			}
 
 			// Prepare prev
-			else
-			{
+			else {
 				index = index - step;
 				index = (index <= 0)? (config.canLoop? getIndexWrapped(index) : 0) : index;
 			}
@@ -416,8 +401,7 @@
 			self.index = index;
 		}
 
-		function isEnd()
-		{
+		function isEnd() {
 			return !config.canLoop && ((isPrev && self.index === 0) || (!isPrev && self.index === count - 1));
 		}
 
@@ -426,41 +410,38 @@
 		Update markers + buttons
 		----------------------------------- */
 
-		function updateMarkers(event)
-		{
-			if (markers)
-			{
+		function updateMarkers(event) {
+
+			if (markers) {
+
 				// Clicked so update
-				if (event)
-				{
+				if (event) {
+
 					// Change to the correct slide
 					change.call(this, event, { slide: markerButtons.index(this) });
 				}
 
-				else
-				{
+				else {
+
 					// Highlight the right marker
 					markerButtons.removeAttr('class').eq(self.index).addClass(config.classActive);
 				}
 			}
 
-			if (numbers)
-			{
+			if (numbers) {
 				numbers.html('<strong>' + (self.index + 1) + '</strong>/<strong>' + count + '</strong>');
 			}
 		}
 
-		function updateNextPrev()
-		{
+		function updateNextPrev() {
 			var button, buttonClass = config.classDisabled;
 
 			// Skip when looping is on
-			if (!config.canLoop)
-			{
+			if (!config.canLoop) {
+
 				buttons.removeClass(buttonClass);
 
-				switch (self.index)
-				{
+				switch (self.index) {
 					case 0:
 					button = buttonPrev; break;
 
@@ -479,14 +460,14 @@
 		Utility methods
 		----------------------------------- */
 
-		function getTransitionX(index, isRelative)
-		{
+		function getTransitionX(index, isRelative) {
+
 			// Present percentage relative to entire strip width?
 			return (isRelative)? index * (100 / count) : index * -100;
 		}
 
-		function getIndexWrapped(index)
-		{
+		function getIndexWrapped(index) {
+
 			// Wrap index if it goes out of bounds
 			if (index >= count) index = index - count;
 			if (index < 0) index = count + index;
@@ -494,13 +475,11 @@
 			return index;
 		}
 
-		function getIndexOffset(index)
-		{
+		function getIndexOffset(index) {
 			return getIndexWrapped(self.index + (config.canLoop? indexStart - index : 0));
 		}
 
-		function getPositionOffset(index)
-		{
+		function getPositionOffset(index) {
 			return getIndexWrapped(config.canLoop? index - indexStart + self.index : index);
 		}
 
@@ -509,20 +488,20 @@
 		Initial setup
 		----------------------------------- */
 
-		function initSlides(event)
-		{
+		function initSlides(event) {
+
 			var slide, index;
 
 			// Default to 1st slide with active class
-			if (!self.slide)
-			{
+			if (!self.slide) {
+
 				self.slide = slides.filter('.' + config.classActive).first();
 				self.index = slides.index(self.slide);
 			}
 
 			// Grab slide matching hash
-			if (location.hash)
-			{
+			if (location.hash) {
+
 				slide = slides.filter(location.hash);
 				index = slides.index(slide);
 
@@ -531,28 +510,27 @@
 			}
 
 			// No? Grab 1st slide instead
-			if (!self.slide.length)
-			{
+			if (!self.slide.length) {
+
 				self.index = 0;
 				self.slide = slides.eq(self.index);
 			}
 
 			// Reset browser trying to jump to slide before transition
-			offload(function()
-			{
+			offload(function() {
+
 				element.scrollTop(0);
 				element.scrollLeft(0);
 			});
 		}
 
-		function initPositions()
-		{
+		function initPositions() {
+
 			var i = count, slide,
 				xOld, xNew;
 
 			// Loops slides, fix positions
-			while (i--)
-			{
+			while (i--) {
 				slide = slides.eq(getPositionOffset(i));
 
 				xOld = slide.data('x');
@@ -566,18 +544,17 @@
 			transition((config.canLoop)? indexStart : self.index);
 		}
 
-		function initMarkers()
-		{
+		function initMarkers() {
+
 			// Skip when no marker config
-			if (config.markers)
-			{
+			if (config.markers) {
+
 				// Add the markers
 				markers = $(config.markers);
 
 				// Create marker links
 				var i = count;
-				while (i--)
-				{
+				while (i--) {
 					markers.prepend($('<button>' + (i + 1) + '</button>'));
 				}
 
@@ -586,15 +563,15 @@
 			}
 
 			// Skip when no number config
-			if (config.numbers)
-			{
+			if (config.numbers) {
+
 				// Add the numbers
 				numbers = $(config.numbers).text('1/9');
 			}
 		}
 
-		function initEvents()
-		{
+		function initEvents() {
+
 			// Listen for mouse movement
 			element.mouseenter(stop).mouseleave(start);
 
@@ -625,8 +602,8 @@
 		Initial setup, touch support
 		----------------------------------- */
 
-		function initTouch()
-		{
+		function initTouch() {
+
 			var touch, delta,
 
 				// Listen for these events
@@ -634,8 +611,8 @@
 				eventsTouchMove = 'touchmove pointermove MSPointerMove',
 				eventsTouchEnd = 'touchend touchleave touchcancel MSPointerUp MSPointerOut MSPointerCancel pointerup pointerleave pointercancel';
 
-			function begin(event)
-			{
+			function begin(event) {
+
 				var ignoreTouch = buttons || markers && markers.add(buttons), originalEvent = event.originalEvent,
 					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
@@ -656,47 +633,47 @@
 				element.on(eventsTouchEnd, end);
 			}
 
-			function move(event)
-			{
+			function move(event) {
+
 				var originalEvent = event.originalEvent,
 					touches = originalEvent.touches && originalEvent.touches[0] || originalEvent;
 
-					// Waiting for frame, or multiple touch points or pinch-zoom
-					if (isFrameRequested || touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1)
-						return;
+				// Waiting for frame, or multiple touch points or pinch-zoom
+				if (isFrameRequested || touches.length > 1 || originalEvent.scale && originalEvent.scale !== 1)
+					return;
 
-					// Movement since touch
-					delta = { x: (touches.pageX || touches.screenX) - touch.x, y: (touches.pageY || touches.screenY) - touch.y };
+				// Movement since touch
+				delta = { x: (touches.pageX || touches.screenX) - touch.x, y: (touches.pageY || touches.screenY) - touch.y };
 
-					// Are we scrolling? i.e. Moving up/down more than left/right
-					if (typeof isScrolling === 'undefined')
-						isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
+				// Are we scrolling? i.e. Moving up/down more than left/right
+				if (typeof isScrolling === 'undefined')
+					isScrolling = !!(isScrolling || Math.abs(delta.x) < Math.abs(delta.y));
 
-					// If tracking touch, block scrolling
-					if (!isScrolling)
-					{
-						event.preventDefault();
-						stop();
+				// If tracking touch, block scrolling
+				if (!isScrolling) {
 
-						// Swiping forward or backwards?
-						isPrev = delta.x > 0;
+					event.preventDefault();
+					stop();
 
-						// Mark as busy
-						isBusy = true;
+					// Swiping forward or backwards?
+					isPrev = delta.x > 0;
 
-						// Add resistance to first and last slide
-						if (!config.canLoop && isEnd())
-							delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
+					// Mark as busy
+					isBusy = true;
 
-						// Override strip X relative to touch moved
-						transition(null, null, null, (delta.x / self.width) * (100 / count));
-					}
+					// Add resistance to first and last slide
+					if (!config.canLoop && isEnd())
+						delta.x = delta.x / (Math.abs(delta.x) / self.width + 1);
+
+					// Override strip X relative to touch moved
+					transition(null, null, null, (delta.x / self.width) * (100 / count));
+				}
 			}
 
-			function end()
-			{
-				if (!isScrolling)
-				{
+			function end() {
+
+				if (!isScrolling) {
+
 					var duration = +new Date() - touch.time, distance = Math.abs(delta.x),
 						isEnough = duration < 250 && distance > 20 || distance > self.width / 3;
 
@@ -712,8 +689,8 @@
 						change.call(this, event, { isPrev: isPrev });
 
 					// Stay on slide
-					else if (distance > 0)
-					{
+					else if (distance > 0) {
+
 						// Offset requested position?
 						transition(null, config.time);
 					}
@@ -723,8 +700,8 @@
 				element.off(eventsTouchEnd, end);
 			}
 
-			function click(event)
-			{
+			function click(event) {
+
 				// Prevent click being registered after valid swipe
 				if (!isScrolling && isBusy) event.preventDefault();
 			}
