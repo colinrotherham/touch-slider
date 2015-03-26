@@ -7,6 +7,7 @@
 		uglify = require('gulp-uglify'),
 		prefix = require('gulp-autoprefixer'),
 		minifyCSS = require('gulp-minify-css'),
+		beautifyCSS = require('gulp-cssbeautify'),
 		rename = require('gulp-rename'),
 		del = require('del');
 
@@ -30,6 +31,11 @@
 		minifyCSS: {
 			keepSpecialComments: false
 		},
+
+		beautifyCSS: {
+			indent: '	',
+			autosemicolon: true
+		}
 	};
 
 
@@ -64,7 +70,7 @@
 			.on('error', console.error.bind(console))
 			.pipe(prefix(options.prefix))
 			.pipe(minifyCSS(options.minifyCSS))
-			.pipe(rename({ suffix: '.min' }))
+			.pipe(beautifyCSS(options.beautifyCSS))
 			.pipe(gulp.dest('./dist/assets/css'));
 	});
 
