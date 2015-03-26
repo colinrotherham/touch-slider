@@ -17,20 +17,24 @@
 		<script>document.documentElement.className = 'advanced';</script>
 	</head>
 	<body>
-			<button class="previous"><b>« Previous</b></button>
-			<button class="next"><b>Next »</b></button>
-		<div class="slideshow disabled">
+		<div class="slideshow slideshow--disabled">
+			<button class="slideshow__button slideshow__button--previous">
+				<b class="slideshow__button__icon">« Previous</b>
+			</button>
+			<button class="slideshow__button slideshow__button--next">
+				<b class="slideshow__button__icon">Next »</b>
+			</button>
 
-			<div class="strip">
-				<div class="slide slide-1 sticky"></div>
-				<div class="slide slide-2"></div>
-				<div class="slide slide-3"></div>
-				<div class="slide slide-4"></div>
-				<div class="slide slide-5"></div>
-				<div class="slide slide-6"></div>
+			<div class="slideshow__strip">
+				<div class="slideshow__slide slideshow__slide--1 sticky"></div>
+				<div class="slideshow__slide slideshow__slide--2"></div>
+				<div class="slideshow__slide slideshow__slide--3"></div>
+				<div class="slideshow__slide slideshow__slide--4"></div>
+				<div class="slideshow__slide slideshow__slide--5"></div>
+				<div class="slideshow__slide slideshow__slide--6"></div>
 			</div>
 
-			<div class="markers"></div>
+			<div class="slideshow__markers"></div>
 		</div>
 
 		<!-- Script includes -->

@@ -17,8 +17,15 @@
 		-ms-user-select: none;
 		user-select: none;
 
-		.strip,
-		.slide {
+		&__strip,
+		&__slide,
+		&__button {
+			-webkit-perspective: 1000;
+			-webkit-backface-visibility: hidden;
+		}
+
+		&__strip,
+		&__slide {
 			left: 0;
 			top: 0;
 
@@ -26,14 +33,7 @@
 			height: 100%;
 		}
 
-		.strip,
-		.slide,
-		> button {
-			-webkit-perspective: 1000;
-			-webkit-backface-visibility: hidden;
-		}
-
-		.strip {
+		&__strip {
 			position: relative;
 
 			/* Specify IE touch actions */
@@ -41,32 +41,31 @@
 			touch-action: pan-y;
 		}
 
-		.slide {
+		&__slide {
 			position: absolute;
 			display: none;
 			text-align: center;
 			outline: none;
 
-			&.sticky {
+			&--sticky {
 				display: block;
 			}
 		}
 
-		> button {
+		&__button {
 			position: absolute;
 			z-index: 1;
 			top: 0;
 			left: 0;
-
 			padding: 0;
 
-			&.next {
+			&--next {
 				left: auto;
 				right: 0;
 			}
 		}
 
-		.markers {
+		&__markers {
 			text-align: right;
 		}
 	}

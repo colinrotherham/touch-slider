@@ -19,17 +19,19 @@
 		----------------------------------- */
 
 		config = {
-			next: 'button.next',
-			previous: 'button.previous',
-			markers: '.markers',
-			numbers: '.numbers',
+			next: '.slideshow__button--next',
+			previous: '.slideshow__button--previous',
+			markers: '.slideshow__markers',
+			numbers: '.slideshow__numbers',
 
 			// Classes
-			classStrip: 'strip',
-			classSlide: 'slide',
-			classActive: 'sticky',
-			classDisabled: 'disabled',
-			classTouch: 'touch',
+			classStrip: 'slideshow__strip',
+			classSlide: 'slideshow__slide',
+			classSlideActive: 'slideshow__slide--sticky',
+			classMarker: 'slideshow__marker',
+			classMarkerActive: 'slideshow__marker--sticky',
+			classDisabled: 'slideshow--disabled',
+			classTouch: 'slideshow--enable-touch',
 
 			// How many to step next/prev by
 			step: 1,
@@ -350,8 +352,8 @@
 			isBusy = false;
 
 			// Update sticky class
-			slides.removeClass(config.classActive);
-			self.slide.addClass(config.classActive);
+			slides.removeClass(config.classSlideActive);
+			self.slide.addClass(config.classSlideActive);
 
 			// Zero transition time
 			style[prefix + 'Transition'] = '';
@@ -424,7 +426,7 @@
 				else {
 
 					// Highlight the right marker
-					markerButtons.removeAttr('class').eq(self.index).addClass(config.classActive);
+					markerButtons.removeClass(config.classMarkerActive).eq(self.index).addClass(config.classMarkerActive);
 				}
 			}
 
@@ -495,7 +497,7 @@
 			// Default to 1st slide with active class
 			if (!self.slide) {
 
-				self.slide = slides.filter('.' + config.classActive).first();
+				self.slide = slides.filter('.' + config.classSlideActive).first();
 				self.index = slides.index(self.slide);
 			}
 
@@ -555,7 +557,7 @@
 				// Create marker links
 				var i = count;
 				while (i--) {
-					markers.prepend($('<button>' + (i + 1) + '</button>'));
+					markers.prepend($('<button>' + (i + 1) + '</button>').addClass(config.classMarker));
 				}
 
 				// Find the new links, wire up, add
@@ -578,6 +580,8 @@
 			// Wire up next/previous
 			buttonNext = $(config.next).on('click touchend', next);
 			buttonPrev = $(config.previous).on('click touchend', prev);
+
+			console.log(buttonNext, buttonPrev);
 
 			// Both buttons
 			buttons = buttonPrev.add(buttonNext);

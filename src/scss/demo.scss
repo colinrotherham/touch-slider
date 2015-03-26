@@ -34,17 +34,25 @@
 	.slideshow {
 		height: 100%;
 
-		.strip {
+		&__strip {
 			height: 100%;
 		}
 
-		.slide {
+		&__slide {
 			overflow: hidden;
 			background-position: 50% 50%;
 			background-size: cover;
+
+			&--1	{ background-image: url(../img/example1.jpg); }
+			&--2	{ background-image: url(../img/example2.jpg); }
+			&--3	{ background-image: url(../img/example3.jpg); }
+			&--4	{ background-image: url(../img/example4.jpg); }
+			&--5	{ background-image: url(../img/example5.jpg); }
+			&--6	{ background-image: url(../img/example6.jpg); }
 		}
 
-		button {
+		&__button,
+		&__marker {
 			margin: 0;
 
 			background: none;
@@ -54,11 +62,16 @@
 			-webkit-appearance: none;
 			-moz-appearance: none;
 			appearance: none;
+
+			/* Hide buttons when disabled */
+			.slideshow--disabled & {
+				display: none;
+			}
 		}
 
-		> button {
+		&__button {
 
-			b {
+			&__icon {
 				display: block;
 
 				width: 23px;
@@ -69,16 +82,17 @@
 				background-size: 23px 72px;
 
 				text-indent: -10000px;
-			}
 
-			&.next {
-				padding-right: 7px;
-				padding-left: 10px;
-
-				b {
+				// Swap arrow icon for next button
+				.slideshow__button--next & {
 					left: 10px;
 					background-position: 0 0;
 				}
+			}
+
+			&--next {
+				padding-right: 7px;
+				padding-left: 10px;
 			}
 
 			&::-moz-focus-inner {
@@ -101,12 +115,7 @@
 			}
 		}
 
-		/* Hide buttons when disabled */
-		&.disabled > button {
-			display: none;
-		}
-
-		.markers {
+		&__markers {
 			position: relative;
 			top: -45px;
 
@@ -116,58 +125,49 @@
 			text-align: center;
 			font-size: 0.8em;
 
-			button {
-				display: inline-block;
-
-				*display: block;
-				*float: left;
-
-				padding: 0;
-
-				width: 10px;
-				height: 10px;
-
-				background: white;
-				border-radius: 5px;
-
-				text-indent: -10000px;
-				opacity: 0.4;
-
-				+ button {
-					margin-left: 10px;
-				}
-
-				&.sticky {
-					background-color: #3172dd;
-					opacity: 1;
-				}
+			/* Bigger markers for touch */
+			.slideshow--enable-touch & {
+				top: -65px;
+				padding: 25px 10px;
 			}
 		}
 
-		/* Bigger markers for touch */
-		&.touch {
+		&__marker {
+			display: inline-block;
 
-			.markers {
-				top: -65px;
-				padding: 25px 10px;
+			*display: block;
+			*float: left;
 
-				button {
-					width: 16px;
-					height: 16px;
+			padding: 0;
 
-					border-radius: 8px;
+			width: 10px;
+			height: 10px;
 
-					+ button {
-						margin-left: 15px;
-					}
+			background: white;
+			border-radius: 5px;
+
+			text-indent: -10000px;
+			opacity: 0.4;
+
+			&--sticky {
+				background-color: #3172dd;
+				opacity: 1;
+			}
+
+			& + & {
+				margin-left: 10px;
+			}
+
+			/* Bigger markers for touch */
+			.slideshow--enable-touch & {
+				width: 16px;
+				height: 16px;
+
+				border-radius: 8px;
+
+				& + & {
+					margin-left: 15px;
 				}
 			}
 		}
 	}
-
-	.slide-1	{ background-image: url(../img/example1.jpg); }
-	.slide-2	{ background-image: url(../img/example2.jpg); }
-	.slide-3	{ background-image: url(../img/example3.jpg); }
-	.slide-4	{ background-image: url(../img/example4.jpg); }
-	.slide-5	{ background-image: url(../img/example5.jpg); }
-	.slide-6	{ background-image: url(../img/example6.jpg); }
