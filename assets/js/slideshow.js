@@ -114,10 +114,6 @@
 
 				self.viewportWidth = Math.floor(document.documentElement.clientWidth);
 
-				// Only continue if slideshow exists
-				if (!element || !element.length)
-					return;
-
 				// Check breakpoints
 				if (config.breakpoints)
 				{
@@ -147,7 +143,10 @@
 						if (event && config.breakpoints[breakpointMatched].callback && self.breakpoint !== breakpointMatched)
 						{
 							self.breakpoint = breakpointMatched;
-							config.breakpoints[breakpointMatched].callback();
+
+							// Only continue if slideshow exists
+							if (element && element.length)
+								config.breakpoints[breakpointMatched].callback();
 						}
 					}
 				}
