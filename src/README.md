@@ -37,36 +37,36 @@ Configuring the script
 Starting the slideshow (as shown in launcher.js):
 
 ``` js
-new CRD.Slideshow({ slideshow: '#slideshow' }).init();
+new CRD.Slideshow({ slideshow: '.slideshow' }).init();
 ```
 
 Adjusting how many slides to step by when moving next/prev
 ``` js
-new CRD.Slideshow({ slideshow: '#slideshow', step: 2 }).init();
+new CRD.Slideshow({ slideshow: '.slideshow', step: 2 }).init();
 ```
 
 Alternatively, set a callback to run after each transition:
 
 ``` js
-new CRD.Slideshow({ slideshow: '#slideshow' }, function(event) { /* Do something */ }).init();
+new CRD.Slideshow({ slideshow: '.slideshow' }, function(event) { /* Do something */ }).init();
 ```
 
 Alternatively, set a callback to run before and after each transition:
 
 ``` js
-new CRD.Slideshow({ slideshow: '#slideshow' }, function(event) { /* After transition */ }, function(event) { /* Before transition */ }).init();
+new CRD.Slideshow({ slideshow: '.slideshow' }, function(event) { /* After transition */ }, function(event) { /* Before transition */ }).init();
 ```
 
 Alternatively, override the default configuration:
 
 ``` js
-new CRD.Slideshow({ slideshow: '#slideshow', delay: 3000, interval: 5000, time: 600, canLoop: true, isManual: false }).init();
+new CRD.Slideshow({ slideshow: '.slideshow', delay: 3000, interval: 5000, time: 600, canLoop: true, isManual: false }).init();
 ```
 
 …or override timings of an already-running slideshow:
 
 ``` js
-var slideshow = new CRD.Slideshow({ slideshow: '#slideshow' });
+var slideshow = new CRD.Slideshow({ slideshow: '.slideshow' });
 
 slideshow.init();
 slideshow.updateConfig({ delay: 3000, interval: 5000, time: 600 });
