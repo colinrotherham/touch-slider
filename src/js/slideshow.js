@@ -581,8 +581,6 @@
 			buttonNext = $(config.next).on('click touchend', next);
 			buttonPrev = $(config.previous).on('click touchend', prev);
 
-			console.log(buttonNext, buttonPrev);
-
 			// Both buttons
 			buttons = buttonPrev.add(buttonNext);
 
