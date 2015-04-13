@@ -1,0 +1,173 @@
+/*
+	Sample reset
+	----------------------------------- */
+
+	html, body {
+		margin: 0;
+		padding: 0;
+		height: 100%;
+	}
+
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+	}
+
+	p {
+		vertical-align: baseline;
+	}
+
+	a {
+		color: #373737;
+		font-weight: bold;
+
+		&:hover,
+		&:focus {
+			color: #737373;
+		}
+	}
+
+
+/*
+	Theme
+	----------------------------------- */
+
+	.slideshow {
+		height: 100%;
+
+		&__strip {
+			height: 100%;
+		}
+
+		&__slide {
+			overflow: hidden;
+			background-position: 50% 50%;
+			background-size: cover;
+
+			&--1	{ background-image: url(../img/example1.jpg); }
+			&--2	{ background-image: url(../img/example2.jpg); }
+			&--3	{ background-image: url(../img/example3.jpg); }
+			&--4	{ background-image: url(../img/example4.jpg); }
+			&--5	{ background-image: url(../img/example5.jpg); }
+			&--6	{ background-image: url(../img/example6.jpg); }
+		}
+
+		&__button,
+		&__marker {
+			margin: 0;
+
+			background: none;
+			border: 0;
+			cursor: pointer;
+
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+
+			/* Hide buttons when disabled */
+			.slideshow--disabled & {
+				display: none;
+			}
+		}
+
+		&__button {
+
+			&__icon {
+				display: block;
+
+				width: 23px;
+				height: 36px;
+
+				background: transparent url(../img/arrow.png) no-repeat 0 -36px;
+				background: rgba(0, 0, 0, 0) url(../img/arrow.svg) no-repeat 0 -36px;
+				background-size: 23px 72px;
+
+				text-indent: -10000px;
+
+				// Swap arrow icon for next button
+				.slideshow__button--next & {
+					left: 10px;
+					background-position: 0 0;
+				}
+			}
+
+			&--next {
+				padding-right: 7px;
+				padding-left: 10px;
+			}
+
+			&::-moz-focus-inner {
+				margin: -1px;
+				padding: 0;
+			}
+
+			.advanced & {
+				position: absolute;
+				top: 50%;
+
+				display: block;
+
+				width: 40px;
+				height: 36px;
+
+				margin-top: -36px;
+				padding-right: 10px;
+				padding-left: 7px;
+			}
+		}
+
+		&__markers {
+			position: relative;
+			top: -45px;
+
+			height: 15px;
+			padding: 15px 10px;
+
+			text-align: center;
+			font-size: 0.8em;
+
+			/* Bigger markers for touch */
+			.slideshow--enable-touch & {
+				top: -65px;
+				padding: 25px 10px;
+			}
+		}
+
+		&__marker {
+			display: inline-block;
+
+			*display: block;
+			*float: left;
+
+			padding: 0;
+
+			width: 10px;
+			height: 10px;
+
+			background: white;
+			border-radius: 5px;
+
+			text-indent: -10000px;
+			opacity: 0.4;
+
+			&--sticky {
+				background-color: #3172dd;
+				opacity: 1;
+			}
+
+			& + & {
+				margin-left: 10px;
+			}
+
+			/* Bigger markers for touch */
+			.slideshow--enable-touch & {
+				width: 16px;
+				height: 16px;
+
+				border-radius: 8px;
+
+				& + & {
+					margin-left: 15px;
+				}
+			}
+		}
+	}
