@@ -2,14 +2,16 @@
 	Dependencies
 	----------------------------------- */
 
-	var gulp = require('gulp'),
-		sass = require('gulp-sass'),
-		uglify = require('gulp-uglify'),
-		prefix = require('gulp-autoprefixer'),
-		minifyCSS = require('gulp-minify-css'),
-		beautifyCSS = require('gulp-cssbeautify'),
+	var autoprefixer = require('autoprefixer'),
+		csswring = require('csswring'),
+		del = require('del'),
+		gulp = require('gulp'),
+		perfectionist = require('perfectionist'),
+		postcss = require('gulp-postcss'),
 		rename = require('gulp-rename'),
-		del = require('del');
+		sass = require('gulp-sass'),
+		uglify = require('gulp-uglify');
+
 
 /*
 	Shared options
@@ -22,19 +24,13 @@
 			errLogToConsole: true
 		},
 
-		prefix: {
+		autoprefixer: {
 			browsers: ['> 5%', 'IE >= 7', 'iOS >= 5.1'],
-			cascade: false,
 			remove: true
 		},
 
-		minifyCSS: {
-			keepSpecialComments: false
-		},
-
-		beautifyCSS: {
-			indent: '	',
-			autosemicolon: true
+		perfectionist: {
+			cascade: false
 		}
 	};
 
@@ -66,12 +62,19 @@
 	gulp.task('sass', ['clean'], function() {
 
 		gulp.src('./src/scss/*.scss')
-			.pipe(sass(options.sass))
-			.on('error', console.error.bind(console))
-			.pipe(prefix(options.prefix))
-			.pipe(minifyCSS(options.minifyCSS))
-			.pipe(beautifyCSS(options.beautifyCSS))
-			.pipe(gulp.dest('./dist/assets/css'));
+
+			// Convert to CSS
+			.pipe(sass(options.sass).on('error', sass.logError))
+
+			// Process PostCSS
+			.pipe(postcss([
+				autoprefixer(options.autoprefixer),
+				csswring(options.csswring),
+				perfectionist(options.perfectionist)
+			]))
+
+			// Rename, write to files
+			.pipe(gulp.dest('./dist/assets/css'))
 	});
 
 
@@ -81,7 +84,7 @@
 
 	gulp.task('uglify', ['clean'], function() {
 
-		gulp.src('./src/js/slideshow.js')
+		gulp.src('./src/js/simple-slideshow.js')
 			.pipe(uglify())
 			.on('error', console.error.bind(console))
 			.pipe(rename({ suffix: '.min' }))

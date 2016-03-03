@@ -1,22 +1,43 @@
 {
-  "name": "CRD.SimpleSlideshow",
-  "version": "1.1.0",
+  "name": "simple-slideshow",
+  "version": "2.0.0",
   "description": "A very simple jQuery slideshow with callback support",
+  "main": "dist/assets/js/simple-slideshow.min.js",
+  "author": {
+    "name": "Colin Rotherham",
+    "email": "work@colinr.com"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/colinrotherham/CRD.SimpleSlideshow"
+    "url": "https://github.com/colinrotherham/simple-slideshow"
   },
-  "author": "Colin Rotherham",
-  "homepage": "https://github.com/colinrotherham/CRD.SimpleSlideshow",
+  "keywords": [
+    "slideshow",
+    "carousel",
+    "jquery",
+    "mobile",
+    "touch",
+    "swipe",
+    "transition",
+    "transform"
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "homepage": "https://github.com/colinrotherham/simple-slideshow",
   "devDependencies": {
-    "del": "^1.1.1",
-    "gulp": "~3.8.11",
-    "gulp-autoprefixer": "~2.1.0",
-    "gulp-cssbeautify": "^0.1.3",
-    "gulp-minify-css": "~1.0.0",
-    "gulp-rename": "~1.2.0",
-    "gulp-sass": "~1.3.3",
-    "gulp-uglify": "~1.1.0",
-    "jquery": "1.1.2"
+    "autoprefixer": "^6.3.3",
+    "csswring": "^4.2.1",
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-postcss": "^6.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "gulp-uglify": "^1.5.3",
+    "jquery": "^1.12",
+    "perfectionist": "^2.1.3"
   }
 }

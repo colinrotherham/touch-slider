@@ -1,148 +1,154 @@
-.slideshow,.slideshow__strip,body,html {
-	height: 100%;
-}
-
-body,html {
-	margin: 0;
-	padding: 0;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 
 body {
-	font-family: Helvetica,Arial,sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
 }
 
 p {
-	vertical-align: baseline;
+    vertical-align: baseline;
 }
 
 a {
-	color: #373737;
-	font-weight: 700;
+    color: #373737;
+    font-weight: 700;
 }
 
-a:focus,a:hover {
-	color: #737373;
+a:hover, a:focus {
+    color: #737373;
+}
+
+.slideshow {
+    height: 100%;
+}
+
+.slideshow__strip {
+    height: 100%;
 }
 
 .slideshow__slide {
-	overflow: hidden;
-	background-position: 50% 50%;
-	background-size: cover;
+    overflow: hidden;
+    background-position: 50% 50%;
+    background-size: cover;
 }
 
 .slideshow__slide--1 {
-	background-image: url(../img/example1.jpg);
+    background-image: url(../img/example1.jpg);
 }
 
 .slideshow__slide--2 {
-	background-image: url(../img/example2.jpg);
+    background-image: url(../img/example2.jpg);
 }
 
 .slideshow__slide--3 {
-	background-image: url(../img/example3.jpg);
+    background-image: url(../img/example3.jpg);
 }
 
 .slideshow__slide--4 {
-	background-image: url(../img/example4.jpg);
+    background-image: url(../img/example4.jpg);
 }
 
 .slideshow__slide--5 {
-	background-image: url(../img/example5.jpg);
+    background-image: url(../img/example5.jpg);
 }
 
 .slideshow__slide--6 {
-	background-image: url(../img/example6.jpg);
+    background-image: url(../img/example6.jpg);
 }
 
-.slideshow__button,.slideshow__marker {
-	margin: 0;
-	background: 0 0;
-	border: 0;
-	cursor: pointer;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
+.slideshow__button, .slideshow__marker {
+    margin: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
-.slideshow--disabled .slideshow__button,.slideshow--disabled .slideshow__marker {
-	display: none;
+.slideshow--disabled .slideshow__button, .slideshow--disabled .slideshow__marker {
+    display: none;
 }
 
 .slideshow__button__icon {
-	display: block;
-	width: 23px;
-	height: 36px;
-	background: url(../img/arrow.svg)0 -36px no-repeat;
-	background-size: 23px 72px;
-	text-indent: -10000px;
+    display: block;
+    width: 23px;
+    height: 36px;
+    background: transparent url(../img/arrow.png) no-repeat 0 -36px;
+    background: transparent url(../img/arrow.svg) no-repeat 0 -36px;
+    background-size: 23px 72px;
+    text-indent: -10000px;
 }
 
 .slideshow__button--next .slideshow__button__icon {
-	left: 10px;
-	background-position: 0 0;
+    left: 10px;
+    background-position: 0 0;
 }
 
 .slideshow__button--next {
-	padding-right: 7px;
-	padding-left: 10px;
+    padding-right: 7px;
+    padding-left: 10px;
 }
 
 .slideshow__button::-moz-focus-inner {
-	margin: -1px;
-	padding: 0;
+    margin: -1px;
+    padding: 0;
 }
 
 .advanced .slideshow__button {
-	position: absolute;
-	top: 50%;
-	display: block;
-	width: 40px;
-	height: 36px;
-	margin-top: -36px;
-	padding-right: 10px;
-	padding-left: 7px;
+    position: absolute;
+    top: 50%;
+    display: block;
+    width: 40px;
+    height: 36px;
+    margin-top: -36px;
+    padding-right: 10px;
+    padding-left: 7px;
 }
 
 .slideshow__markers {
-	position: relative;
-	top: -45px;
-	height: 15px;
-	padding: 15px 10px;
-	text-align: center;
-	font-size: .8em;
+    position: relative;
+    top: -45px;
+    height: 15px;
+    padding: 15px 10px;
+    text-align: center;
+    font-size: .8em;
 }
 
 .slideshow--enable-touch .slideshow__markers {
-	top: -65px;
-	padding: 25px 10px;
+    top: -65px;
+    padding: 25px 10px;
 }
 
 .slideshow__marker {
-	display: inline-block;
-	padding: 0;
-	width: 10px;
-	height: 10px;
-	background: #fff;
-	border-radius: 5px;
-	text-indent: -10000px;
-	opacity: .4;
+    display: inline-block;
+    padding: 0;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 5px;
+    text-indent: -10000px;
+    opacity: .4;
 }
 
 .slideshow__marker--sticky {
-	background-color: #3172dd;
-	opacity: 1;
+    background-color: #3172dd;
+    opacity: 1;
 }
 
 .slideshow__marker+.slideshow__marker {
-	margin-left: 10px;
+    margin-left: 10px;
 }
 
 .slideshow--enable-touch .slideshow__marker {
-	width: 16px;
-	height: 16px;
-	border-radius: 8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
 }
 
 .slideshow--enable-touch .slideshow__marker+.slideshow--enable-touch .slideshow__marker {
-	margin-left: 15px;
+    margin-left: 15px;
 }
