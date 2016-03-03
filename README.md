@@ -71,3 +71,15 @@ var slider = new TouchSlider({ slider: '.slider' });
 slider.init();
 slider.updateConfig({ delay: 3000, interval: 5000, time: 600 });
 ```
+
+CommonJS
+--------
+
+Instead, Touch Slider can be installed via `npm install touch-slider` and used as a module:
+
+``` js
+var slider = new (require('touch-slider'))({ slider: '.slider' });
+
+slider.init();
+slider.updateConfig({ delay: 3000, interval: 5000, time: 600 });
+```
