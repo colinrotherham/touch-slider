@@ -1,6 +1,6 @@
 {
   "name": "touch-slider",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A very simple jQuery slider with callback support",
   "main": "dist/assets/js/touch-slider.js",
   "author": {

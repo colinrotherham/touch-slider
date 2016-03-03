@@ -29,6 +29,7 @@
 			classSlideActive: 'slider__slide--sticky',
 			classMarker: 'slider__marker',
 			classMarkerActive: 'slider__marker--sticky',
+			classButtonDisabled: 'slider__button--disabled',
 			classDisabled: 'slider--disabled',
 			classTouch: 'slider--enable-touch',
 
@@ -430,7 +431,7 @@
 		}
 
 		function updateNextPrev() {
-			var button, buttonClass = config.classDisabled;
+			var button, buttonClass = config.classButtonDisabled;
 
 			// Skip when looping is on
 			if (!config.canLoop) {

@@ -51,6 +51,10 @@
     right: 0;
 }
 
+.slider__button--disabled {
+    opacity: .5;
+}
+
 .slider__markers {
     text-align: right;
 }
