@@ -3,13 +3,17 @@
 	----------------------------------- */
 
 	var autoprefixer = require('autoprefixer'),
+		browserify = require('browserify'),
+		buffer = require('vinyl-buffer'),
 		csswring = require('csswring'),
 		del = require('del'),
 		gulp = require('gulp'),
 		perfectionist = require('perfectionist'),
+		plumber = require('gulp-plumber'),
 		postcss = require('gulp-postcss'),
 		rename = require('gulp-rename'),
 		sass = require('gulp-sass'),
+		source = require('vinyl-source-stream');
 		uglify = require('gulp-uglify');
 
 
@@ -50,8 +54,9 @@
 
 	gulp.task('copy', function(callback) {
 
-		gulp.src('./node_modules/jquery/dist/jquery.min.js')
+		gulp.src('./src/js/*.js')
 			.pipe(gulp.dest('./dist/assets/js'));
+
 	});
 
 
@@ -79,16 +84,34 @@
 
 
 /*
-	Minify JS
+	Resolve dependencies, bundle
 	----------------------------------- */
 
-	gulp.task('uglify', ['clean'], function() {
+	gulp.task('bundle', ['clean'], function() {
 
-		gulp.src('./src/js/touch-slider.js')
+		// Configure browserify
+		var b = browserify({
+			debug: true,
+			entries: './src/js/touch-slider.js',
+			standalone: 'TouchSlider'
+		});
+
+		return b.bundle()
+			.pipe(plumber())
+
+			// Load files
+			.pipe(source('./src/js/touch-slider.js'))
+			.pipe(buffer())
+
+			// Uglify and switch to build location
 			.pipe(uglify())
-			.on('error', console.error.bind(console))
-			.pipe(rename({ suffix: '.min' }))
-			.pipe(gulp.dest('./dist/assets/js'));
+			.pipe(rename({
+				dirname: './dist/assets/js/',
+				suffix: '-bundle.min'
+			}))
+
+			// Write to files
+			.pipe(gulp.dest('.'));
 	});
 
 
@@ -97,4 +120,4 @@
 	----------------------------------- */
 
 	// Default
-	gulp.task('default', ['copy', 'sass', 'uglify']);
+	gulp.task('default', ['copy', 'sass', 'bundle']);
