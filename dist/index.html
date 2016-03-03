@@ -2,7 +2,7 @@
 <html lang="en-GB">
 	<head>
 		<meta charset="utf-8">
-		<title>Slideshow</title>
+		<title>Touch Slider</title>
 
 		<!-- Handheld support -->
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,38 +10,38 @@
 		<meta name="MobileOptimized" content="320">
 
 		<!-- CSS includes -->
-		<link rel="stylesheet" href="assets/css/slideshow.css">
+		<link rel="stylesheet" href="assets/css/touch-slider.css">
 		<link rel="stylesheet" href="assets/css/demo.css">
 
 		<!-- Initialise advanced UI -->
 		<script>document.documentElement.className = 'advanced';</script>
 	</head>
 	<body>
-		<div class="slideshow slideshow--disabled">
-			<button class="slideshow__button slideshow__button--previous">
-				<b class="slideshow__button__icon">« Previous</b>
+		<div class="slider slider--disabled">
+			<button class="slider__button slider__button--previous">
+				<b class="slider__button__icon">« Previous</b>
 			</button>
-			<button class="slideshow__button slideshow__button--next">
-				<b class="slideshow__button__icon">Next »</b>
+			<button class="slider__button slider__button--next">
+				<b class="slider__button__icon">Next »</b>
 			</button>
 
-			<div class="slideshow__strip">
-				<div class="slideshow__slide slideshow__slide--1 slideshow__slide--sticky"></div>
-				<div class="slideshow__slide slideshow__slide--2"></div>
-				<div class="slideshow__slide slideshow__slide--3"></div>
-				<div class="slideshow__slide slideshow__slide--4"></div>
-				<div class="slideshow__slide slideshow__slide--5"></div>
-				<div class="slideshow__slide slideshow__slide--6"></div>
+			<div class="slider__strip">
+				<div class="slider__slide slider__slide--1 slider__slide--sticky"></div>
+				<div class="slider__slide slider__slide--2"></div>
+				<div class="slider__slide slider__slide--3"></div>
+				<div class="slider__slide slider__slide--4"></div>
+				<div class="slider__slide slider__slide--5"></div>
+				<div class="slider__slide slider__slide--6"></div>
 			</div>
 
-			<div class="slideshow__markers"></div>
+			<div class="slider__markers"></div>
 		</div>
 
 		<!-- Script includes -->
 		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/simple-slideshow.min.js"></script>
+		<script src="assets/js/touch-slider.min.js"></script>
 
-		<!-- Create and init the slideshow -->
-		<script>new SimpleSlideshow({ slideshow: '.slideshow', canLoop: true }).init();</script>
+		<!-- Create and init the slider -->
+		<script>new TouchSlider({ slider: '.slider', canLoop: true }).init();</script>
 	</body>
 </html>

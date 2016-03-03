@@ -21,45 +21,45 @@ a:hover, a:focus {
     color: #737373;
 }
 
-.slideshow {
+.slider {
     height: 100%;
 }
 
-.slideshow__strip {
+.slider__strip {
     height: 100%;
 }
 
-.slideshow__slide {
+.slider__slide {
     overflow: hidden;
     background-position: 50% 50%;
     background-size: cover;
 }
 
-.slideshow__slide--1 {
+.slider__slide--1 {
     background-image: url(../img/example1.jpg);
 }
 
-.slideshow__slide--2 {
+.slider__slide--2 {
     background-image: url(../img/example2.jpg);
 }
 
-.slideshow__slide--3 {
+.slider__slide--3 {
     background-image: url(../img/example3.jpg);
 }
 
-.slideshow__slide--4 {
+.slider__slide--4 {
     background-image: url(../img/example4.jpg);
 }
 
-.slideshow__slide--5 {
+.slider__slide--5 {
     background-image: url(../img/example5.jpg);
 }
 
-.slideshow__slide--6 {
+.slider__slide--6 {
     background-image: url(../img/example6.jpg);
 }
 
-.slideshow__button, .slideshow__marker {
+.slider__button, .slider__marker {
     margin: 0;
     background: none;
     border: 0;
@@ -69,11 +69,11 @@ a:hover, a:focus {
     appearance: none;
 }
 
-.slideshow--disabled .slideshow__button, .slideshow--disabled .slideshow__marker {
+.slider--disabled .slider__button, .slider--disabled .slider__marker {
     display: none;
 }
 
-.slideshow__button__icon {
+.slider__button__icon {
     display: block;
     width: 23px;
     height: 36px;
@@ -83,22 +83,22 @@ a:hover, a:focus {
     text-indent: -10000px;
 }
 
-.slideshow__button--next .slideshow__button__icon {
+.slider__button--next .slider__button__icon {
     left: 10px;
     background-position: 0 0;
 }
 
-.slideshow__button--next {
+.slider__button--next {
     padding-right: 7px;
     padding-left: 10px;
 }
 
-.slideshow__button::-moz-focus-inner {
+.slider__button::-moz-focus-inner {
     margin: -1px;
     padding: 0;
 }
 
-.advanced .slideshow__button {
+.advanced .slider__button {
     position: absolute;
     top: 50%;
     display: block;
@@ -109,7 +109,7 @@ a:hover, a:focus {
     padding-left: 7px;
 }
 
-.slideshow__markers {
+.slider__markers {
     position: relative;
     top: -45px;
     height: 15px;
@@ -118,12 +118,12 @@ a:hover, a:focus {
     font-size: .8em;
 }
 
-.slideshow--enable-touch .slideshow__markers {
+.slider--enable-touch .slider__markers {
     top: -65px;
     padding: 25px 10px;
 }
 
-.slideshow__marker {
+.slider__marker {
     display: inline-block;
     padding: 0;
     width: 10px;
@@ -134,21 +134,21 @@ a:hover, a:focus {
     opacity: .4;
 }
 
-.slideshow__marker--sticky {
+.slider__marker--sticky {
     background-color: #3172dd;
     opacity: 1;
 }
 
-.slideshow__marker+.slideshow__marker {
+.slider__marker+.slider__marker {
     margin-left: 10px;
 }
 
-.slideshow--enable-touch .slideshow__marker {
+.slider--enable-touch .slider__marker {
     width: 16px;
     height: 16px;
     border-radius: 8px;
 }
 
-.slideshow--enable-touch .slideshow__marker+.slideshow--enable-touch .slideshow__marker {
+.slider--enable-touch .slider__marker+.slider--enable-touch .slider__marker {
     margin-left: 15px;
 }

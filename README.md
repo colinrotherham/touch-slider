@@ -1,18 +1,18 @@
-Simple Slideshow
-================
+Touch Slider
+============
 
 Features
 --------
 
 1. Swipe or change slide by pressing the next/previous buttons
-2. Markers below the slideshow show which slide is active\*
+2. Markers below the slider show which slide is active\*
 3. Fully responsive + flexible, no reliance on JavaScript to resize
 4. GPU accelerated where available (i.e. CSS Translate/Transition)
 5. Optionally provide a callback to run after each transition
 
 \* e.g. Styled as the little dots, iOS-style
 
-By default, the slideshow has a three-second delay, then you'll get
+By default, the slider has a three-second delay, then you'll get
 a wait time of five seconds per slide and a 400ms transition time.
 
 Customise as you like!
@@ -21,7 +21,7 @@ Customise as you like!
 Browser support
 ---------------
 
-For modern browsers (e.g. Chrome, Safari, Firefox, Opera), Simple Slideshow uses super smooth GPU-accelerated CSS Translate + Transition.
+For modern browsers (e.g. Chrome, Safari, Firefox, Opera), Touch Slider uses super smooth GPU-accelerated CSS Translate + Transition.
 Where support isn't available (e.g. IE7, IE8) jQuery animations are used instead.
 
 
@@ -34,40 +34,40 @@ Touching to move slide (either flicking or following your finger) is available i
 Configuring the script
 ----------------------
 
-Starting the slideshow (as shown in launcher.js):
+Starting the slider (as shown in launcher.js):
 
 ``` js
-new SimpleSlideshow({ slideshow: '.slideshow' }).init();
+new TouchSlider({ slider: '.slider' }).init();
 ```
 
 Adjusting how many slides to step by when moving next/prev
 ``` js
-new SimpleSlideshow({ slideshow: '.slideshow', step: 2 }).init();
+new TouchSlider({ slider: '.slider', step: 2 }).init();
 ```
 
 Alternatively, set a callback to run after each transition:
 
 ``` js
-new SimpleSlideshow({ slideshow: '.slideshow' }, function(event) { /* Do something */ }).init();
+new TouchSlider({ slider: '.slider' }, function(event) { /* Do something */ }).init();
 ```
 
 Alternatively, set a callback to run before and after each transition:
 
 ``` js
-new SimpleSlideshow({ slideshow: '.slideshow' }, function(event) { /* After transition */ }, function(event) { /* Before transition */ }).init();
+new TouchSlider({ slider: '.slider' }, function(event) { /* After transition */ }, function(event) { /* Before transition */ }).init();
 ```
 
 Alternatively, override the default configuration:
 
 ``` js
-new SimpleSlideshow({ slideshow: '.slideshow', delay: 3000, interval: 5000, time: 600, canLoop: true, isManual: false }).init();
+new TouchSlider({ slider: '.slider', delay: 3000, interval: 5000, time: 600, canLoop: true, isManual: false }).init();
 ```
 
-…or override timings of an already-running slideshow:
+…or override timings of an already-running slider:
 
 ``` js
-var slideshow = new SimpleSlideshow({ slideshow: '.slideshow' });
+var slider = new TouchSlider({ slider: '.slider' });
 
-slideshow.init();
-slideshow.updateConfig({ delay: 3000, interval: 5000, time: 600 });
+slider.init();
+slider.updateConfig({ delay: 3000, interval: 5000, time: 600 });
 ```

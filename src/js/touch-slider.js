@@ -6,7 +6,7 @@
 	(function() {
 		'use strict';
 
-		function SimpleSlideshow(userConfig, callbackEnd, callbackStart) {
+		function TouchSlider(userConfig, callbackEnd, callbackStart) {
 
 			var self = this,
 
@@ -18,19 +18,19 @@
 			----------------------------------- */
 
 			config = {
-				next: '.slideshow__button--next',
-				previous: '.slideshow__button--previous',
-				markers: '.slideshow__markers',
-				numbers: '.slideshow__numbers',
+				next: '.slider__button--next',
+				previous: '.slider__button--previous',
+				markers: '.slider__markers',
+				numbers: '.slider__numbers',
 
 				// Classes
-				classStrip: 'slideshow__strip',
-				classSlide: 'slideshow__slide',
-				classSlideActive: 'slideshow__slide--sticky',
-				classMarker: 'slideshow__marker',
-				classMarkerActive: 'slideshow__marker--sticky',
-				classDisabled: 'slideshow--disabled',
-				classTouch: 'slideshow--enable-touch',
+				classStrip: 'slider__strip',
+				classSlide: 'slider__slide',
+				classSlideActive: 'slider__slide--sticky',
+				classMarker: 'slider__marker',
+				classMarkerActive: 'slider__marker--sticky',
+				classDisabled: 'slider--disabled',
+				classTouch: 'slider--enable-touch',
 
 				// How many to step next/prev by
 				step: 1,
@@ -135,7 +135,7 @@
 							if (event && config.breakpoints[breakpointMatched].callback && self.breakpoint !== breakpointMatched) {
 								self.breakpoint = breakpointMatched;
 
-								// Only continue if slideshow exists
+								// Only continue if slider exists
 								if (element && element.length)
 									config.breakpoints[breakpointMatched].callback();
 							}
@@ -158,7 +158,7 @@
 			}
 
 
-			/* Start the slideshow
+			/* Start the slider
 			----------------------------------- */
 
 			function init() {
@@ -177,7 +177,7 @@
 					strip.removeAttr('style');
 				}
 
-				element = $(config.slideshow);
+				element = $(config.slider);
 				slides = element.find('.' + config.classSlide);
 				strip = element.find('.' + config.classStrip);
 
@@ -287,7 +287,7 @@
 					}
 				}
 
-				// Start slideshow again?
+				// Start slider again?
 				if (!event) start();
 
 				// Stop default action
@@ -576,7 +576,7 @@
 				// Both buttons
 				buttons = buttonPrev.add(buttonNext);
 
-				// Start the slideshow timer
+				// Start the slider timer
 				timeoutStart = offload(start, config.delay);
 
 				// Listen for marker clicks
@@ -586,7 +586,7 @@
 				// Focus & hashchange management
 				$(window).on('hashchange', initSlides);
 
-				// Track slideshow size for movement/breakpoint calculations
+				// Track slider size for movement/breakpoint calculations
 				updateWidth();
 				$(window).resize(updateWidth);
 			}
@@ -745,15 +745,15 @@
 
 		// AMD module
 		if (typeof define === 'function' && define.amd) {
-			define(function() { return SimpleSlideshow; });
+			define(function() { return TouchSlider; });
 		}
 
 		// CommonJS module
 		else if (typeof module === 'object' && module.exports) {
-			module.exports = SimpleSlideshow;
+			module.exports = TouchSlider;
 		}
 
 		// Global
-		else window.SimpleSlideshow = SimpleSlideshow;
+		else window.TouchSlider = TouchSlider;
 
 	})();

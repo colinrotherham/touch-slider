@@ -1,18 +1,19 @@
 {
-  "name": "simple-slideshow",
+  "name": "touch-slider",
   "version": "2.0.0",
-  "description": "A very simple jQuery slideshow with callback support",
-  "main": "dist/assets/js/simple-slideshow.min.js",
+  "description": "A very simple jQuery slider with callback support",
+  "main": "dist/assets/js/touch-slider.min.js",
   "author": {
     "name": "Colin Rotherham",
     "email": "work@colinr.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/colinrotherham/simple-slideshow"
+    "url": "https://github.com/colinrotherham/touch-slider"
   },
   "keywords": [
     "slideshow",
+    "slider",
     "carousel",
     "jquery",
     "mobile",
@@ -27,7 +28,7 @@
       "url": "http://opensource.org/licenses/MIT"
     }
   ],
-  "homepage": "https://github.com/colinrotherham/simple-slideshow",
+  "homepage": "https://github.com/colinrotherham/touch-slider",
   "devDependencies": {
     "autoprefixer": "^6.3.3",
     "csswring": "^4.2.1",

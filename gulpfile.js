@@ -84,7 +84,7 @@
 
 	gulp.task('uglify', ['clean'], function() {
 
-		gulp.src('./src/js/simple-slideshow.js')
+		gulp.src('./src/js/touch-slider.js')
 			.pipe(uglify())
 			.on('error', console.error.bind(console))
 			.pipe(rename({ suffix: '.min' }))

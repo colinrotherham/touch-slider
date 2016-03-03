@@ -31,7 +31,9 @@
 	Theme
 	----------------------------------- */
 
-	.slideshow {
+	.slider {
+		$block: #{&};
+
 		height: 100%;
 
 		&__strip {
@@ -64,7 +66,7 @@
 			appearance: none;
 
 			/* Hide buttons when disabled */
-			.slideshow--disabled & {
+			#{$block}--disabled & {
 				display: none;
 			}
 		}
@@ -84,7 +86,7 @@
 				text-indent: -10000px;
 
 				// Swap arrow icon for next button
-				.slideshow__button--next & {
+				#{$block}__button--next & {
 					left: 10px;
 					background-position: 0 0;
 				}
@@ -126,7 +128,7 @@
 			font-size: 0.8em;
 
 			/* Bigger markers for touch */
-			.slideshow--enable-touch & {
+			#{$block}--enable-touch & {
 				top: -65px;
 				padding: 25px 10px;
 			}
@@ -159,7 +161,7 @@
 			}
 
 			/* Bigger markers for touch */
-			.slideshow--enable-touch & {
+			#{$block}--enable-touch & {
 				width: 16px;
 				height: 16px;
 
